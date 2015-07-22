@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">InterTalking</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main_tabs">MainTabs</string>
+    <string name="title_activity_friends">Friends</string>
+    <string name="title_activity_conversations">Conversations</string>
+    <string name="title_activity_chat_room">ChatRoom</string>
+    <string name="facebook_app_id">974378129279344</string>
+    <string name="firebase_url"> https://blazing-torch-3851.firebaseio.com</string>
+
+</resources>
