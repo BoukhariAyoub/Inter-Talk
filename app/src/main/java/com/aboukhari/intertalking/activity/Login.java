@@ -45,7 +45,7 @@ public class Login extends Activity implements View.OnClickListener {
 
         if (AccessToken.getCurrentAccessToken() != null) {
             Intent intent = new Intent(Login.this,
-                    Friends.class);
+                    MainActivity.class);
             startActivity(intent);
             this.finish();
         }
@@ -72,18 +72,10 @@ public class Login extends Activity implements View.OnClickListener {
         }
         if (v == btnFbLogin) {
             if (AccessToken.getCurrentAccessToken() != null) {
-                Intent mainIntent = new Intent(Login.this,
-                        Friends.class);
-                mainIntent.putExtra("id", "1");
 
-                startActivity(mainIntent);
-          //      LoginManager.getInstance().logOut();
-          //      btnFbLogin.setText("Logout");
+
             } else {
                 LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "user_friends"));
-                btnFbLogin.setText("Login");
-
-
             }
         }
     }
@@ -124,6 +116,11 @@ public class Login extends Activity implements View.OnClickListener {
 
                     System.out.println(AccessToken.getCurrentAccessToken().toString());
 
+                    Intent mainIntent = new Intent(Login.this,
+                            Friends.class);
+                    mainIntent.putExtra("id", "1");
+                    startActivity(mainIntent);
+
                 }
 
                 @Override
@@ -132,7 +129,6 @@ public class Login extends Activity implements View.OnClickListener {
                 }
             });
         } else {
-        /* Logged out of Facebook so do a logout from the Firebase app */
             ref.unauth();
         }
     }

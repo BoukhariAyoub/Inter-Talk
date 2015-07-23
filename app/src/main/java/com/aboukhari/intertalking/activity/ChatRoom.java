@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -21,6 +20,9 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 
 public class ChatRoom extends Activity {
 
@@ -29,6 +31,7 @@ public class ChatRoom extends Activity {
     private ChatListAdapter chatListAdapter;
     private ListView listView;
     private String roomName;
+
     public static String USERNAME;
 
 
@@ -70,6 +73,7 @@ public class ChatRoom extends Activity {
             }
         });
 
+        setLastRead();
     }
 
     @Override
@@ -83,7 +87,7 @@ public class ChatRoom extends Activity {
             @Override
             public void onChanged() {
                 super.onChanged();
-                Log.d("natija", "gotMessage");
+                // Log.d("natija", "gotMessage");
                 listView.setSelection(chatListAdapter.getCount() - 1);
             }
         });
@@ -112,6 +116,7 @@ public class ChatRoom extends Activity {
         super.onStop();
         ref.getRoot().child(".info/connected").removeEventListener(connectedListener);
         chatListAdapter.cleanup();
+        setLastRead();
     }
 
 
@@ -125,6 +130,10 @@ public class ChatRoom extends Activity {
             ref.child("messages").child(roomName).push().setValue(chat);
             inputText.setText("");
         }
+    }
+
+    private void setLastRead(){
+        ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").child(roomName).setValue(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime());
     }
 
 

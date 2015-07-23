@@ -31,4 +31,13 @@ public class Chat {
     public Date getDate() {
         return date;
     }
+
+    @Override
+    public String toString() {
+        return "Chat{" +
+                "message='" + message + '\'' +
+                ", author='" + author + '\'' +
+                ", date=" + date +
+                '}';
+    }
 }

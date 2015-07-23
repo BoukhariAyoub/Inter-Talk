@@ -3,7 +3,6 @@ package com.aboukhari.intertalking.adapter;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,11 +57,9 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
         authorText.setText(author + ": ");
         // If the message was sent by this user, color it differently
         if (author.equals(uid)) {
-            Log.d("natija", "equals");
             view.setBackgroundColor(Color.TRANSPARENT);
             messageText.setTextColor(Color.WHITE);
         } else {
-            Log.d("natija", "not equals");
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             layoutParams.gravity = Gravity.LEFT;
             linearChat.setGravity(Gravity.LEFT);
