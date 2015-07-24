@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aboukhari.intertalking.R;
+import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.adapter.ChatListAdapter;
 import com.aboukhari.intertalking.model.Chat;
 import com.firebase.client.DataSnapshot;
@@ -40,22 +41,23 @@ public class ChatRoom extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_room);
 
+        roomName = getIntent().getStringExtra("roomName");
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setTitle("HEY HEY");
-
+            toolbar.setTitle(roomName);
         }
 
         listView = (ListView) findViewById(android.R.id.list);
-        // Make sure we have a USERNAME
-        roomName = getIntent().getStringExtra("roomName");
-        setTitle("Chatting as " + USERNAME);
+
+
+        FireBaseManager.currentRoom = roomName;
 
         // Setup our Firebase ref
         ref = new Firebase(getString(R.string.firebase_url));
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
-        EditText inputText = (EditText)findViewById(R.id.messageInput);
+        EditText inputText = (EditText) findViewById(R.id.messageInput);
         inputText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -96,7 +98,7 @@ public class ChatRoom extends Activity {
         connectedListener = ref.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean connected = (Boolean)dataSnapshot.getValue();
+                boolean connected = (Boolean) dataSnapshot.getValue();
                 if (connected) {
                     Toast.makeText(ChatRoom.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
                 } else {
@@ -117,11 +119,12 @@ public class ChatRoom extends Activity {
         ref.getRoot().child(".info/connected").removeEventListener(connectedListener);
         chatListAdapter.cleanup();
         setLastRead();
+        FireBaseManager.currentRoom = null;
     }
 
 
     private void sendMessage() {
-        EditText inputText = (EditText)findViewById(R.id.messageInput);
+        EditText inputText = (EditText) findViewById(R.id.messageInput);
         String input = inputText.getText().toString();
         if (!input.equals("")) {
             // Create our 'model', a Chat object
@@ -132,7 +135,7 @@ public class ChatRoom extends Activity {
         }
     }
 
-    private void setLastRead(){
+    private void setLastRead() {
         ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").child(roomName).setValue(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime());
     }
 

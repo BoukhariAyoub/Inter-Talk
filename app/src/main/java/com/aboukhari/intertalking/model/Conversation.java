@@ -92,7 +92,7 @@ public class Conversation {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot.getValue() != null) {
+                if (dataSnapshot.exists()) {
                     Log.d("natija conv ", String.valueOf(dataSnapshot));
                     Map<String, Chat> value = (Map<String, Chat>) dataSnapshot.getValue();
                     Object key = value.keySet().toArray()[0];
@@ -119,6 +119,6 @@ public class Conversation {
     }
 
     public String extractFriendUid(Firebase ref) {
-        return myId == ref.getAuth().getUid() ? myId : friendId;
+        return myId.equals(ref.getAuth().getUid()) ? friendId:myId;
     }
 }
