@@ -8,7 +8,7 @@ import java.util.Comparator;
  * Created by aboukhari on 24/07/2015.
  */
 
-    public class DateComparator2  implements Comparator<Conversation> {
+    public class DateComparator  implements Comparator<Conversation> {
 
 
         @Override
