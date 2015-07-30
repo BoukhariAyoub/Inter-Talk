@@ -1,32 +1,18 @@
 package com.aboukhari.intertalking.activity;
 
 
-import android.app.DownloadManager;
-import android.app.ProgressDialog;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.adapter.TabsPagerAdapter;
-import com.aboukhari.intertalking.model.Friend;
 import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.firebase.client.Firebase;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
 
 public class MainActivity extends ActionBarActivity implements
         ActionBar.TabListener {
@@ -104,8 +90,9 @@ public class MainActivity extends ActionBarActivity implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            checkFriends(AccessToken.getCurrentAccessToken());
+        if (id == R.id.sync_fb_friends) {
+           fireBaseManager.syncFacebookFriends(AccessToken.getCurrentAccessToken());
+          //  Utils.exportDB("intertalk");
         }
 
         return super.onOptionsItemSelected(item);
@@ -128,54 +115,7 @@ public class MainActivity extends ActionBarActivity implements
 
     }
 
-    private void checkFriends(AccessToken token) {
-        Log.d("natija", "hnaaa " + token.toString());
-        GraphRequest request = GraphRequest.newMyFriendsRequest(
-                token, new GraphRequest.GraphJSONArrayCallback() {
-                    @Override
-                    public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
-                        ProgressDialog dialog = new ProgressDialog(MainActivity.this);
-                        dialog.show();
-                        for (int i = 0, size = jsonArray.length(); i < size; i++) {
-                            try {
-                                JSONObject object = jsonArray.getJSONObject(i);
-                                String fbid = object.get("id").toString();
-                                String uid = "facebook:" + fbid;
-                                String name = object.get("name").toString();
-                                String imageUrl = ((JSONObject) ((JSONObject) object.get("picture")).get("data")).get("url").toString();
 
-                                Friend friend = new Friend(uid, name, imageUrl);
-                                downloadImage(uid, imageUrl);
-                                ref.child("users").child(ref.getAuth().getUid()).child("friends").child("facebook:" + uid).setValue(friend);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-
-                    }
-                });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,picture");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
-
-    private void downloadImage(String uid, final String url) {
-        String dirPath = getFilesDir().getAbsolutePath() + File.separator + "pic-profile";
-
-        File file = new File(Environment.getExternalStorageDirectory() + "/" + dirPath + "/" + uid + ".jpg");
-        if (file.exists()) {
-            file.delete();
-        }
-
-        DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url))
-                .setDestinationInExternalPublicDir(dirPath, uid + ".jpg")
-                .setVisibleInDownloadsUi(false);
-        dm.enqueue(request);
-
-    }
 
 
     public FireBaseManager getFireBaseManager() {

@@ -15,14 +15,12 @@ import android.widget.Toast;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.adapter.ChatListAdapter;
-import com.aboukhari.intertalking.model.Chat;
+import com.aboukhari.intertalking.database.DatabaseManager;
+import com.aboukhari.intertalking.model.Message;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-
-import java.util.Calendar;
-import java.util.TimeZone;
 
 
 public class ChatRoom extends Activity {
@@ -32,8 +30,8 @@ public class ChatRoom extends Activity {
     private ChatListAdapter chatListAdapter;
     private ListView listView;
     private String roomName;
-
-    public static String USERNAME;
+    private DatabaseManager databaseManager;
+    private FireBaseManager fireBaseManager;
 
 
     @Override
@@ -41,6 +39,9 @@ public class ChatRoom extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_room);
 
+        databaseManager = DatabaseManager.getInstance(this);
+
+        fireBaseManager = new FireBaseManager(this);
         roomName = getIntent().getStringExtra("roomName");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -75,12 +76,13 @@ public class ChatRoom extends Activity {
             }
         });
 
-        setLastRead();
+        fireBaseManager.updateLastRead(roomName);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
         // Tell our list adapter that we only want 50 messages at a time
         chatListAdapter = new ChatListAdapter(ref.child("messages").child(roomName).orderByChild("date"), this, R.layout.item_chat_list, ref.getAuth().getUid());
@@ -94,6 +96,7 @@ public class ChatRoom extends Activity {
             }
         });
 
+
         // Finally, a little indication of connection status
         connectedListener = ref.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
             @Override
@@ -106,11 +109,16 @@ public class ChatRoom extends Activity {
                 }
             }
 
+
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 // No-op
             }
         });
+
+        FireBaseManager.currentRoom = roomName;
+
+
     }
 
     @Override
@@ -118,7 +126,7 @@ public class ChatRoom extends Activity {
         super.onStop();
         ref.getRoot().child(".info/connected").removeEventListener(connectedListener);
         chatListAdapter.cleanup();
-        setLastRead();
+        fireBaseManager.updateLastRead(roomName);
         FireBaseManager.currentRoom = null;
     }
 
@@ -127,16 +135,10 @@ public class ChatRoom extends Activity {
         EditText inputText = (EditText) findViewById(R.id.messageInput);
         String input = inputText.getText().toString();
         if (!input.equals("")) {
-            // Create our 'model', a Chat object
-            Chat chat = new Chat(input, ref.getAuth().getUid());
-            // Create a new, auto-generated child of that chat location, and save our chat data there
-            ref.child("messages").child(roomName).push().setValue(chat);
+            Message message = new Message(input, ref.getAuth().getUid());
+            ref.child("messages").child(roomName).push().setValue(message);
             inputText.setText("");
         }
-    }
-
-    private void setLastRead() {
-        ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").child(roomName).setValue(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime());
     }
 
 

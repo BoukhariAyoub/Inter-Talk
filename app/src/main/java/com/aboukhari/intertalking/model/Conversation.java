@@ -6,6 +6,8 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -15,13 +17,27 @@ import java.util.Map;
 /**
  * Created by aboukhari on 23/07/2015.
  */
+
+@DatabaseTable(tableName = "conversation")
+
 public class Conversation {
 
+    @DatabaseField(id = true)
     String roomName;
+
+    @DatabaseField
     String myId;
+
+    @DatabaseField
     String friendId;
+
+    @DatabaseField
     Date dateCreated;
+
+    @DatabaseField
     String lastMessage;
+
+    @DatabaseField
     Date lastMessageDate;
 
 
@@ -94,7 +110,7 @@ public class Conversation {
 
                 if (dataSnapshot.exists()) {
                     Log.d("natija conv ", String.valueOf(dataSnapshot));
-                    Map<String, Chat> value = (Map<String, Chat>) dataSnapshot.getValue();
+                    Map<String, Message> value = (Map<String, Message>) dataSnapshot.getValue();
                     Object key = value.keySet().toArray()[0];
                     Map<String, Object> chat = (Map<String, Object>) value.get(key);
 

@@ -8,25 +8,22 @@ import android.view.View;
 import android.widget.Button;
 
 import com.aboukhari.intertalking.R;
+import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
-import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class Login extends Activity implements View.OnClickListener {
 
 
-    Button btnFbLogin,btnEmailLogin;
+    Button btnFbLogin, btnEmailLogin;
     Firebase ref;
     CallbackManager callbackManager;
 
@@ -37,25 +34,32 @@ public class Login extends Activity implements View.OnClickListener {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
 
+        final FireBaseManager fireBaseManager = new FireBaseManager(this);
         callbackManager = CallbackManager.Factory.create();
         ref = new Firebase(getString(R.string.firebase_url));
 
         btnEmailLogin = (Button) findViewById(R.id.btn_email_sign_in);
         btnFbLogin = (Button) findViewById(R.id.btn_fb_login);
 
-        if (AccessToken.getCurrentAccessToken() != null) {
+        if (ref.getAuth() != null) {
             Intent intent = new Intent(Login.this,
                     MainActivity.class);
             startActivity(intent);
             this.finish();
         }
 
-            ProfileTracker profileTracker = new ProfileTracker() {
+        ProfileTracker profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
                 Log.d("natija", "profile change");
 
-                onFacebookAccessTokenChange(AccessToken.getCurrentAccessToken());
+                if(newProfile!= null){
+                    String pictureUrl = newProfile.getProfilePictureUri(400, 400).toString();
+                    fireBaseManager.onFacebookAccessTokenChange(AccessToken.getCurrentAccessToken(), pictureUrl);
+                }
+
+
+
             }
         };
 
@@ -67,15 +71,15 @@ public class Login extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if(v == btnEmailLogin){
+        if (v == btnEmailLogin) {
 
         }
         if (v == btnFbLogin) {
             if (AccessToken.getCurrentAccessToken() != null) {
-
+                LoginManager.getInstance().logOut();
 
             } else {
-                LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "user_friends"));
+                LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "user_friends", "user_birthday"));
             }
         }
     }
@@ -84,53 +88,6 @@ public class Login extends Activity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-
-    private void onFacebookAccessTokenChange(final AccessToken token) {
-        if (token != null) {
-
-            ref.authWithOAuthToken("facebook", token.getToken(), new Firebase.AuthResultHandler() {
-                @Override
-                public void onAuthenticated(AuthData authData) {
-                    Log.d("natija", "authData " + authData.getExpires());
-                    Map<String, String> map2 = new HashMap<>();
-
-                    map2.put("provider", authData.getProvider());
-                    if (authData.getProviderData().containsKey("id")) {
-                        map2.put("provider_id", authData.getProviderData().get("id").toString());
-                    }
-                    if (authData.getProviderData().containsKey("displayName")) {
-                        map2.put("displayName", authData.getProviderData().get("displayName").toString());
-                    }
-
-                    if (authData.getProviderData().containsKey("profileImageURL")) {
-                        map2.put("profileImageURL", authData.getProviderData().get("profileImageURL").toString());
-                    }
-
-                    if (authData.getProviderData().containsKey("email")) {
-                        map2.put("email", authData.getProviderData().get("email").toString());
-                    }
-
-                    ref.child("users").child(authData.getUid()).setValue(map2);
-
-                    System.out.println(AccessToken.getCurrentAccessToken().toString());
-
-                    Intent mainIntent = new Intent(Login.this,
-                            Friends.class);
-                    mainIntent.putExtra("id", "1");
-                    startActivity(mainIntent);
-
-                }
-
-                @Override
-                public void onAuthenticationError(FirebaseError firebaseError) {
-                    Log.e("natija", "error " + firebaseError.getMessage());
-                }
-            });
-        } else {
-            ref.unauth();
-        }
     }
 
 

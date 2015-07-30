@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aboukhari.intertalking.R;
-import com.aboukhari.intertalking.model.Chat;
+import com.aboukhari.intertalking.model.Message;
 import com.firebase.client.Query;
 
 import java.text.DateFormat;
@@ -22,7 +22,7 @@ import java.util.TimeZone;
  * This class is an example of how to use FirebaseListAdapter. It uses the <code>Chat</code> class to encapsulate the
  * data for each individual chat message
  */
-public class ChatListAdapter extends FirebaseListAdapter<Chat> {
+public class ChatListAdapter extends FirebaseListAdapter<Message> {
 
     private static final DateFormat CHAT_MSG_DATE_FORMAT = new SimpleDateFormat("HH:mm");
 
@@ -30,7 +30,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
     private String uid;
 
     public ChatListAdapter(Query ref, Activity activity, int layout, String uid) {
-        super(ref, Chat.class, layout, activity);
+        super(ref, Message.class, layout, activity);
         this.uid     = uid;
     }
 
@@ -40,15 +40,15 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
      * to the constructor, as well as a single <code>Chat</code> instance that represents the current data to bind.
      *
      * @param view A view instance corresponding to the layout we passed to the constructor.
-     * @param chat An instance representing the current state of a chat message
+     * @param message An instance representing the current state of a chat message
      */
 
 
     @Override
-    protected void populateView(View view, Chat chat) {
+    protected void populateView(View view, Message message) {
         // Map a Chat object to an entry in our listview
 
-        String author = chat.getAuthor();
+        String author = message.getAuthor();
         TextView authorText = (TextView) view.findViewById(R.id.author);
         TextView messageText = (TextView) view.findViewById(R.id.message);
         TextView dateText = (TextView) view.findViewById(R.id.date);
@@ -71,10 +71,10 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
         }
 
      //   translateMessage(chat.getMessage(),messageText);
-        messageText.setText(chat.getMessage());
+        messageText.setText(message.getMessage());
 
         CHAT_MSG_DATE_FORMAT.setTimeZone(TimeZone.getDefault());
-        dateText.setText(CHAT_MSG_DATE_FORMAT.format(chat.getDate()));
+        dateText.setText(CHAT_MSG_DATE_FORMAT.format(message.getDate()));
     }
 
 

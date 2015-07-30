@@ -39,7 +39,9 @@ public class Conversations extends Fragment {
 
         MainActivity activity = (MainActivity) getActivity();
         fireBaseManager = activity.getFireBaseManager();
-        fireBaseManager.addMessageListeners();
+        //fireBaseManager.addMessageListeners();
+        fireBaseManager.theRealDeal();
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

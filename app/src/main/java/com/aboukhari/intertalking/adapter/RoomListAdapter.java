@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.aboukhari.intertalking.R;
-import com.aboukhari.intertalking.model.Room;
+import com.aboukhari.intertalking.model.UserRoom;
 import com.firebase.client.Query;
 
 import java.text.DateFormat;
@@ -13,7 +13,7 @@ import java.text.DateFormat;
 /**
  * Created by aboukhari on 15/07/2015.
  */
-public class RoomListAdapter extends FirebaseListAdapter<Room> {
+public class RoomListAdapter extends FirebaseListAdapter<UserRoom> {
 
     private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance(DateFormat.FULL);
 
@@ -26,14 +26,14 @@ public class RoomListAdapter extends FirebaseListAdapter<Room> {
      * @param activity   The activity containing the ListView
      */
     public RoomListAdapter(Query ref, Activity activity, int layout) {
-        super(ref, Room.class, layout, activity);
+        super(ref, UserRoom.class, layout, activity);
     }
 
 
     @Override
-    protected void populateView(View view, Room room) {
-        ((TextView) view.findViewById(R.id.tv_name)).setText(room.getName());
-        ((TextView) view.findViewById(R.id.tv_date)).setText(DATE_FORMAT.format(room.getDate()));
+    protected void populateView(View view, UserRoom room) {
+        ((TextView) view.findViewById(R.id.tv_name)).setText(room.getRoomName());
+        ((TextView) view.findViewById(R.id.tv_date)).setText(DATE_FORMAT.format(room.getLastSeen()));
     }
 
 

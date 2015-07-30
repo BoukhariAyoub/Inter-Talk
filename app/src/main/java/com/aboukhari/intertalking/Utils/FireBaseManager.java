@@ -1,47 +1,73 @@
 package com.aboukhari.intertalking.Utils;
 
+import android.app.DownloadManager;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.activity.ChatRoom;
-import com.aboukhari.intertalking.model.Chat;
+import com.aboukhari.intertalking.activity.Friends;
+import com.aboukhari.intertalking.database.DatabaseManager;
 import com.aboukhari.intertalking.model.Conversation;
 import com.aboukhari.intertalking.model.Friend;
+import com.aboukhari.intertalking.model.Message;
+import com.aboukhari.intertalking.model.User;
+import com.aboukhari.intertalking.model.UserRoom;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * Created by aboukhari on 24/07/2015.
  */
 public class FireBaseManager {
 
-    Firebase ref;
-    Map<String, ChildEventListener> messageListenerMap = new HashMap<>();
-    public static Map<String, Long> unreadMap = new HashMap();
     Context context;
+    private DatabaseManager databaseManager;
+    Firebase ref;
+
+    Map<String, ChildEventListener> messagesListenerMap = new HashMap<>();
+    Map<String, ValueEventListener> singleMessageLisntenerMap = new HashMap<>();
+    public static Map<String, Long> unreadMap = new HashMap();
     public static String currentRoom = null;
+    Map<String, ChildEventListener> roomMessagesListenerMap = new HashMap<>();
 
 
     public FireBaseManager(Context context) {
         Firebase.setAndroidContext(context);
         this.ref = new Firebase(context.getResources().getString(R.string.firebase_url));
         this.context = context;
+        databaseManager = DatabaseManager.getInstance(context);
+
     }
 
 
@@ -61,9 +87,20 @@ public class FireBaseManager {
 
                     //Add Room to room_names
                     ref.child("room_names").child(conversation.getRoomName()).setValue(conversation);
+                    databaseManager.addConversation(conversation);
 
                     //Add Room to current user Rooms
-                    ref.child("users").child(conversation.getMyId()).child("rooms").child(conversation.getRoomName()).setValue(Calendar.getInstance().getTime());
+                    HashMap<String, Object> userRoomMap = new HashMap<>();
+                    //userRoomMap.put("")
+                    Date lastSeen = Calendar.getInstance().getTime();
+                    ref.child("users").child(conversation.getMyId()).child("rooms").child(conversation.getRoomName()).setValue(lastSeen);
+                    UserRoom userRoom = new UserRoom();
+                    userRoom.setLastSeen(lastSeen);
+                    userRoom.setFriend(friend);
+                    userRoom.setRoomName(conversation.getRoomName());
+
+                    //Add current room to database
+                    databaseManager.addUserRoom(userRoom);
 
                     //Add Room to friend's Rooms
                     ref.child("users").child(friend.getuId()).child("rooms").child(conversation.getRoomName()).setValue(0);
@@ -79,7 +116,6 @@ public class FireBaseManager {
         return conversation.getRoomName();
     }
 
-
     /**
      * Update last message and last message date of conversation
      *
@@ -92,9 +128,9 @@ public class FireBaseManager {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot.getValue() != null) {
+                if (dataSnapshot.exists()) {
                     Log.d("natija conv ", String.valueOf(dataSnapshot));
-                    Map<String, Chat> value = (Map<String, Chat>) dataSnapshot.getValue();
+                    Map<String, Message> value = (Map<String, Message>) dataSnapshot.getValue();
                     Object key = value.keySet().toArray()[0];
                     Map<String, Object> chat = (Map<String, Object>) value.get(key);
 
@@ -115,41 +151,46 @@ public class FireBaseManager {
 
     }
 
-
     public void openRoom(String roomName) {
-
         Intent intent = new Intent(context, ChatRoom.class);
         intent.putExtra("roomName", roomName);
         context.startActivity(intent);
     }
 
     public void addMessageListeners() {
+        /* Check user's Rooms */
         ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                Log.d("natija listener", " ref.getRoot().child(\"users\").child(ref.getAuth().getUid()).child(\"rooms\")");
+
+               /* Iterate User Rooms */
                 for (final DataSnapshot snap : snapshot.getChildren()) {
 
-                    if (!messageListenerMap.containsKey(snap.getKey())) {
+                    Log.d("natija get ref", snap.getRef().getKey());
+                    /* If listener isn't already added */
+                    if (!messagesListenerMap.containsKey(snap.getKey())) {
 
                         final String roomName = snap.getKey();
-                        //Add listener to Read
 
-
-                        //   final Long d =  addReadListener(roomName);
-
-                        ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").child(roomName).addValueEventListener(new ValueEventListener() {
+                        /* Check last Read Message */
+                        ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.exists()) {
-                                    //Last Read by user
-                                    Long read = dataSnapshot.getValue(Long.class);
-                                    ChildEventListener messageListener = attachMessageListener(roomName, snap, read);
-                                    checkLastMessages(roomName, read);
+                                Long read = dataSnapshot.getValue(Long.class);
+                                Log.d("natija listener", " ref.getRoot().child(\"users\").child(ref.getAuth().getUid()).child(\"rooms\").child(roomName) ");
+                                databaseManager.updateLastSeen(roomName, read);
+                                //   checkLastMessages(roomName, read);
+                                //checkLastMessages(roomName, read);
 
-                                    messageListenerMap.put(roomName, messageListener);
-                                    //Get All the messages since last read and attach a listener
+                                if (messagesListenerMap.containsKey(roomName)) {
+                                    ChildEventListener messageListener = attachMessageListener(roomName, snap, read);
+                                    messagesListenerMap.put(roomName, messageListener);
+
 
                                 }
+
+
                             }
 
                             @Override
@@ -157,9 +198,13 @@ public class FireBaseManager {
 
                             }
                         });
+
+
                     }
                 }
+
             }
+
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
@@ -167,7 +212,6 @@ public class FireBaseManager {
         });
 
     }
-
 
     /**
      * Attach Listener To unread Messages
@@ -179,34 +223,36 @@ public class FireBaseManager {
      */
 
     private ChildEventListener attachMessageListener(final String roomName, final DataSnapshot snap, final Long lastRead) {
+        Log.d("natija unread date", "before key " + snap.getKey());
 
         return ref.getRoot().child("messages").child(snap.getKey()).orderByChild("date").startAt(lastRead).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                final Chat chat = dataSnapshot.getValue(Chat.class);
+                final Message message = dataSnapshot.getValue(Message.class);
                 //  Log.d("natija unread messages", chat.getMessage());
                 //Get Sender display Name
-                ref.getRoot().child("users").child(chat.getAuthor()).child("displayName").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //Show Notification and update Room
-                        if (!roomName.equals(currentRoom)) {
+                //       ref.getRoot().child("users").child(message.getAuthor()).child("displayName").addListenerForSingleValueEvent(new ValueEventListener() {
+                Log.d("natija unread date", "key " + dataSnapshot.getKey());
+                //Show Notification and update Room
+                if (!roomName.equals(currentRoom)) {
+                    //   showNotification(dataSnapshot.getValue().toString(), message.getMessage());
+                    Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(500);
+                }
+                String messageId = dataSnapshot.getKey();
 
-                            showNotification(dataSnapshot.getValue().toString(), chat.getMessage());
-                            Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                            v.vibrate(500);
-                           checkLastMessages(roomName, lastRead);
+                if (messagesListenerMap.containsKey(messageId)) {
+                    ChildEventListener listener = messagesListenerMap.get(messageId);
+                    ref.getRoot().child("messages").child(roomName).child(messageId).removeEventListener(listener);
+                    messagesListenerMap.remove(messageId);
+                }
+                messagesListenerMap.put(messageId, this);
 
-                        }
-                        updateRoom(roomName);
-                    }
 
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
+                checkLastMessages(roomName, lastRead);
 
-                    }
-                });
 
+                updateRoom(roomName);
 
             }
 
@@ -232,7 +278,6 @@ public class FireBaseManager {
         });
     }
 
-
     public void showNotification(String title, String text) {
         //  PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, Friends.class), 0);
         Resources r = context.getResources();
@@ -257,23 +302,19 @@ public class FireBaseManager {
      * @param roomName
      */
     private void removeListeners(String roomName) {
-        if (messageListenerMap.containsKey(roomName)) {
-            ChildEventListener listener = messageListenerMap.get(roomName);
+        if (messagesListenerMap.containsKey(roomName)) {
+            ChildEventListener listener = messagesListenerMap.get(roomName);
             ref.getRoot().child("messages").child(roomName).removeEventListener(listener);
-            messageListenerMap.remove(roomName);
+            messagesListenerMap.remove(roomName);
         }
     }
 
     private void checkLastMessages(final String roomName, final Long lastRead) {
-        final Date d = new Date(lastRead);
-
-        ref.getRoot().child("messages").child(roomName).orderByChild("date").startAt(lastRead).addValueEventListener(new ValueEventListener() {
+        ref.getRoot().child("messages").child(roomName).orderByChild("date").startAt(lastRead).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 long count = dataSnapshot.getChildrenCount();
-                Log.d("natija unread messages", "last read date " + roomName +" - " + lastRead);
-                Log.d("natija unread messages", "last read long "+ roomName +" - " + d.toString());
-                Log.d("natija unread messages", "last read count "+ roomName +" - "  + count);
+                // Log.d("natija unread count", "last read count " + roomName + " - " + count);
                 unreadMap.put(roomName, count);
             }
 
@@ -284,15 +325,240 @@ public class FireBaseManager {
         });
     }
 
-    public Long addReadListener(final String roomName) {
 
-        final Long[] t = new Long[1];
-        ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").child(roomName).addValueEventListener(new ValueEventListener() {
+    public void onFacebookAccessTokenChange(final AccessToken token, final String pictureUrl) {
+        if (token != null) {
+
+            ref.authWithOAuthToken("facebook", token.getToken(), new Firebase.AuthResultHandler() {
+                @Override
+                public void onAuthenticated(final AuthData authData) {
+
+                    String email = authData.getProviderData().get("email").toString();
+
+                    ref.child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String uid = authData.getUid();
+                            String email = "";
+                            Date birthday = new Date(0L);
+                            String displayName = "";
+                            String gender = "";
+
+                            //     Log.d("natija auth data", authData.getProviderData().toString());
+
+                            //Set DisplayName
+                            if (authData.getProviderData().containsKey("displayName")) {
+                                displayName = authData.getProviderData().get("displayName").toString();
+                            }
+
+                            //Set Picture
+                            downloadImage(authData.getUid(), pictureUrl);
+
+                            //Set Email
+                            if (authData.getProviderData().containsKey("email")) {
+                                email = authData.getProviderData().get("email").toString();
+                            }
+
+                            //Set Birthday & Gender
+                            if (authData.getProviderData().containsKey("cachedUserProfile")) {
+                                Map<String, Object> cachedUserProfile = (Map<String, Object>) authData.getProviderData().get("cachedUserProfile");
+                                if (cachedUserProfile.containsKey("birthday")) {
+                                    birthday = Utils.stringToDate(cachedUserProfile.get("birthday").toString());
+                                }
+                                if (cachedUserProfile.containsKey("gender")) {
+                                    gender = cachedUserProfile.get("gender").toString();
+                                }
+                            }
+
+                            User user = new User(uid, displayName, email, birthday, gender);
+
+                            if (!dataSnapshot.exists()) {
+
+                                //Add User To Firebase
+                                ref.child("users").child(authData.getUid()).setValue(user);
+
+                            } else {
+                                // Get existing user Id
+                                HashMap<String, Object> map = ((HashMap<String, Object>) dataSnapshot.getValue());
+                                String id = map.keySet().iterator().next();
+
+                                Map<String, Object> userMap = new HashMap<>();
+                                userMap.put("email", email);
+                                userMap.put("birthday", birthday.getTime());
+                                userMap.put("gender", gender);
+                                ref.child("users").child(id).updateChildren(userMap);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
+
+
+                    Intent mainIntent = new Intent(context,
+                            Friends.class);
+                    mainIntent.putExtra("id", "1");
+                    context.startActivity(mainIntent);
+                }
+
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+                    Log.e("natija", "error " + firebaseError.getMessage());
+                }
+            });
+        } else {
+            ref.unauth();
+        }
+    }
+
+    public void syncFacebookFriends(AccessToken token) {
+        Log.d("natija", "hnaaa " + token.toString());
+        GraphRequest request = GraphRequest.newMyFriendsRequest(
+                token, new GraphRequest.GraphJSONArrayCallback() {
+                    @Override
+                    public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
+                        ProgressDialog dialog = new ProgressDialog(context);
+                        dialog.show();
+                        for (int i = 0, size = jsonArray.length(); i < size; i++) {
+                            try {
+                                JSONObject object = jsonArray.getJSONObject(i);
+                                String fbid = object.get("id").toString();
+                                String uid = "facebook:" + fbid;
+                                String name = object.get("name").toString();
+                                String imageUrl = ((JSONObject) ((JSONObject) object.get("picture")).get("data")).get("url").toString();
+                                Friend friend = new Friend();
+                                friend.setDisplayName(name);
+                                friend.setuId(uid);
+                                downloadImage(uid, imageUrl);
+                                ref.child("users").child(ref.getAuth().getUid()).child("friends").child("facebook:" + uid).setValue(friend);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,picture.width(300).height(300)");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    public void downloadImage(String uid, final String url) {
+        String dirPath = context.getFilesDir().getAbsolutePath() + File.separator + "pic-profile";
+
+        File file = new File(Environment.getExternalStorageDirectory() + "/" + dirPath + "/" + uid + ".jpg");
+        if (file.exists()) {
+            file.delete();
+        }
+
+        DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url))
+                .setDestinationInExternalPublicDir(dirPath, uid + ".jpg")
+                .setVisibleInDownloadsUi(false);
+        dm.enqueue(request);
+
+    }
+
+    public void theRealDeal() {
+        final Firebase refUserRooms = ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms");
+        refUserRooms.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+               /* Iterate User Rooms */
+                for (final DataSnapshot snapRoom : snapshot.getChildren()) {
+
+                    final String roomName = snapRoom.getKey();
+                    //  checkUnread(roomName);
+
+
+                    final Firebase refRoomMessages = ref.getRoot().child("messages").child(roomName);
+
+                    refRoomMessages.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                            if (!roomMessagesListenerMap.containsKey(s)) {
+
+                                //   if(roomMessagesListenerMap.containsKey(dataSnapshot.getKey()))
+                                //   updateRoom(roomName); // Update Last message
+                                checkUnread(roomName);
+
+
+                                if (roomName.equals(currentRoom)) {
+                                    updateLastRead(roomName);
+                                }
+                                roomMessagesListenerMap.put(s, this);
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                        }
+
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+
+        });
+    }
+
+    public void updateLastRead(String roomName) {
+        Date now = Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime();
+        ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").child(roomName).setValue(now);
+    }
+
+    public void checkUnread(final String roomName) {
+        Firebase refUserRooms = ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms");
+
+        refUserRooms.child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Long read = dataSnapshot.getValue(Long.class);
-                checkLastMessages(roomName, read);
-                t[0] = read;
+                Log.d("natija list", dataSnapshot.toString());
+                Long lastRead = dataSnapshot.getValue(Long.class);
+                Query refUnreadChat = ref.getRoot().child("messages").child(roomName).orderByChild("date").startAt(lastRead);
+
+                refUnreadChat.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        long count = dataSnapshot.getChildrenCount();
+                        Log.d("natija unread count", "last read count " + roomName + " - " + count);
+                        unreadMap.put(roomName, count);
+                        updateRoom(roomName);
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -300,7 +566,7 @@ public class FireBaseManager {
 
             }
         });
-
-        return t[0];
     }
+
+
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">InterTalking</string>
+    <string name="app_name">Chat App</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -11,7 +11,9 @@
     <string name="firebase_url"> https://blazing-torch-3851.firebaseio.com</string>
     <string name="title_activity_main">MainActivity</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Main MENU -->
+    <string name="sync_fb_friends">Sync</string>
+    <string name="logout">Log Out</string>
+
 
 </resources>
