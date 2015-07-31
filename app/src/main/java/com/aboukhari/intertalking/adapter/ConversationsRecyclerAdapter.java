@@ -210,8 +210,8 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
 
 
     @Override
-    public void onBindViewHolder(ConversationsHolder holder, int position) {
-        Conversation conversation = models.get(position);
+    public void onBindViewHolder(final ConversationsHolder holder, int position) {
+        final Conversation conversation = models.get(position);
         holder.bindConversation(conversation);
     }
 

@@ -4,4 +4,8 @@
     tools:context="com.aboukhari.intertalking.activity.Friends">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/action_dummy_friends" android:title="Dummy Friends"
+        android:orderInCategory="100" app:showAsAction="never" />
+
 </menu>

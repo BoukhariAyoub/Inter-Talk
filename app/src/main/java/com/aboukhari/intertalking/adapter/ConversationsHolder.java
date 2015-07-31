@@ -12,10 +12,7 @@ import android.widget.TextView;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.model.Conversation;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
-import com.firebase.client.ValueEventListener;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -35,9 +32,9 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
     private final FireBaseManager fireBaseManager;
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm");
     private Conversation mConversation;
-    private  View view;
+    private View view;
 
-    public ConversationsHolder(View itemView, Query ref,FireBaseManager fireBaseManager) {
+    public ConversationsHolder(View itemView, Query ref, FireBaseManager fireBaseManager) {
         super(itemView);
         this.ref = ref;
         this.view = itemView;
@@ -52,31 +49,22 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
     }
 
     public void bindConversation(final Conversation conversation) {
-        mConversation = conversation;
+
+
         final Long count = FireBaseManager.unreadMap.get(conversation.getRoomName()) == null ? 0L : FireBaseManager.unreadMap.get(conversation.getRoomName());
+        mConversation = conversation;
 
-       if (count > 0) {
+        if (count > 0) {
             view.setBackgroundColor(view.getResources().getColor(R.color.md_grey_300));
+        } else {
+            view.setBackgroundColor(Color.TRANSPARENT);
         }
-        else {
-           view.setBackgroundColor(Color.TRANSPARENT);
 
-       }
+        mDisplayNameTextView.setText(conversation.getFriendId());
+        mDateTextView.setText(DATE_FORMAT.format(conversation.getLastMessageDate()));
+        mMessageTextView.setText(conversation.getLastMessage());
 
         setImage(conversation, mImageView);
-        ref.getRef().getRoot().child("users").child(conversation.extractFriendUid(ref.getRef())).child("displayName").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mDisplayNameTextView.setText(dataSnapshot.getValue().toString() + " - " + count);
-                mDateTextView.setText(DATE_FORMAT.format(conversation.getLastMessageDate()));
-                mMessageTextView.setText(conversation.getLastMessage());
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
     }
 
     private void setImage(Conversation conversation, ImageView imageView) {
@@ -88,6 +76,10 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
         if (imgFile.exists()) {
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             imageView.setImageBitmap(myBitmap);
+        } else {
+            Bitmap icon = BitmapFactory.decodeResource(imageView.getResources(),
+                    R.mipmap.ic_friends);
+            imageView.setImageBitmap(icon);
         }
     }
 
@@ -95,4 +87,5 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
     public void onClick(View v) {
         fireBaseManager.openRoom(mConversation.getRoomName());
     }
+
 }

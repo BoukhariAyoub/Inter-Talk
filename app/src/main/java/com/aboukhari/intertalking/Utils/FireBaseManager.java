@@ -445,6 +445,24 @@ public class FireBaseManager {
         request.executeAsync();
     }
 
+    public void generateDummyFriends() {
+        for (int i = 1; i <= 15; i++) {
+            String fbid = "" + i;
+            String uid = "dump:" + fbid;
+            String name = "Friend No " + i;
+            String imageUrl = "http://dummyimage.com/300/ffffff/000000.jpg&text="+name;
+            Friend friend = new Friend();
+            friend.setDisplayName(name);
+            friend.setuId(uid);
+            downloadImage(uid, imageUrl);
+
+            User user = new User(uid,name,name,new Date(),"male");
+
+            ref.child("users").child(uid).setValue(user);
+            ref.child("users").child(ref.getAuth().getUid()).child("friends").child("facebook:" + uid).setValue(friend);
+        }
+    }
+
     public void downloadImage(String uid, final String url) {
         String dirPath = context.getFilesDir().getAbsolutePath() + File.separator + "pic-profile";
 

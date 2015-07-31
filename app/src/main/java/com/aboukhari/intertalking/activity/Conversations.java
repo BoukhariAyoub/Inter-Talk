@@ -80,7 +80,7 @@ public class Conversations extends Fragment {
         conversationsRecyclerAdapter.setHasStableIds(true);
         MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(getActivity(),1);
         MyLayoutManager myLayoutManager = new MyLayoutManager(getActivity());
-        recyclerView.setLayoutManager(myLayoutManager);
+        recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(conversationsRecyclerAdapter);
         recyclerView.setItemAnimator(new FadeInAnimator());
 

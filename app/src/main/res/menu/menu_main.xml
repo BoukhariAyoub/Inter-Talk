@@ -8,9 +8,11 @@
         android:icon="@mipmap/ic_fb"
         android:orderInCategory="1"
         android:title="@string/sync_fb_friends"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="never" />
 
 
+    <item android:id="@+id/action_dummy_friends" android:title="Dummy Friends"
+        android:orderInCategory="100" app:showAsAction="never" />
 
 
 </menu>

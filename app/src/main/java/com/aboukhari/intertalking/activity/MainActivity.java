@@ -94,6 +94,9 @@ public class MainActivity extends ActionBarActivity implements
            fireBaseManager.syncFacebookFriends(AccessToken.getCurrentAccessToken());
           //  Utils.exportDB("intertalk");
         }
+        if(id == R.id.action_dummy_friends){
+            fireBaseManager.generateDummyFriends();
+        }
 
         return super.onOptionsItemSelected(item);
     }
