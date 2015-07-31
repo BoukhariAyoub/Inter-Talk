@@ -34,5 +34,8 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'com.android.support:recyclerview-v7:+'
+    compile 'jp.wasabeef:recyclerview-animators:1.2.1'
+
 
 }

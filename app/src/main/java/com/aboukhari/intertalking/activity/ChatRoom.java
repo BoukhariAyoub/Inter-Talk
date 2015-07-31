@@ -43,7 +43,6 @@ public class ChatRoom extends Activity {
 
         fireBaseManager = new FireBaseManager(this);
         roomName = getIntent().getStringExtra("roomName");
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             toolbar.setTitle(roomName);
@@ -117,8 +116,7 @@ public class ChatRoom extends Activity {
         });
 
         FireBaseManager.currentRoom = roomName;
-
-
+        FireBaseManager.currentRoom = "hoho";//TODO delete this
     }
 
     @Override
@@ -127,6 +125,8 @@ public class ChatRoom extends Activity {
         ref.getRoot().child(".info/connected").removeEventListener(connectedListener);
         chatListAdapter.cleanup();
         fireBaseManager.updateLastRead(roomName);
+        fireBaseManager.checkUnread(roomName);
+    Conversations.conversationsRecyclerAdapter.notifyDataSetChanged();
         FireBaseManager.currentRoom = null;
     }
 

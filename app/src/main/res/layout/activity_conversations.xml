@@ -4,7 +4,7 @@
     android:background="@color/white"
     tools:context="com.aboukhari.intertalking.activity.Conversations">
 
-    <ListView
+<!--    <ListView
         android:id="@android:id/list"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
@@ -12,6 +12,14 @@
         android:divider="@color/DarkGray"
         android:background="@color/white"
         android:transcriptMode="alwaysScroll"
-        android:dividerHeight="1dp" />
+        android:dividerHeight="1dp" />-->
+
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
 </RelativeLayout>

@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.activity.ChatRoom;
+import com.aboukhari.intertalking.activity.Conversations;
 import com.aboukhari.intertalking.activity.Friends;
 import com.aboukhari.intertalking.database.DatabaseManager;
 import com.aboukhari.intertalking.model.Conversation;
@@ -414,7 +415,6 @@ public class FireBaseManager {
     }
 
     public void syncFacebookFriends(AccessToken token) {
-        Log.d("natija", "hnaaa " + token.toString());
         GraphRequest request = GraphRequest.newMyFriendsRequest(
                 token, new GraphRequest.GraphJSONArrayCallback() {
                     @Override
@@ -437,8 +437,6 @@ public class FireBaseManager {
                                 e.printStackTrace();
                             }
                         }
-
-
                     }
                 });
         Bundle parameters = new Bundle();
@@ -481,10 +479,11 @@ public class FireBaseManager {
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
+                            //if the listener is not already added
                             if (!roomMessagesListenerMap.containsKey(s)) {
 
-                                //   if(roomMessagesListenerMap.containsKey(dataSnapshot.getKey()))
-                                //   updateRoom(roomName); // Update Last message
+                                if (roomMessagesListenerMap.containsKey(dataSnapshot.getKey()))
+                                    updateRoom(roomName); // Update Last message
                                 checkUnread(roomName);
 
 
@@ -535,9 +534,10 @@ public class FireBaseManager {
         ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").child(roomName).setValue(now);
     }
 
+
+    /* retrieve the count of unread messages */
     public void checkUnread(final String roomName) {
         Firebase refUserRooms = ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms");
-
         refUserRooms.child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -552,6 +552,7 @@ public class FireBaseManager {
                         Log.d("natija unread count", "last read count " + roomName + " - " + count);
                         unreadMap.put(roomName, count);
                         updateRoom(roomName);
+                        Conversations.conversationsRecyclerAdapter.notifyDataSetChanged();
                     }
 
                     @Override

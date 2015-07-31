@@ -40,6 +40,7 @@ public class Friends extends Fragment {
         MainActivity activity = (MainActivity) getActivity();
         fireBaseManager = activity.getFireBaseManager();
 
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -76,8 +77,6 @@ public class Friends extends Fragment {
         // ref.getRoot().child(".info/connected").removeEventListener(connectedListener);
         friendListAdapter.cleanup();
     }
-
-
 
 
 }

@@ -1,16 +1,10 @@
 package com.aboukhari.intertalking.adapter;
 
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.DateComparator;
@@ -22,9 +16,6 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,50 +23,33 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is a generic way of backing an Android ListView with a Firebase location.
- * It handles all of the child events at the given Firebase location. It marshals received data into the given
- * class type. Extend this class and provide an implementation of <code>populateView</code>, which will be given an
- * instance of your list item layout and an instance your class that holds your data. Simply populate the view however
- * you like and this class will handle updating the list as the data changes.
+ * Created by aboukhari on 31/07/2015.
  */
-public class ConversationsListAdapter extends BaseAdapter {
+public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<ConversationsHolder> {
 
-    private Query ref;
-    private Class<Conversation> modelClass;
-    private int layout;
-    private LayoutInflater inflater;
+    Query ref;
     private List<Conversation> models;
     private Map<String, Conversation> modelNames;
     private ChildEventListener listener;
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm");
+    private FireBaseManager fireBaseManager;
 
 
-    /**
-     * @param ref      The Firebase location to watch for data changes. Can also be a slice of a location, using some
-     *                 combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>,
-     * @param layout   This is the layout used to represent a single list item. You will be responsible for populating an
-     *                 instance of the corresponding view with the data from an instance of modelClass.
-     * @param activity The activity containing the ListView
-     */
-    public ConversationsListAdapter(Query ref, int layout, Activity activity) {
-
-
+    public ConversationsRecyclerAdapter(Query ref, FireBaseManager fireBaseManager) {
         this.ref = ref;
-        this.modelClass = Conversation.class;
-        this.layout = layout;
-        inflater = activity.getLayoutInflater();
+        this.fireBaseManager = fireBaseManager;
+
         models = new ArrayList<>();
         modelNames = new HashMap<>();
-        final String uid = ConversationsListAdapter.this.ref.getRef().getAuth().getUid();
+        final String uid = ConversationsRecyclerAdapter.this.ref.getRef().getAuth().getUid();
         // Look for all child events. We will then map them to our own internal ArrayList, which backs ListView
         listener = this.ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, final String previousChildName) {
 
                 final String roomName = dataSnapshot.getKey();
-                final Conversation model = dataSnapshot.getValue(ConversationsListAdapter.this.modelClass);
+                final Conversation model = dataSnapshot.getValue(Conversation.class);
                 Log.d("natija", dataSnapshot.toString());
-                ConversationsListAdapter.this.ref.getRef().getRoot().child("users").child(uid).child("rooms").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
+                ConversationsRecyclerAdapter.this.ref.getRef().getRoot().child("users").child(uid).child("rooms").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -118,9 +92,9 @@ public class ConversationsListAdapter extends BaseAdapter {
                 // One of the models changed. Replace it in our list and name mapping
                 final String modelName = dataSnapshot.getKey();
                 final Conversation oldModel = modelNames.get(modelName);
-                final Conversation newModel = dataSnapshot.getValue(ConversationsListAdapter.this.modelClass);
+                final Conversation newModel = dataSnapshot.getValue(Conversation.class);
 
-                ConversationsListAdapter.this.ref.getRef().getRoot().child("users").child(uid).child("rooms").child(modelName).addListenerForSingleValueEvent(new ValueEventListener() {
+                ConversationsRecyclerAdapter.this.ref.getRef().getRoot().child("users").child(uid).child("rooms").child(modelName).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         int index = models.indexOf(oldModel);
@@ -147,7 +121,7 @@ public class ConversationsListAdapter extends BaseAdapter {
                 final String modelName = dataSnapshot.getKey();
                 final Conversation oldModel = modelNames.get(modelName);
 
-                ConversationsListAdapter.this.ref.getRef().getRoot().child("users").child(uid).child("rooms").child(modelName).addListenerForSingleValueEvent(new ValueEventListener() {
+                ConversationsRecyclerAdapter.this.ref.getRef().getRoot().child("users").child(uid).child("rooms").child(modelName).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
@@ -177,9 +151,9 @@ public class ConversationsListAdapter extends BaseAdapter {
                 // A model changed position in the list. Update our list accordingly
                 final String modelName = dataSnapshot.getKey();
                 final Conversation oldModel = modelNames.get(modelName);
-                final Conversation newModel = dataSnapshot.getValue(ConversationsListAdapter.this.modelClass);
+                final Conversation newModel = dataSnapshot.getValue(Conversation.class);
 
-                ConversationsListAdapter.this.ref.getRef().getRoot().child("users").child(uid).child("rooms").child(modelName).addListenerForSingleValueEvent(new ValueEventListener() {
+                ConversationsRecyclerAdapter.this.ref.getRef().getRoot().child("users").child(uid).child("rooms").child(modelName).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
@@ -228,87 +202,26 @@ public class ConversationsListAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
+    public ConversationsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_conversation_list, parent, false);
+        return new ConversationsHolder(view, ref, fireBaseManager);
+    }
+
+
+    @Override
+    public void onBindViewHolder(ConversationsHolder holder, int position) {
+        Conversation conversation = models.get(position);
+        holder.bindConversation(conversation);
+    }
+
+    @Override
+    public int getItemCount() {
         return models.size();
     }
 
     @Override
-    public Object getItem(int i) {
-        return models.get(i);
+    public long getItemId(int position) {
+        return models.get(position).hashCode();
     }
-
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
-
-
-    @Override
-    public View getView(int i, View convertView, ViewGroup viewGroup) {
-        convertView = null;
-        View view = convertView;
-
-        if (convertView == null) {
-
-            convertView = inflater.inflate(layout, viewGroup, false);
-
-        }
-
-
-        Conversation model = models.get(i);
-        // Call out to subclass to marshall this model into the provided view
-        populateView(convertView, model);
-
-        return convertView;
-    }
-
-
-    protected void populateView(final View view, final Conversation conversation) {
-
-        final Long count = FireBaseManager.unreadMap.get(conversation.getRoomName()) == null ? 0L : FireBaseManager.unreadMap.get(conversation.getRoomName());
-
-        if (count > 0) {
-            view.setBackgroundColor(view.getResources().getColor(R.color.md_grey_300));
-        }
-        ImageView imageView = ((ImageView) view.findViewById(R.id.iv_profile));
-        setImage(conversation, imageView);
-        ref.getRef().getRoot().child("users").child(conversation.extractFriendUid(ref.getRef())).child("displayName").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ((TextView) view.findViewById(R.id.tv_display_name)).setText(dataSnapshot.getValue().toString() + " - " + count);
-                ((TextView) view.findViewById(R.id.tv_date)).setText(DATE_FORMAT.format(conversation.getLastMessageDate()));
-                ((TextView) view.findViewById(R.id.tv_message)).setText(conversation.getLastMessage());
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-    }
-
-
-
-
-
-
-
-
-
-
-    private void setImage(Conversation conversation, ImageView imageView) {
-
-        String dirPath = imageView.getContext().getFilesDir().getAbsolutePath() + File.separator + "pic-profile";
-
-        File imgFile = new File(Environment.getExternalStorageDirectory() + "/" + dirPath + "/" + conversation.extractFriendUid(ref.getRef()) + ".jpg");
-
-        if (imgFile.exists()) {
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            imageView.setImageBitmap(myBitmap);
-        }
-    }
-
-
-
-
 }
