@@ -11,14 +11,14 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Vibrator;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.activity.ChatRoom;
-import com.aboukhari.intertalking.activity.Conversations;
-import com.aboukhari.intertalking.activity.Friends;
+import com.aboukhari.intertalking.activity.Login;
+import com.aboukhari.intertalking.activity.main.Conversations;
+import com.aboukhari.intertalking.activity.main.MainActivity;
 import com.aboukhari.intertalking.database.DatabaseManager;
 import com.aboukhari.intertalking.model.Conversation;
 import com.aboukhari.intertalking.model.Friend;
@@ -28,6 +28,8 @@ import com.aboukhari.intertalking.model.UserRoom;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -79,8 +81,8 @@ public class FireBaseManager {
      * @return
      */
     public String createRoom(final Friend friend) {
-        final Conversation conversation = new Conversation(ref, ref.getAuth().getUid(), friend.getuId());
-
+        User user = databaseManager.getCurrentUser(ref.getAuth().getUid());
+        final Conversation conversation = new Conversation(ref, ref.getAuth().getUid(), friend.getuId(), user.getDisplayName(), friend.getDisplayName());
         ref.child("room_names").child(conversation.getRoomName()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -94,7 +96,7 @@ public class FireBaseManager {
                     HashMap<String, Object> userRoomMap = new HashMap<>();
                     //userRoomMap.put("")
                     Date lastSeen = Calendar.getInstance().getTime();
-                    ref.child("users").child(conversation.getMyId()).child("rooms").child(conversation.getRoomName()).setValue(lastSeen);
+                    ref.child("users").child(ref.getAuth().getUid()).child("rooms").child(conversation.getRoomName()).setValue(lastSeen);
                     UserRoom userRoom = new UserRoom();
                     userRoom.setLastSeen(lastSeen);
                     userRoom.setFriend(friend);
@@ -153,123 +155,15 @@ public class FireBaseManager {
     }
 
     public void openRoom(String roomName) {
-        Intent intent = new Intent(context, ChatRoom.class);
-        intent.putExtra("roomName", roomName);
-        context.startActivity(intent);
-    }
-
-    public void addMessageListeners() {
-        /* Check user's Rooms */
-        ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.getRoot().child("room_names").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                Log.d("natija listener", " ref.getRoot().child(\"users\").child(ref.getAuth().getUid()).child(\"rooms\")");
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Conversation conversation = dataSnapshot.getValue(Conversation.class);
 
-               /* Iterate User Rooms */
-                for (final DataSnapshot snap : snapshot.getChildren()) {
-
-                    Log.d("natija get ref", snap.getRef().getKey());
-                    /* If listener isn't already added */
-                    if (!messagesListenerMap.containsKey(snap.getKey())) {
-
-                        final String roomName = snap.getKey();
-
-                        /* Check last Read Message */
-                        ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                Long read = dataSnapshot.getValue(Long.class);
-                                Log.d("natija listener", " ref.getRoot().child(\"users\").child(ref.getAuth().getUid()).child(\"rooms\").child(roomName) ");
-                                databaseManager.updateLastSeen(roomName, read);
-                                //   checkLastMessages(roomName, read);
-                                //checkLastMessages(roomName, read);
-
-                                if (messagesListenerMap.containsKey(roomName)) {
-                                    ChildEventListener messageListener = attachMessageListener(roomName, snap, read);
-                                    messagesListenerMap.put(roomName, messageListener);
-
-
-                                }
-
-
-                            }
-
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
-
-                            }
-                        });
-
-
-                    }
-                }
-
-            }
-
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
-        });
-
-    }
-
-    /**
-     * Attach Listener To unread Messages
-     *
-     * @param roomName
-     * @param snap
-     * @param lastRead
-     * @return
-     */
-
-    private ChildEventListener attachMessageListener(final String roomName, final DataSnapshot snap, final Long lastRead) {
-        Log.d("natija unread date", "before key " + snap.getKey());
-
-        return ref.getRoot().child("messages").child(snap.getKey()).orderByChild("date").startAt(lastRead).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                final Message message = dataSnapshot.getValue(Message.class);
-                //  Log.d("natija unread messages", chat.getMessage());
-                //Get Sender display Name
-                //       ref.getRoot().child("users").child(message.getAuthor()).child("displayName").addListenerForSingleValueEvent(new ValueEventListener() {
-                Log.d("natija unread date", "key " + dataSnapshot.getKey());
-                //Show Notification and update Room
-                if (!roomName.equals(currentRoom)) {
-                    //   showNotification(dataSnapshot.getValue().toString(), message.getMessage());
-                    Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                    v.vibrate(500);
-                }
-                String messageId = dataSnapshot.getKey();
-
-                if (messagesListenerMap.containsKey(messageId)) {
-                    ChildEventListener listener = messagesListenerMap.get(messageId);
-                    ref.getRoot().child("messages").child(roomName).child(messageId).removeEventListener(listener);
-                    messagesListenerMap.remove(messageId);
-                }
-                messagesListenerMap.put(messageId, this);
-
-
-                checkLastMessages(roomName, lastRead);
-
-
-                updateRoom(roomName);
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.d("natija", "child changed = " + dataSnapshot.getKey());
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+                Intent intent = new Intent(context, ChatRoom.class);
+                intent.putExtra("title", conversation.getFriendDisplayName(ref));
+                intent.putExtra("roomName", conversation.getRoomName());
+                context.startActivity(intent);
             }
 
             @Override
@@ -278,6 +172,7 @@ public class FireBaseManager {
             }
         });
     }
+
 
     public void showNotification(String title, String text) {
         //  PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, Friends.class), 0);
@@ -308,22 +203,6 @@ public class FireBaseManager {
             ref.getRoot().child("messages").child(roomName).removeEventListener(listener);
             messagesListenerMap.remove(roomName);
         }
-    }
-
-    private void checkLastMessages(final String roomName, final Long lastRead) {
-        ref.getRoot().child("messages").child(roomName).orderByChild("date").startAt(lastRead).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                long count = dataSnapshot.getChildrenCount();
-                // Log.d("natija unread count", "last read count " + roomName + " - " + count);
-                unreadMap.put(roomName, count);
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
     }
 
 
@@ -372,11 +251,16 @@ public class FireBaseManager {
                             }
 
                             User user = new User(uid, displayName, email, birthday, gender);
+                            databaseManager.addUser(user);
 
                             if (!dataSnapshot.exists()) {
 
+                                ObjectMapper m = new ObjectMapper();
+                                Map<String, Object> userMap = m.convertValue(user, Map.class);
+
                                 //Add User To Firebase
-                                ref.child("users").child(authData.getUid()).setValue(user);
+                                ref.child("users").child(authData.getUid()).updateChildren(userMap);
+
 
                             } else {
                                 // Get existing user Id
@@ -399,7 +283,7 @@ public class FireBaseManager {
 
 
                     Intent mainIntent = new Intent(context,
-                            Friends.class);
+                            MainActivity.class);
                     mainIntent.putExtra("id", "1");
                     context.startActivity(mainIntent);
                 }
@@ -446,17 +330,24 @@ public class FireBaseManager {
     }
 
     public void generateDummyFriends() {
+
         for (int i = 1; i <= 15; i++) {
             String fbid = "" + i;
             String uid = "dump:" + fbid;
             String name = "Friend No " + i;
-            String imageUrl = "http://dummyimage.com/300/ffffff/000000.jpg&text="+name;
+            String imageUrl = "http://dummyimage.com/300/ffffff/000000.jpg&text=" + name;
             Friend friend = new Friend();
             friend.setDisplayName(name);
             friend.setuId(uid);
+            if (i % 2 == 0)
+                friend.setGender("male");
+            else
+                friend.setGender("female");
+
+
             downloadImage(uid, imageUrl);
 
-            User user = new User(uid,name,name,new Date(),"male");
+            User user = new User(uid, name, name, new Date(), "male");
 
             ref.child("users").child(uid).setValue(user);
             ref.child("users").child(ref.getAuth().getUid()).child("friends").child("facebook:" + uid).setValue(friend);
@@ -500,13 +391,16 @@ public class FireBaseManager {
                             //if the listener is not already added
                             if (!roomMessagesListenerMap.containsKey(s)) {
 
-                                if (roomMessagesListenerMap.containsKey(dataSnapshot.getKey()))
+                                if (roomMessagesListenerMap.containsKey(dataSnapshot.getKey())) {
                                     updateRoom(roomName); // Update Last message
+                                }
                                 checkUnread(roomName);
 
 
                                 if (roomName.equals(currentRoom)) {
                                     updateLastRead(roomName);
+                                } else {
+                                    updateRoom(roomName);
                                 }
                                 roomMessagesListenerMap.put(s, this);
 
@@ -585,6 +479,14 @@ public class FireBaseManager {
 
             }
         });
+    }
+
+    public void logout(Context ctx) {
+        ref.unauth();
+        LoginManager.getInstance().logOut();
+        Intent intent = new Intent(ctx, Login.class);
+        ctx.startActivity(intent);
+
     }
 
 

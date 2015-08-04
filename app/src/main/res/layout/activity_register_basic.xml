@@ -1,0 +1,48 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="100dp"
+    android:paddingBottom="100dp"
+    tools:context="com.aboukhari.intertalking.activity.registration.RegisterBasic">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:weightSum="1"
+        android:layout_height="match_parent">
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:inputType="textPersonName"
+            android:layout_weight="0.20"
+            android:ems="10"
+            android:id="@+id/editText"
+            android:layout_gravity="center_horizontal"
+            android:hint="Display Name"
+            android:textColorHint="@color/WhiteSmoke"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:layout_weight="0.20"
+            android:id="@+id/editText3"
+            android:hint="Email"
+            android:textColorHint="@color/WhiteSmoke"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:inputType="date"
+            android:ems="10"
+            android:layout_weight="0.20"
+            android:id="@+id/editText4"
+            android:hint="BirthDate"
+            android:textColorHint="@color/WhiteSmoke"/>
+    </LinearLayout>
+</RelativeLayout>

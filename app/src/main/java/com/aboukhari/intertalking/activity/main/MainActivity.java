@@ -1,7 +1,8 @@
-package com.aboukhari.intertalking.activity;
+package com.aboukhari.intertalking.activity.main;
 
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -12,7 +13,10 @@ import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.adapter.TabsPagerAdapter;
 import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
 import com.firebase.client.Firebase;
+
+import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity implements
         ActionBar.TabListener {
@@ -24,7 +28,6 @@ public class MainActivity extends ActionBarActivity implements
     private ActionBar actionBar;
 
     // Tab titles
-    private String[] tabs = {"Top Rated", "Games", "Movies"};
     final int[] ICONS = new int[]{
             R.mipmap.ic_conversations,
             R.mipmap.ic_friends,
@@ -41,10 +44,18 @@ public class MainActivity extends ActionBarActivity implements
         ref = new Firebase(getString(R.string.firebase_url));
 
         fireBaseManager = new FireBaseManager(this);
+        FacebookSdk.sdkInitialize(this);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         actionBar = getSupportActionBar();
-        mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+
+        ArrayList<Fragment> fragments = new ArrayList<>();
+
+        fragments.add(new Conversations());
+        fragments.add(new Friends());
+        fragments.add(new Test());
+
+        mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), fragments);
 
         viewPager.setAdapter(mAdapter);
         actionBar.setHomeButtonEnabled(false);
@@ -91,11 +102,16 @@ public class MainActivity extends ActionBarActivity implements
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.sync_fb_friends) {
-           fireBaseManager.syncFacebookFriends(AccessToken.getCurrentAccessToken());
-          //  Utils.exportDB("intertalk");
+            fireBaseManager.syncFacebookFriends(AccessToken.getCurrentAccessToken());
+            //  Utils.exportDB("intertalk");
         }
-        if(id == R.id.action_dummy_friends){
+        if (id == R.id.action_dummy_friends) {
             fireBaseManager.generateDummyFriends();
+        }
+
+        if (id == R.id.action_log_out) {
+            fireBaseManager.logout(this);
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -117,8 +133,6 @@ public class MainActivity extends ActionBarActivity implements
     public void onTabReselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction ft) {
 
     }
-
-
 
 
     public FireBaseManager getFireBaseManager() {

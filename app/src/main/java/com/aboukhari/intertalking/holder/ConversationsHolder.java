@@ -1,4 +1,4 @@
-package com.aboukhari.intertalking.adapter;
+package com.aboukhari.intertalking.holder;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -50,7 +50,6 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
 
     public void bindConversation(final Conversation conversation) {
 
-
         final Long count = FireBaseManager.unreadMap.get(conversation.getRoomName()) == null ? 0L : FireBaseManager.unreadMap.get(conversation.getRoomName());
         mConversation = conversation;
 
@@ -60,7 +59,7 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
             view.setBackgroundColor(Color.TRANSPARENT);
         }
 
-        mDisplayNameTextView.setText(conversation.getFriendId());
+        mDisplayNameTextView.setText(conversation.getFriendDisplayName(ref.getRef()));
         mDateTextView.setText(DATE_FORMAT.format(conversation.getLastMessageDate()));
         mMessageTextView.setText(conversation.getLastMessage());
 

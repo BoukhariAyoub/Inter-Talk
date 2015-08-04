@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.DateComparator;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
+import com.aboukhari.intertalking.holder.ConversationsHolder;
 import com.aboukhari.intertalking.model.Conversation;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -48,12 +49,9 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
 
                 final String roomName = dataSnapshot.getKey();
                 final Conversation model = dataSnapshot.getValue(Conversation.class);
-                Log.d("natija", dataSnapshot.toString());
                 ConversationsRecyclerAdapter.this.ref.getRef().getRoot().child("users").child(uid).child("rooms").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-
-
                         if (dataSnapshot.exists()) {
                             modelNames.put(roomName, model);
                             // Insert into the correct location, based on previousChildName

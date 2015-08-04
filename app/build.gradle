@@ -4,6 +4,11 @@ android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
+    dexOptions {
+        preDexLibraries false
+        incremental false
+    }
+
     defaultConfig {
         applicationId "com.aboukhari.intertalking"
         minSdkVersion 15
@@ -36,6 +41,7 @@ dependencies {
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.android.support:recyclerview-v7:+'
     compile 'jp.wasabeef:recyclerview-animators:1.2.1'
-
+    compile 'org.geonames:geonames:1.0'
+    compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
 
 }

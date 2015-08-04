@@ -1,4 +1,4 @@
-package com.aboukhari.intertalking.activity;
+package com.aboukhari.intertalking.activity.main;
 
 import android.database.DataSetObserver;
 import android.os.Bundle;

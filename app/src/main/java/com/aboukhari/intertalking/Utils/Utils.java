@@ -54,4 +54,12 @@ public abstract class Utils {
         }
     }
 
+    public static String setupRoomName(String myId, String friendId) {
+        if (myId.compareTo(friendId) < 0) {
+            return myId + "_" + friendId;
+        }
+        return friendId + "_" + myId;
+    }
+
+
 }

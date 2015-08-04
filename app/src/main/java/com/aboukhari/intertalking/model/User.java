@@ -41,6 +41,9 @@ public class User {
     @DatabaseField
     String gender;
 
+    @DatabaseField
+    String imageUrl;
+
     public User() {
     }
 
@@ -124,6 +127,14 @@ public class User {
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override

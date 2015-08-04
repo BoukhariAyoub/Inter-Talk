@@ -97,6 +97,19 @@ public class DatabaseManager {
 
     }
 
+    public User getCurrentUser(String uId) {
+        User user;
+        try {
+            user = getHelper().getmDaoUser().queryForId(uId);
+            if (user != null) {
+                return user;
+            }
+        } catch (SQLException e) {
+            Log.e("Sql Error", e.getMessage());
+        }
+        return null;
+    }
+
     /*Update*/
     public void updateLastSeen(String roomName, Long lastSeen) {
         UpdateBuilder<UserRoom, String> updateBuilder = getHelper().getmDaoUserRoom().updateBuilder();
@@ -108,12 +121,11 @@ public class DatabaseManager {
 
             int what = updateBuilder.update();
 
-            Log.d("natija unread","what what what what " + what);
+            Log.d("natija unread", "what what what what " + what);
         } catch (SQLException e) {
             Log.d("Sql Error", e.getMessage());
         }
     }
-
 
 
 }

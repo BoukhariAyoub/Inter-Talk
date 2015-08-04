@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
+import com.aboukhari.intertalking.activity.main.Conversations;
 import com.aboukhari.intertalking.adapter.ChatListAdapter;
 import com.aboukhari.intertalking.database.DatabaseManager;
 import com.aboukhari.intertalking.model.Message;
@@ -30,6 +31,7 @@ public class ChatRoom extends Activity {
     private ChatListAdapter chatListAdapter;
     private ListView listView;
     private String roomName;
+    private String mTitle;
     private DatabaseManager databaseManager;
     private FireBaseManager fireBaseManager;
 
@@ -43,9 +45,10 @@ public class ChatRoom extends Activity {
 
         fireBaseManager = new FireBaseManager(this);
         roomName = getIntent().getStringExtra("roomName");
+        mTitle = getIntent().getStringExtra("title");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setTitle(roomName);
+            toolbar.setTitle(mTitle);
         }
 
         listView = (ListView) findViewById(android.R.id.list);

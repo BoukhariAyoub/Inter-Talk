@@ -2,6 +2,7 @@ package com.aboukhari.intertalking.model;
 
 import android.util.Log;
 
+import com.aboukhari.intertalking.Utils.Utils;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -9,7 +10,6 @@ import com.firebase.client.ValueEventListener;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,10 +26,16 @@ public class Conversation {
     String roomName;
 
     @DatabaseField
-    String myId;
+    String firstUid;
 
     @DatabaseField
-    String friendId;
+    String secondUid;
+
+    @DatabaseField
+    String firstDisplayName;
+
+    @DatabaseField
+    String secondDisplayName;
 
     @DatabaseField
     Date dateCreated;
@@ -44,31 +50,56 @@ public class Conversation {
     public Conversation() {
     }
 
-    public Conversation(Firebase ref, String myId, String friendId) {
-        this.myId = myId;
-        this.friendId = friendId;
-        this.roomName = setupRoomName(myId, friendId);
-        this.dateCreated = Calendar.getInstance().getTime();
-        this.lastMessage = "";
-        this.lastMessageDate = new Date(0);
-
+    public Conversation(Firebase ref, String myId, String friendId, String firstDisplayName, String secondDisplayName) {
+        firstUid = myId;
+        secondUid = friendId;
+        roomName = Utils.setupRoomName(myId, friendId);
+        dateCreated = new Date();
+        lastMessage = "";
+        lastMessageDate = new Date(0);
+        this.firstDisplayName = firstDisplayName;
+        this.secondDisplayName = secondDisplayName;
         updateLastMessage(ref);
     }
 
-    public String getMyId() {
-        return myId;
+    public Date getDateCreated() {
+        return dateCreated;
     }
 
-    public void setMyId(String myId) {
-        this.myId = myId;
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
-    public String getFriendId() {
-        return friendId;
+    public String getFirstUid() {
+        return firstUid;
     }
 
-    public void setFriendId(String friendId) {
-        this.friendId = friendId;
+    public void setFirstUid(String firstUid) {
+        this.firstUid = firstUid;
+    }
+
+    public String getSecondUid() {
+        return secondUid;
+    }
+
+    public void setSecondUid(String secondUid) {
+        this.secondUid = secondUid;
+    }
+
+    public String getFirstDisplayName() {
+        return firstDisplayName;
+    }
+
+    public void setFirstDisplayName(String firstDisplayName) {
+        this.firstDisplayName = firstDisplayName;
+    }
+
+    public String getSecondDisplayName() {
+        return secondDisplayName;
+    }
+
+    public void setSecondDisplayName(String secondDisplayName) {
+        this.secondDisplayName = secondDisplayName;
     }
 
     public String getRoomName() {
@@ -78,7 +109,6 @@ public class Conversation {
     public void setRoomName(String roomName) {
         this.roomName = roomName;
     }
-
 
     public Date getLastMessageDate() {
         return lastMessageDate;
@@ -96,13 +126,6 @@ public class Conversation {
         this.lastMessage = lastMessage;
     }
 
-    private String setupRoomName(String myId, String friendId) {
-        if (myId.compareTo(friendId) < 0) {
-            return myId + "_" + friendId;
-        }
-        return friendId + "_" + myId;
-    }
-
     private void updateLastMessage(final Firebase ref) {
         ref.getRoot().child("messages").child(roomName).orderByChild("date").limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -116,7 +139,6 @@ public class Conversation {
 
                     lastMessage = (String) chat.get("message");
                     lastMessageDate = new Date((Long) chat.get("date"));
-
 
                     Map<String, Object> map = new HashMap<>();
                     map.put("lastMessage", chat.get("message").toString());
@@ -134,7 +156,29 @@ public class Conversation {
         });
     }
 
+    private void extractFriendName(Firebase ref) {
+        String friendId = extractFriendUid(ref);
+        ref.child("users").child(friendId).child("displayName").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                secondDisplayName = dataSnapshot.getValue().toString();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+    }
+
     public String extractFriendUid(Firebase ref) {
-        return myId.equals(ref.getAuth().getUid()) ? friendId:myId;
+        String friendId = ref.getAuth().getUid().equals(firstUid) ? secondUid : firstUid;
+        return friendId;
+    }
+
+    public String getFriendDisplayName(Firebase ref) {
+        String displayName = ref.getAuth().getUid().equals(secondUid) ? firstDisplayName :  secondDisplayName;
+        return displayName;
     }
 }

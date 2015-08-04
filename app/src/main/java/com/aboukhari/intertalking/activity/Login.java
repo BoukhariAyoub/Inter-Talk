@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
+import com.aboukhari.intertalking.activity.main.MainActivity;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
