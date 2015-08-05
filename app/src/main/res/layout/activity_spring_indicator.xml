@@ -37,7 +37,7 @@
             app:siIndicatorColor="@color/primary"
             app:siIndicatorColors="@array/indicator_colors"
             app:siSelectedTextColor="@android:color/white"
-            app:siTextColor="@color/primary_text"
+            app:siTextColor="@color/WhiteSmoke"
             app:siTextSize="18sp" />
     </LinearLayout>
 
