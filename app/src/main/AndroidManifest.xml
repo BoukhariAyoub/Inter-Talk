@@ -27,6 +27,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
 
+
         </activity>
         <activity
             android:name=".activity.ChatRoom"
@@ -56,10 +57,17 @@
             android:name=".activity.registration.Registration"
             android:label="@string/title_activity_registration" >
         </activity>
-
         <activity
             android:name=".activity.Main2Activity"
             android:label="@string/title_activity_main2" >
+
+        </activity>
+        <activity
+            android:name=".activity.SpringIndicator"
+            android:label="@string/title_activity_spring_indicator"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            >
+
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -67,7 +75,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+
         </activity>
+
     </application>
 
 </manifest>

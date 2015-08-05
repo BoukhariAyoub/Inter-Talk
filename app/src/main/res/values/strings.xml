@@ -18,6 +18,7 @@
     <string name="title_activity_registration">Registration</string>
     <string name="title_activity_register_basic">RegisterBasic</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_spring_indicator">SpringIndicator</string>
 
 
 </resources>

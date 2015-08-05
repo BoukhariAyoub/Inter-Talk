@@ -34,7 +34,7 @@ public class Login extends Activity implements View.OnClickListener {
         Firebase.setAndroidContext(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
-
+        ref.getDefaultConfig().setPersistenceEnabled(true);
         final FireBaseManager fireBaseManager = new FireBaseManager(this);
         callbackManager = CallbackManager.Factory.create();
         ref = new Firebase(getString(R.string.firebase_url));
@@ -54,11 +54,10 @@ public class Login extends Activity implements View.OnClickListener {
             protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
                 Log.d("natija", "profile change");
 
-                if(newProfile!= null){
+                if (newProfile != null) {
                     String pictureUrl = newProfile.getProfilePictureUri(400, 400).toString();
                     fireBaseManager.onFacebookAccessTokenChange(AccessToken.getCurrentAccessToken(), pictureUrl);
                 }
-
 
 
             }

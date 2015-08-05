@@ -58,6 +58,7 @@ public class MainActivity extends ActionBarActivity implements
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), fragments);
 
         viewPager.setAdapter(mAdapter);
+
         actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
