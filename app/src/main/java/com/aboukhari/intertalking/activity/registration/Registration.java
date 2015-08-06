@@ -59,7 +59,7 @@ public class Registration extends ActionBarActivity implements
 
         fragments.add(new Test());
         fragments.add(new RegisterBasic());
-        fragments.add(new Test());
+        fragments.add(new RegisterLanguages());
 
 
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager(), fragments);

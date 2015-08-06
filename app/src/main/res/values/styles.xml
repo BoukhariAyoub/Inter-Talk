@@ -13,7 +13,7 @@
         </style>
 
     <style name="RadioButton">
-        <item name="android:textColor">@color/primary</item>
+        <item name="android:textColor">@color/WhiteSmoke</item>
         <item name="android:tint">@color/Black</item>
         <item name="android:minHeight">33dp</item>
         <item name="android:minWidth">70dp</item>

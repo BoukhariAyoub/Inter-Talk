@@ -507,4 +507,14 @@
     <color name="indicator_2">#64A4A4</color>
     <color name="indicator_3">#66D7B9</color>
     <color name="indicator_4">#FDBC7D</color>
+
+
+    <color name="mdtp_accent_color">#2196F3</color>
+    <color name="mdtp_accent_color_dark">#1976D2</color>
+
+    <color name="radio_button_selected_color">#ff33b5e5</color>
+    <color name="radio_button_unselected_color">#40FFFFFF</color>
+
+    <color name="transparent_light_grey">#B3FFFFFF</color>
+    <color name="transparent_grey">#40FFFFFF</color>
 </resources>

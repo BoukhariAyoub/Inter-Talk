@@ -18,9 +18,12 @@ import android.widget.ImageView;
  */
 public class RoundedImageView extends ImageView {
 
+    private Paint paintBorder;
+    private int borderWidth = 4;
+
+
     public RoundedImageView(Context context) {
         super(context);
-        // TODO Auto-generated constructor stub
     }
 
     public RoundedImageView(Context context, AttributeSet attrs) {
@@ -50,7 +53,7 @@ public class RoundedImageView extends ImageView {
 
 
         Bitmap roundBitmap =  getCroppedBitmap(bitmap, w);
-        canvas.drawBitmap(roundBitmap, 0,0, null);
+        canvas.drawBitmap(roundBitmap, 0, 0, null);
 
     }
 
@@ -80,6 +83,32 @@ public class RoundedImageView extends ImageView {
 
 
         return output;
+    }
+
+    public void addShadow() {
+        paintBorder = new Paint();
+        setBorderColor(Color.WHITE);
+        paintBorder.setAntiAlias(true);
+        this.setLayerType(LAYER_TYPE_SOFTWARE, paintBorder);
+        paintBorder.setShadowLayer(4.0f, 0.0f, 2.0f, Color.BLACK);
+
+        paintBorder = new Paint();
+        this.setLayerType(LAYER_TYPE_SOFTWARE, paintBorder);
+        paintBorder.setShadowLayer(4.0f, 0.0f, 2.0f, Color.BLACK);
+    }
+
+    public void setBorderWidth(int borderWidth)
+    {
+        this.borderWidth = borderWidth;
+        this.invalidate();
+    }
+
+    public void setBorderColor(int borderColor)
+    {
+        if (paintBorder != null)
+            paintBorder.setColor(borderColor);
+
+        this.invalidate();
     }
 
 }

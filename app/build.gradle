@@ -46,6 +46,6 @@ dependencies {
     compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
     compile 'com.github.chenupt.android:springindicator:1.0.2@aar'
     compile 'info.hoang8f:android-segmented:1.0.5'
-
+    compile 'com.wdullaer:materialdatetimepicker:1.4.2'
 
 }

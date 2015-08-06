@@ -10,6 +10,7 @@ import android.widget.Button;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.activity.main.Test;
 import com.aboukhari.intertalking.activity.registration.RegisterBasic;
+import com.aboukhari.intertalking.activity.registration.RegisterLanguages;
 import com.aboukhari.intertalking.adapter.RegistrationTabsAdapter;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
 
         fragments.add(new Test());
         fragments.add(new RegisterBasic());
-        fragments.add(new Test());
+        fragments.add(new RegisterLanguages());
         return fragments;
     }
     
