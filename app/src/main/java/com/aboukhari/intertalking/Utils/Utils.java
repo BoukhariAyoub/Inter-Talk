@@ -1,15 +1,18 @@
 package com.aboukhari.intertalking.Utils;
 
+import android.content.Context;
 import android.os.Environment;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by aboukhari on 16/07/2015.
@@ -59,6 +62,28 @@ public abstract class Utils {
             return myId + "_" + friendId;
         }
         return friendId + "_" + myId;
+    }
+
+    public static String loadJSONFromAsset(Context context,String fileName) {
+        String json;
+        try {
+            InputStream is = context.getAssets().open(fileName);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+    }
+
+    public static String getCountryByIso(String language,String iso){
+        Locale locale = new Locale(language, iso);
+       return locale.getDisplayCountry();
+
     }
 
 

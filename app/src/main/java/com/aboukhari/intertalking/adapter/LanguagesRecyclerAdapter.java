@@ -22,6 +22,7 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
 
     private List<Language> languages;
 
+
     public LanguagesRecyclerAdapter(ArrayList<Language> languages) {
         this.languages = languages;
     }
@@ -48,6 +49,15 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
         return languages.size();
     }
 
+
+
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
+    }
+
+
+
     public void addItem(int position, Language language) {
         languages.add(position, language);
         notifyItemInserted(position);
@@ -65,6 +75,7 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
             int position = (Integer) v.getTag();
             languages.remove(position);
             notifyItemRemoved(position);
+            notifyItemRangeChanged(position, languages.size());
         }
     }
 }

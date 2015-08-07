@@ -26,22 +26,25 @@ public class RestClient {
     private static RestService REST_CLIENT;
     private static RestAdapter.Builder BUIlDER;
 
+    public final static String GOOGLE_MAPS_ENDPOINT = "https://maps.googleapis.com/maps/api/";
 
-    public final static String ENDPOINT = "http://gd.geobytes.com/";
+    //private static String ENDPOINT = "http://gd.geobytes.com/";
+    private static String ENDPOINT;
 
 
     static {
 
-        setupRestClient();
+        //setupRestClient(ENDPOINT);
     }
 
     private RestClient() {
 
     }
 
-    public static RestService get() {
+    public static RestService get(String endpoint) {
 
-
+        setupRestClient(endpoint);
+        ENDPOINT = endpoint;
         RestAdapter restAdapter = BUIlDER.build();
         restAdapter.create(RestService.class);
 
@@ -49,7 +52,7 @@ public class RestClient {
         return restAdapter.create(RestService.class);
     }
 
-    private static void setupRestClient() {
+    private static void setupRestClient(String endPoint) {
         OkClient client = //new OkClient();
                 getOkClient();
 
@@ -57,7 +60,7 @@ public class RestClient {
 
         GsonConverter gsonConverter = new GsonConverter(gson);
         BUIlDER = new RestAdapter.Builder()
-                .setEndpoint(ENDPOINT)
+                .setEndpoint(endPoint)
                 .setClient(client)
                 .setConverter(gsonConverter)
                 .setLogLevel(RestAdapter.LogLevel.FULL)

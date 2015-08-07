@@ -5,32 +5,25 @@ package com.aboukhari.intertalking.model;
  */
 public class Language {
 
-    private String id;
-    private String name;
 
-    public Language() {
-    }
+    String iso;
+    String name;
 
-    public Language(String id, String name) {
-        this.id = id;
+    public Language(String iso, String name) {
+        this.iso = iso;
         this.name = name;
     }
 
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public String getIso() {
+        return iso;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public String toString() {
+       return name;
     }
 }

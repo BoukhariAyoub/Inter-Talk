@@ -6,19 +6,26 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import com.aboukhari.intertalking.Utils.Variables;
+import com.aboukhari.intertalking.model.Place;
 import com.aboukhari.intertalking.retrofit.RestClient;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
 /**
  * Created by aboukhari on 03/08/2015.
  */
-public class CitiesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
+public class CitiesAutoCompleteAdapter extends ArrayAdapter<Place> implements Filterable {
 
-    private ArrayList<String> resultList;
+    private ArrayList<Place> resultList;
+    private String language;
 
-    public CitiesAutoCompleteAdapter(Context context, int textViewResourceId) {
+    public CitiesAutoCompleteAdapter(Context context, int textViewResourceId, String language) {
         super(context, textViewResourceId);
+        this.language = language;
     }
 
     @Override
@@ -27,22 +34,24 @@ public class CitiesAutoCompleteAdapter extends ArrayAdapter<String> implements F
     }
 
     @Override
-    public String getItem(int index) {
+    public Place getItem(int index) {
         return resultList.get(index);
     }
 
     @Override
     public Filter getFilter() {
         Filter filter = new Filter() {
+            public void stopFiltering(){
+
+            }
+
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 final FilterResults filterResults = new FilterResults();
                 if (constraint != null && constraint.length() > 2) {
                     // Retrieve the autocomplete results.
-                    resultList = RestClient.get().autoCompleteCity(constraint.toString());
-                    if (resultList.size()> 0 && resultList.get(0).isEmpty()) {
-                        resultList.remove(0);
-                    }
+                    resultList = mapsJsonToPlaces(constraint.toString());
+
                     // Assign the data to the FilterResults
                     filterResults.values = resultList;
                     filterResults.count = resultList.size();
@@ -54,8 +63,8 @@ public class CitiesAutoCompleteAdapter extends ArrayAdapter<String> implements F
             protected void publishResults(CharSequence constraint, FilterResults results) {
 
                 if (results != null && results.count > 0) {
-                    Log.d("publish", constraint.length() + " length");
-                    Log.d("publish", results.count + " count");
+                    Log.d("natija publish", (String) constraint);
+                    Log.d("natija publish", String.valueOf(results.count));
                     notifyDataSetChanged();
                 } else {
                     notifyDataSetInvalidated();
@@ -64,6 +73,21 @@ public class CitiesAutoCompleteAdapter extends ArrayAdapter<String> implements F
         };
 
         return filter;
+    }
+
+    private ArrayList<Place> mapsJsonToPlaces(String constraint) {
+        JsonElement json = RestClient.get(RestClient.GOOGLE_MAPS_ENDPOINT).autoCompleteCity(constraint.toString(), "(cities)", language, Variables.GOOGLE_API_KEY);
+        ArrayList<Place> places = new ArrayList<>();
+        JsonArray predictions = json.getAsJsonObject().getAsJsonArray("predictions");
+        for (int i = 0, size = predictions.size(); i < size; i++) {
+            JsonObject jsonPlace = predictions.get(i).getAsJsonObject();
+            String description = jsonPlace.get("description").getAsString();
+            String id = jsonPlace.get("place_id").getAsString();
+
+            Place place = new Place(id, description);
+            places.add(place);
+        }
+        return places;
     }
 }
 

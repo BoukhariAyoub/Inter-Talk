@@ -45,7 +45,7 @@ public class GeoNames extends ActionBarActivity implements AdapterView.OnItemCli
 
         autoCompView.setThreshold(2);
 
-        autoCompView.setAdapter(new CitiesAutoCompleteAdapter(this, R.layout.support_simple_spinner_dropdown_item));
+        autoCompView.setAdapter(new CitiesAutoCompleteAdapter(this, R.layout.support_simple_spinner_dropdown_item,""));
         autoCompView.setOnItemClickListener(this);
         button.setOnClickListener(this);
 
@@ -81,7 +81,7 @@ public class GeoNames extends ActionBarActivity implements AdapterView.OnItemCli
 
             } else {
 
-                RestClient.get().getCityDetails(city, new Callback<JsonElement>() {
+                RestClient.get(RestClient.GOOGLE_MAPS_ENDPOINT).getCityDetails(city, new Callback<JsonElement>() {
                     @Override
                     public void success(JsonElement jsonElement, Response response) {
 

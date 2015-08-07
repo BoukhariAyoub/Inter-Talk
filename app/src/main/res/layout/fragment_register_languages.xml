@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_10"
     android:orientation="vertical"
+    android:padding="10dp"
     android:weightSum="1">
 
     <LinearLayout
@@ -15,33 +15,6 @@
         android:weightSum="1">
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:orientation="horizontal">
-
-            <AutoCompleteTextView
-                android:id="@+id/auto_country"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/et_form"
-                android:drawableLeft="@mipmap/ic_username_white"
-                android:drawableStart="@mipmap/ic_username_white"
-                android:hint="Country"
-                android:imeOptions="actionNext"
-                android:nextFocusDown="@id/et_email"
-                android:nextFocusForward="@id/et_email"
-                android:nextFocusRight="@id/et_email"
-                android:textColor="@color/white"
-                android:textColorHint="@color/transparent_light_grey"
-                android:textSize="15sp" />
-
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -59,7 +32,8 @@
                 android:background="@drawable/et_form"
                 android:drawableLeft="@mipmap/ic_username_white"
                 android:drawableStart="@mipmap/ic_username_white"
-                android:hint="City"
+                android:hint="Location"
+                android:inputType="textNoSuggestions"
                 android:imeOptions="actionNext"
                 android:nextFocusDown="@id/et_email"
                 android:nextFocusForward="@id/et_email"
@@ -88,6 +62,7 @@
                 android:drawableLeft="@mipmap/ic_username_white"
                 android:drawableStart="@mipmap/ic_username_white"
                 android:hint="Languages"
+                android:inputType="textNoSuggestions"
                 android:imeOptions="actionNext"
                 android:nextFocusDown="@id/et_email"
                 android:nextFocusForward="@id/et_email"
@@ -130,5 +105,6 @@
         android:layout_height="match_parent"
         android:background="@color/White"
         android:gravity="center"
+        android:visibility="invisible"
         android:text="NOTHING TO SEE" />
 </LinearLayout>

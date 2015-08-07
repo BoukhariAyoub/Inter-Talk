@@ -32,13 +32,17 @@ public class LanguagesViewHolder extends RecyclerView.ViewHolder implements View
     }
 
     public ImageView getmCrossImageView() {
-        return mCrossImageView;
+         return mCrossImageView;
     }
+
+
 
     @Override
     public void onClick(View v) {
         if(v==mCrossImageView){
-
+            mCrossImageView.setTag(getAdapterPosition());
         }
     }
+
+
 }
