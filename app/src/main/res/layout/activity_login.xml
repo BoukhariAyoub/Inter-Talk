@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/bg1" />
+        android:src="@drawable/bg_9" />
 
 
     <LinearLayout
@@ -51,28 +51,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginBottom="10dp"
-                android:drawableLeft="@mipmap/ic_email"
+                android:drawableLeft="@mipmap/ic_email_white"
                 android:drawablePadding="5dip"
                 android:ems="10"
                 android:hint="Email"
                 android:inputType="textPassword"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
-                android:textColorHint="@color/md_grey_400" />
+                android:textColorHint="@color/md_grey_100" />
 
             <EditText
                 android:id="@+id/editText2"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginBottom="40dp"
-                android:drawableLeft="@mipmap/ic_password"
+                android:drawableLeft="@mipmap/ic_password_white"
                 android:drawablePadding="5dip"
                 android:ems="10"
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
-                android:textColorHint="@color/md_grey_400" />
+                android:textColorHint="@color/md_grey_100" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -113,9 +113,6 @@
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="50dp"
                 android:layout_marginRight="50dp"
-                android:background="@color/white"
-
-
                 />
 
             <Button

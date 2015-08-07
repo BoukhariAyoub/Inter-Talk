@@ -11,27 +11,13 @@ public class Place {
     String region;
     String country;
     String url;
-    int latitude;
-    int longtitude;
+    double latitude;
+    double longitude;
 
-    public Place(String id, String description, String city, String region, String country) {
-        this.id = id;
-        this.description = description;
-        this.city = city;
-        this.region = region;
-        this.country = country;
-    }
 
     public Place(String id, String description) {
         this.id = id;
         this.description = description;
-    }
-
-    public Place(final String placeId) {
-
-
-
-
     }
 
     public String getId() {
@@ -78,12 +64,12 @@ public class Place {
         this.url = url;
     }
 
-    public void setLatitude(int latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public void setLongtitude(int longtitude) {
-        this.longtitude = longtitude;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     @Override
@@ -101,7 +87,7 @@ public class Place {
                 ", country='" + country + '\'' +
                 ", url='" + url + '\'' +
                 ", latitude='" + latitude + '\'' +
-                ", longtitude='" + longtitude + '\'' +
+                ", longitude='" + longitude + '\'' +
                 '}';
     }
 }

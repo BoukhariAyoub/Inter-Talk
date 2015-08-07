@@ -151,13 +151,18 @@ public class RegisterLanguages extends Fragment {
             @Override
             public void success(JsonElement json, Response response) {
                 JsonObject placeJson = json.getAsJsonObject().get("result").getAsJsonObject();
-                JsonArray components = placeJson.get("address_components").getAsJsonArray();
-                JsonObject location = placeJson.get("geometry").getAsJsonObject().get("location").getAsJsonObject();
-
 
                 place.setDescription(placeJson.get("formatted_address").getAsString());
-                place.setLatitude(location.get("lat").getAsInt());
-                place.setLongtitude(location.get("lng").getAsInt());
+                place.setUrl(placeJson.get("url").getAsString());
+
+
+
+                JsonObject location = placeJson.get("geometry").getAsJsonObject().get("location").getAsJsonObject();
+                place.setLatitude(location.get("lat").getAsDouble());
+                place.setLongitude(location.get("lng").getAsDouble());
+
+
+                JsonArray components = placeJson.get("address_components").getAsJsonArray();
 
 
                 for (JsonElement comp : components) {

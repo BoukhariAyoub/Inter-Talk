@@ -51,7 +51,6 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
         mEmailEditText.setOnClickListener(this);
         mPasswordEditText.setOnClickListener(this);
         mBirthDateEditText.setOnClickListener(this);
-       // mGenderEditText.setOnClickListener(this);
 
 
         return v;
