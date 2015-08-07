@@ -45,9 +45,12 @@ import retrofit.client.Response;
 public class RegisterLanguages extends Fragment {
 
     private AutoCompleteTextView mPlaceAutoComplete, mLanguagesAutoComplete;
-    RecyclerView recyclerView;
+    LanguagesRecyclerAdapter mRecyclerAdapter;
+
+    RecyclerView mRecyclerView;
     ArrayList<Language> mLanguagesList;
     CitiesAutoCompleteAdapter mCityAdapter;
+    ArrayAdapter<Language> mLanguageAdapter;
     Place mChosenPlace;
     ArrayList<Language> mChosenLanguages = new ArrayList<>();
 
@@ -58,7 +61,6 @@ public class RegisterLanguages extends Fragment {
         TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
         String countryCode = tm.getSimCountryIso();
 
-        Log.d("natija locale", "country code" + countryCode);
 
 
         mPlaceAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.auto_city);
@@ -71,11 +73,12 @@ public class RegisterLanguages extends Fragment {
 
         Language[] lang = getAllLanguages();
         Log.d("natija lang", Arrays.toString(lang));
-        ArrayAdapter<Language> languageAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, lang);
-        mLanguagesAutoComplete.setAdapter(languageAdapter);
+        mLanguageAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, lang);
+        mLanguagesAutoComplete.setAdapter(mLanguageAdapter);
+        mLanguagesAutoComplete.setOnItemClickListener(setLanguagesOnClickListener());
 
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         setupRecyclerView();
 
 
@@ -90,13 +93,7 @@ public class RegisterLanguages extends Fragment {
 
 
     private ArrayList<Language> getSelectedLanguages() {
-
         ArrayList<Language> languages = new ArrayList<>();
-        languages.add(new Language("fr", "Francais"));
-        languages.add(new Language("en", "English"));
-        languages.add(new Language("fr", "Francais"));
-        languages.add(new Language("en", "English"));
-
         return languages;
     }
 
@@ -135,13 +132,14 @@ public class RegisterLanguages extends Fragment {
         return languages;
     }
 
+
     private void setupRecyclerView() {
-        recyclerView.setHasFixedSize(false);
+        mRecyclerView.setHasFixedSize(false);
         MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(getActivity(), 3);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setItemAnimator(new OvershootInLeftAnimator());
-        LanguagesRecyclerAdapter recyclerAdapter = new LanguagesRecyclerAdapter(getSelectedLanguages());
-        recyclerView.setAdapter(recyclerAdapter);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
+        mRecyclerView.setItemAnimator(new OvershootInLeftAnimator());
+        mRecyclerAdapter = new LanguagesRecyclerAdapter(getSelectedLanguages(),mLanguageAdapter);
+        mRecyclerView.setAdapter(mRecyclerAdapter);
 
     }
 
@@ -154,7 +152,6 @@ public class RegisterLanguages extends Fragment {
 
                 place.setDescription(placeJson.get("formatted_address").getAsString());
                 place.setUrl(placeJson.get("url").getAsString());
-
 
 
                 JsonObject location = placeJson.get("geometry").getAsJsonObject().get("location").getAsJsonObject();
@@ -209,8 +206,18 @@ public class RegisterLanguages extends Fragment {
 
             }
         };
-
-
     }
+
+    private AdapterView.OnItemClickListener setLanguagesOnClickListener() {
+        return new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Language language = (Language) parent.getItemAtPosition(position);
+                mRecyclerAdapter.addItem(0, language);
+                mLanguagesAutoComplete.setText("");
+            }
+        };
+    }
+
 
 }

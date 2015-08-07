@@ -31,9 +31,6 @@ public class LanguagesViewHolder extends RecyclerView.ViewHolder implements View
         mCrossImageView.setTag(position);
     }
 
-    public ImageView getmCrossImageView() {
-         return mCrossImageView;
-    }
 
 
 
@@ -44,5 +41,8 @@ public class LanguagesViewHolder extends RecyclerView.ViewHolder implements View
         }
     }
 
+    public ImageView getmCrossImageView() {
+        return mCrossImageView;
+    }
 
 }

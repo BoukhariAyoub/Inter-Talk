@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.aboukhari.intertalking.R;
@@ -21,10 +22,12 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
 
 
     private List<Language> languages;
+    ArrayAdapter<Language> mLanguageAdapter;
 
 
-    public LanguagesRecyclerAdapter(ArrayList<Language> languages) {
+    public LanguagesRecyclerAdapter(ArrayList<Language> languages,ArrayAdapter<Language> languageAdapter) {
         this.languages = languages;
+        mLanguageAdapter = languageAdapter;
     }
 
     @Override
@@ -60,22 +63,30 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
 
     public void addItem(int position, Language language) {
         languages.add(position, language);
+        mLanguageAdapter.remove(language);
+        mLanguageAdapter.notifyDataSetChanged();
         notifyItemInserted(position);
+        notifyItemRangeChanged(position, languages.size());
+
     }
 
     public void removeItem(int position) {
+        mLanguageAdapter.add(languages.get(position));
+        mLanguageAdapter.notifyDataSetChanged();
+
         languages.remove(position);
         notifyItemRemoved(position);
+        notifyItemRangeChanged(position, languages.size());
     }
+
+
 
     @Override
     public void onClick(View v) {
         Log.d("natija", "view = " + v);
         if (v instanceof ImageView) {
             int position = (Integer) v.getTag();
-            languages.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, languages.size());
+            removeItem(position);
         }
     }
 }
