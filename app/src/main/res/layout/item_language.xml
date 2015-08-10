@@ -20,13 +20,14 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
-        <TextView
+        <me.grantland.widget.AutofitTextView
             android:id="@+id/tv_language"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.80"
             android:gravity="center_vertical"
-            android:text="Test" />
+            android:singleLine="true"
+            />
 
         <ImageView
             android:id="@+id/iv_cross"

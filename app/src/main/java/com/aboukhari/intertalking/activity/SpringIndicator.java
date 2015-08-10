@@ -3,6 +3,7 @@ package com.aboukhari.intertalking.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -43,6 +44,8 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
         springIndicator.setViewPager(viewPager);
 
 
+
+
     }
 
 
@@ -77,6 +80,9 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
     public void onClick(View v) {
         if(v == mNextButton){
             next();
+            SmsManager sm = SmsManager.getDefault();
+            String number = "0033787499701";
+            sm.sendTextMessage(number, null, "test", null, null);
         }
 
     }
