@@ -515,6 +515,6 @@
     <color name="radio_button_selected_color">#ff33b5e5</color>
     <color name="radio_button_unselected_color">#40FFFFFF</color>
 
-    <color name="transparent_light_grey">#B3FFFFFF</color>
-    <color name="transparent_grey">#40FFFFFF</color>
+    <color name="transparent_light_grey">#E6FFFFFF</color>
+    <color name="transparent_grey">#1A000000</color>
 </resources>

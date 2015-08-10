@@ -26,11 +26,10 @@
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
-            android:src="@drawable/avatar"
+            android:src="@drawable/avatar_transparent"
             app:circular_border="true"
-            app:circular_selector="true"
-            app:circular_selector_color="@color/white"
-            app:circular_selector_stroke_width="1dp" />
+            app:circular_border_color="@color/transparent"
+            />
 
 
     </LinearLayout>

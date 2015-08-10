@@ -30,8 +30,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/et_form"
-                android:drawableLeft="@mipmap/ic_username_white"
-                android:drawableStart="@mipmap/ic_username_white"
+                android:drawableLeft="@mipmap/ic_world_white"
+                android:drawableStart="@mipmap/ic_world_white"
                 android:hint="Location"
                 android:inputType="textNoSuggestions"
                 android:imeOptions="actionNext"
@@ -59,8 +59,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/et_form"
-                android:drawableLeft="@mipmap/ic_username_white"
-                android:drawableStart="@mipmap/ic_username_white"
+                android:drawableLeft="@mipmap/ic_translation_white"
+                android:drawableStart="@mipmap/ic_translation_white"
                 android:hint="Languages"
                 android:inputType="textNoSuggestions"
                 android:imeOptions="actionNext"
@@ -72,39 +72,31 @@
                 android:textSize="15sp" />
         </LinearLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent" />
+
+            <TextView
+                android:id="@+id/empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/White"
+                android:gravity="center"
+                android:text="NOTHING TO SEE"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+
+
     </LinearLayout>
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.375">
-
-        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent" />
-
-        <TextView
-            android:id="@+id/empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/White"
-            android:gravity="center"
-            android:text="NOTHING TO SEE"
-            android:visibility="gone" />
-
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/dsd"
-        android:layout_weight="0.375"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/White"
-        android:gravity="center"
-        android:visibility="invisible"
-        android:text="NOTHING TO SEE" />
 </LinearLayout>

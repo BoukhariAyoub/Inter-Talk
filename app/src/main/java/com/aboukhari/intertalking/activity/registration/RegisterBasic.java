@@ -44,7 +44,7 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
         mEmailEditText = (EditText) v.findViewById(R.id.et_email);
         mPasswordEditText = (EditText) v.findViewById(R.id.et_password);
         mBirthDateEditText = (EditText) v.findViewById(R.id.et_birthday);
-       // mGenderEditText = (EditText) v.findViewById(R.id.et_gender);
+        // mGenderEditText = (EditText) v.findViewById(R.id.et_gender);
 
 
         mPasswordEditText.setOnTouchListener(this);
@@ -64,30 +64,24 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Log.d("natija crop", "resultCode " + resultCode);
-        Log.d("natija crop", "requestCode " + requestCode);
-
         if (requestCode == Crop.REQUEST_PICK && resultCode == Activity.RESULT_OK) {
             beginCrop(data.getData());
-            Log.d("natija crop", "begin crop " + requestCode);
         } else if (requestCode == Crop.REQUEST_CROP) {
             handleCrop(resultCode, data);
-            Log.d("natija crop", "handle crop " + requestCode);
         }
 
-    /*    if (requestCode == PICK_PHOTO_FOR_AVATAR && resultCode == Activity.RESULT_OK) {
-            if (data == null) {
-                Log.e("natija", "data = null");
-                return;
-            }
+    }
+
+    private void beginCrop(Uri source) {
+        Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), "cropped"));
+        Crop.of(source, destination).asSquare().start(getActivity(), this);
+
+    }
+
+    private void handleCrop(int resultCode, Intent result) {
+        if (resultCode == getActivity().RESULT_OK) {
             try {
-
-
-              //  Crop.of(inputUri, outputUri).asSquare().start(activity)
-
-
-InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
+                InputStream inputStream = getActivity().getContentResolver().openInputStream(Crop.getOutput(result));
                 Bitmap bmp = BitmapFactory.decodeStream(inputStream);
                 mAvatarImageView.setImageBitmap(bmp);
                 mAvatarImageView.addShadow();
@@ -96,37 +90,7 @@ InputStream inputStream = getActivity().getContentResolver().openInputStream(dat
                 mAvatarImageView.setSelectorStrokeColor(getResources().getColor(R.color.white));
                 mAvatarImageView.setSelectorStrokeWidth(1);
                 mAvatarImageView.addShadow();
-
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            //Now you can do whatever you want with your inpustream, save it as file, upload to a server, decode a bitmap...
-        }*/
-    }
-
-    private void beginCrop(Uri source) {
-        Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), "cropped"));
-        com.aboukhari.intertalking.Utils.Crop.of(source, destination).asSquare().start(this);
-
-    }
-
-    private void handleCrop(int resultCode, Intent result)  {
-        Log.d("natija crop","handle result code " + resultCode);
-        Log.d("natija crop","handle result " + result);
-
-        if (resultCode == getActivity().RESULT_OK) {
-          //  mAvatarImageView.setImageURI(Crop.getOutput(result));
-            try {
-            InputStream inputStream = getActivity().getContentResolver().openInputStream(Crop.getOutput(result));
-            Bitmap bmp = BitmapFactory.decodeStream(inputStream);
-            mAvatarImageView.setImageBitmap(bmp);
-            mAvatarImageView.addShadow();
-            mAvatarImageView.setBorderColor(getResources().getColor(R.color.md_grey_300));
-            mAvatarImageView.setBorderWidth(1);
-            mAvatarImageView.setSelectorStrokeColor(getResources().getColor(R.color.white));
-            mAvatarImageView.setSelectorStrokeWidth(1);
-            mAvatarImageView.addShadow();
-        } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         } else if (resultCode == Crop.RESULT_ERROR) {
@@ -165,8 +129,6 @@ InputStream inputStream = getActivity().getContentResolver().openInputStream(dat
 
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 if (event.getRawX() >= (mPasswordEditText.getRight() - mPasswordEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                    // your action here
-                    Log.d("natija", "eye touché");
                     mPasswordEditText.setTransformationMethod(null);
                     return true;
                 }
@@ -174,8 +136,6 @@ InputStream inputStream = getActivity().getContentResolver().openInputStream(dat
 
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (event.getRawX() >= (mPasswordEditText.getRight() - mPasswordEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                    // your action here
-                    Log.d("natija", "eye untouché");
                     mPasswordEditText.setTransformationMethod(new PasswordTransformationMethod());
                     return true;
                 }
@@ -187,8 +147,7 @@ InputStream inputStream = getActivity().getContentResolver().openInputStream(dat
     private void pickImage() {
         Intent intent = (new Intent("android.intent.action.GET_CONTENT")).setType("image/*");
         startActivityForResult(intent, Crop.REQUEST_PICK);
-
-        Log.d("natija crop","pick image");
+        Log.d("natija crop", "pick image");
 
     }
 
