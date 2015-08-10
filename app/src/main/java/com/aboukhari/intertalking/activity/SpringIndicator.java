@@ -42,10 +42,6 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
 
         // just set viewPager
         springIndicator.setViewPager(viewPager);
-
-
-
-
     }
 
 

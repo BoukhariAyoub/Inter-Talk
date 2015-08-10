@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,11 +15,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.CircularImageView;
+import com.soundcloud.android.crop.Crop;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Calendar;
@@ -60,15 +64,31 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_PHOTO_FOR_AVATAR && resultCode == Activity.RESULT_OK) {
+
+        Log.d("natija crop", "resultCode " + resultCode);
+        Log.d("natija crop", "requestCode " + requestCode);
+
+        if (requestCode == Crop.REQUEST_PICK && resultCode == Activity.RESULT_OK) {
+            beginCrop(data.getData());
+            Log.d("natija crop", "begin crop " + requestCode);
+        } else if (requestCode == Crop.REQUEST_CROP) {
+            handleCrop(resultCode, data);
+            Log.d("natija crop", "handle crop " + requestCode);
+        }
+
+    /*    if (requestCode == PICK_PHOTO_FOR_AVATAR && resultCode == Activity.RESULT_OK) {
             if (data == null) {
                 Log.e("natija", "data = null");
                 return;
             }
             try {
-                InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
-                Bitmap bmp = BitmapFactory.decodeStream(inputStream);
 
+
+              //  Crop.of(inputUri, outputUri).asSquare().start(activity)
+
+
+InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
+                Bitmap bmp = BitmapFactory.decodeStream(inputStream);
                 mAvatarImageView.setImageBitmap(bmp);
                 mAvatarImageView.addShadow();
                 mAvatarImageView.setBorderColor(getResources().getColor(R.color.md_grey_300));
@@ -81,9 +101,38 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
                 e.printStackTrace();
             }
             //Now you can do whatever you want with your inpustream, save it as file, upload to a server, decode a bitmap...
-        }
+        }*/
     }
 
+    private void beginCrop(Uri source) {
+        Uri destination = Uri.fromFile(new File(getActivity().getCacheDir(), "cropped"));
+        com.aboukhari.intertalking.Utils.Crop.of(source, destination).asSquare().start(this);
+
+    }
+
+    private void handleCrop(int resultCode, Intent result)  {
+        Log.d("natija crop","handle result code " + resultCode);
+        Log.d("natija crop","handle result " + result);
+
+        if (resultCode == getActivity().RESULT_OK) {
+          //  mAvatarImageView.setImageURI(Crop.getOutput(result));
+            try {
+            InputStream inputStream = getActivity().getContentResolver().openInputStream(Crop.getOutput(result));
+            Bitmap bmp = BitmapFactory.decodeStream(inputStream);
+            mAvatarImageView.setImageBitmap(bmp);
+            mAvatarImageView.addShadow();
+            mAvatarImageView.setBorderColor(getResources().getColor(R.color.md_grey_300));
+            mAvatarImageView.setBorderWidth(1);
+            mAvatarImageView.setSelectorStrokeColor(getResources().getColor(R.color.white));
+            mAvatarImageView.setSelectorStrokeWidth(1);
+            mAvatarImageView.addShadow();
+        } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else if (resultCode == Crop.RESULT_ERROR) {
+            Toast.makeText(getActivity(), Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -136,9 +185,11 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
     }
 
     private void pickImage() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        startActivityForResult(intent, PICK_PHOTO_FOR_AVATAR);
+        Intent intent = (new Intent("android.intent.action.GET_CONTENT")).setType("image/*");
+        startActivityForResult(intent, Crop.REQUEST_PICK);
+
+        Log.d("natija crop","pick image");
+
     }
 
     @Override
