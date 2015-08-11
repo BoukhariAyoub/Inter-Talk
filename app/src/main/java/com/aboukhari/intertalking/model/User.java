@@ -1,5 +1,8 @@
 package com.aboukhari.intertalking.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -11,8 +14,9 @@ import java.util.Date;
 
 
 @DatabaseTable(tableName = "user")
+public class User implements Parcelable {
 
-public class User {
+
 
     @DatabaseField(id = true)
     String uid;
@@ -145,7 +149,55 @@ public class User {
                 ", dateAdded=" + dateAdded +
                 ", birthday=" + birthday +
                 ", displayName='" + displayName + '\'' +
+                ", spokenLanguages='" + spokenLanguages + '\'' +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
                 ", gender='" + gender + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.uid);
+        dest.writeString(this.email);
+        dest.writeLong(dateAdded != null ? dateAdded.getTime() : -1);
+        dest.writeLong(birthday != null ? birthday.getTime() : -1);
+        dest.writeString(this.displayName);
+        dest.writeString(this.spokenLanguages);
+        dest.writeString(this.city);
+        dest.writeString(this.country);
+        dest.writeString(this.gender);
+        dest.writeString(this.imageUrl);
+    }
+
+    protected User(Parcel in) {
+        this.uid = in.readString();
+        this.email = in.readString();
+        long tmpDateAdded = in.readLong();
+        this.dateAdded = tmpDateAdded == -1 ? null : new Date(tmpDateAdded);
+        long tmpBirthday = in.readLong();
+        this.birthday = tmpBirthday == -1 ? null : new Date(tmpBirthday);
+        this.displayName = in.readString();
+        this.spokenLanguages = in.readString();
+        this.city = in.readString();
+        this.country = in.readString();
+        this.gender = in.readString();
+        this.imageUrl = in.readString();
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

@@ -14,7 +14,6 @@ import android.widget.TabHost;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
-import com.aboukhari.intertalking.activity.main.Test;
 import com.aboukhari.intertalking.adapter.TabsPagerAdapter;
 import com.facebook.FacebookSdk;
 import com.firebase.client.Firebase;
@@ -57,7 +56,6 @@ public class Registration extends ActionBarActivity implements
 
         ArrayList<Fragment> fragments = new ArrayList<>();
 
-        fragments.add(new Test());
         fragments.add(new RegisterBasic());
         fragments.add(new RegisterLanguages());
 

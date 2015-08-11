@@ -1,12 +1,11 @@
 package com.aboukhari.intertalking.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.holder.LanguagesViewHolder;
@@ -21,11 +20,14 @@ import java.util.List;
 public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesViewHolder> implements View.OnClickListener {
 
 
+    Context context;
     private List<Language> languages;
     ArrayAdapter<Language> mLanguageAdapter;
+    LanguagesViewHolder mHolder;
 
 
-    public LanguagesRecyclerAdapter(ArrayList<Language> languages,ArrayAdapter<Language> languageAdapter) {
+    public LanguagesRecyclerAdapter(Context context, ArrayList<Language> languages, ArrayAdapter<Language> languageAdapter) {
+        this.context = context;
         this.languages = languages;
         mLanguageAdapter = languageAdapter;
     }
@@ -34,17 +36,15 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
     public LanguagesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_language, parent, false);
-        return new LanguagesViewHolder(view);
+        return new LanguagesViewHolder(context, view);
     }
 
     @Override
     public void onBindViewHolder(LanguagesViewHolder holder, int position) {
         final Language language = languages.get(position);
-        holder.bindLanguage(language, position);
-
+        mHolder = holder.bindLanguage(language, position);
         holder.getmCrossImageView().setOnClickListener(this);
-
-
+        holder.getmLevelImageView().setOnClickListener(this);
     }
 
     @Override
@@ -52,13 +52,10 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
         return languages.size();
     }
 
-
-
     @Override
     public long getItemId(int position) {
         return super.getItemId(position);
     }
-
 
 
     public void addItem(int position, Language language) {
@@ -67,26 +64,33 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
         mLanguageAdapter.notifyDataSetChanged();
         notifyItemInserted(position);
         notifyItemRangeChanged(position, languages.size());
-
     }
 
     public void removeItem(int position) {
         mLanguageAdapter.add(languages.get(position));
         mLanguageAdapter.notifyDataSetChanged();
-
         languages.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, languages.size());
     }
 
+    public void updateItem(int position) {
+        languages.get(position).updateLevel();
+        notifyItemChanged(position);
+    }
 
 
     @Override
     public void onClick(View v) {
-        Log.d("natija", "view = " + v);
-        if (v instanceof ImageView) {
+        if (v.getId() == mHolder.getmCrossImageView().getId()) {
             int position = (Integer) v.getTag();
             removeItem(position);
         }
+
+        if (v.getId() == mHolder.getmLevelImageView().getId()) {
+            int position = (Integer) v.getTag();
+            updateItem(position);
+        }
+
     }
 }

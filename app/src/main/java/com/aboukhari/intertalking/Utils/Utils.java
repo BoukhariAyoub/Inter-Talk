@@ -32,7 +32,7 @@ public abstract class Utils {
     }
 
     public static  String dateToString(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         return formatter.format(date);
     }

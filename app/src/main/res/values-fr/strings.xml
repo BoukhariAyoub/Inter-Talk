@@ -21,8 +21,8 @@
 
 
     <!-- LANGUAGE REGISTER -->
-    <string name="languages_you_know">Languages You Know</string>
-    <string name="languages_you_want">Languages You Want To Learn</string>
+    <string name="languages_you_know">Langues Parlées</string>
+    <string name="languages_you_want">Langues Qui vous Intéressent</string>
 
     <!-- LANGUAGE LEVEL -->
     <string name="language_level_1">Beginner</string>

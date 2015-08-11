@@ -17,6 +17,7 @@ import android.util.Log;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.activity.ChatRoom;
 import com.aboukhari.intertalking.activity.Login;
+import com.aboukhari.intertalking.activity.SpringIndicator;
 import com.aboukhari.intertalking.activity.main.Conversations;
 import com.aboukhari.intertalking.activity.main.MainActivity;
 import com.aboukhari.intertalking.database.DatabaseManager;
@@ -29,7 +30,6 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -206,7 +206,7 @@ public class FireBaseManager {
     }
 
 
-    public void onFacebookAccessTokenChange(final AccessToken token, final String pictureUrl) {
+    public void onFacebookAccessTokenChange(final Context context, final AccessToken token, final String pictureUrl) {
         if (token != null) {
 
             ref.authWithOAuthToken("facebook", token.getToken(), new Firebase.AuthResultHandler() {
@@ -234,6 +234,7 @@ public class FireBaseManager {
                             //Set Picture
                             downloadImage(authData.getUid(), pictureUrl);
 
+
                             //Set Email
                             if (authData.getProviderData().containsKey("email")) {
                                 email = authData.getProviderData().get("email").toString();
@@ -251,8 +252,14 @@ public class FireBaseManager {
                             }
 
                             User user = new User(uid, displayName, email, birthday, gender);
-                            databaseManager.addUser(user);
+                            user.setImageUrl(pictureUrl);
+                            Intent intent = new Intent(context, SpringIndicator.class);
+                            intent.putExtra("user", user);
+                            Log.d("natija user", "from fb" + user);
+                            context.startActivity(intent);
 
+
+/*
                             if (!dataSnapshot.exists()) {
 
                                 ObjectMapper m = new ObjectMapper();
@@ -272,7 +279,7 @@ public class FireBaseManager {
                                 userMap.put("birthday", birthday.getTime());
                                 userMap.put("gender", gender);
                                 ref.child("users").child(id).updateChildren(userMap);
-                            }
+                            }*/
                         }
 
                         @Override

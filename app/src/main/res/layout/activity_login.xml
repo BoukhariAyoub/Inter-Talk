@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/bg_9" />
+        android:src="@drawable/bg_blue_white" />
 
 
     <LinearLayout
@@ -49,32 +49,37 @@
             <EditText
                 android:id="@+id/et_email"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:drawableLeft="@mipmap/ic_email_white"
-                android:drawablePadding="5dip"
+                android:drawableStart="@mipmap/ic_email_white"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:ems="10"
                 android:hint="Email"
                 android:inputType="textPassword"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
+                android:background="@drawable/et_form"
                 android:textColorHint="@color/md_grey_100" />
 
             <EditText
                 android:id="@+id/editText2"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginBottom="40dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="3dp"
+                android:paddingRight="3dp"
+                android:background="@drawable/et_form"
                 android:drawableLeft="@mipmap/ic_password_white"
-                android:drawablePadding="5dip"
-                android:ems="10"
+                android:drawableStart="@mipmap/ic_password_white"
                 android:hint="Password"
-                android:inputType="textPassword"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp"
-                android:textColorHint="@color/md_grey_100" />
+                android:inputType="textNoSuggestions"
+                android:textColor="@color/white"
+                android:textColorHint="@color/transparent_light_grey"
+                android:textSize="15sp" />
 
             <LinearLayout
+                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:orientation="horizontal"
@@ -86,7 +91,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="#26A4CE"
+                    android:background="#6626A4CE"
                     android:text="Login"
                     android:layout_marginRight="2dp"
                     android:textColor="@color/md_white_1000"
@@ -98,7 +103,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#007C9A"
+                    android:background="#66007C9A"
                     android:text="Sign Up"
                     android:layout_marginLeft="2dp"
                     android:textColor="@color/md_white_1000"
@@ -123,7 +128,7 @@
                 android:layout_above="@+id/btn_email_sign"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:background="#3A5897"
+                android:background="#663A5897"
                 android:drawableLeft="@mipmap/ic_fb"
                 android:text="Log in with Facebook"
                 android:textColor="@color/md_white_1000"

@@ -26,12 +26,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Locale;
 
 import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
@@ -54,6 +53,8 @@ public class RegisterLanguages extends Fragment {
     Place mChosenPlace;
     ArrayList<Language> mChosenLanguages = new ArrayList<>();
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register_languages, container, false);
@@ -64,7 +65,7 @@ public class RegisterLanguages extends Fragment {
 
 
         mPlaceAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.auto_city);
-        mLanguagesAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.auto_languages);
+        mLanguagesAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.auto_languages_known);
 
         mCityAdapter = new CitiesAutoCompleteAdapter(getActivity(), android.R.layout.simple_list_item_1, Locale.getDefault().getLanguage());
         mPlaceAutoComplete.setThreshold(2);
@@ -78,7 +79,7 @@ public class RegisterLanguages extends Fragment {
         mLanguagesAutoComplete.setOnItemClickListener(setLanguagesOnClickListener());
 
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewKnown);
         setupRecyclerView();
 
 
@@ -87,7 +88,11 @@ public class RegisterLanguages extends Fragment {
 
 
     private Language[] getAllLanguages() {
+
+
         mLanguagesList = jsonToLanguages(Utils.loadJSONFromAsset(getActivity(), "languages.json"));
+
+
         return mLanguagesList.toArray(new Language[mLanguagesList.size()]);
     }
 
@@ -97,34 +102,19 @@ public class RegisterLanguages extends Fragment {
         return languages;
     }
 
- /*   private ArrayList<Country> jsonToList(String json) {
-        ArrayList<Country> countries = new ArrayList<>();
-        try {
-            JSONArray jsonArray = new JSONArray(json);
-            for (int i = 0, size = jsonArray.length(); i < size; i++) {
-                JSONObject objectInArray = jsonArray.getJSONObject(i);
-                String iso = objectInArray.getString("iso");
-                String fullName = objectInArray.getString("fullName");
-                Country country = new Country(iso, fullName);
-                countries.add(country);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return countries;
-    }*/
 
     private ArrayList<Language> jsonToLanguages(String json) {
-        ArrayList<Language> languages = new ArrayList<>();
+       ArrayList<Language> languages = new ArrayList<>();
         try {
-            JSONObject jsonObject = new JSONObject(json);
-            Iterator<String> iter = jsonObject.keys();
-            while (iter.hasNext()) {
-                String key = iter.next();
-                String value = jsonObject.getString(key);
-                Language language = new Language(key, value);
+            JSONArray jsonArray = new JSONArray(json);
+            for(int i = 0; i < jsonArray.length(); i++)
+            {
+                String iso = jsonArray.getString(i);
+
+                Language language = new Language(iso);
+
                 languages.add(language);
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -138,7 +128,7 @@ public class RegisterLanguages extends Fragment {
         MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(getActivity(), 3);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setItemAnimator(new OvershootInLeftAnimator());
-        mRecyclerAdapter = new LanguagesRecyclerAdapter(getSelectedLanguages(),mLanguageAdapter);
+        mRecyclerAdapter = new LanguagesRecyclerAdapter(this.getActivity(),getSelectedLanguages(),mLanguageAdapter);
         mRecyclerView.setAdapter(mRecyclerAdapter);
 
     }

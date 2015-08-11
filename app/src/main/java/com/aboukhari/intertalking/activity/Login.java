@@ -9,7 +9,6 @@ import android.widget.Button;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
-import com.aboukhari.intertalking.activity.main.MainActivity;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -17,6 +16,8 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.firebase.client.Firebase;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.Arrays;
 
@@ -24,7 +25,7 @@ import java.util.Arrays;
 public class Login extends Activity implements View.OnClickListener {
 
 
-    Button btnFbLogin, btnEmailLogin;
+    Button btnFbLogin, btnEmailLogin,btnSignUp;
     Firebase ref;
     CallbackManager callbackManager;
 
@@ -39,15 +40,19 @@ public class Login extends Activity implements View.OnClickListener {
         callbackManager = CallbackManager.Factory.create();
         ref = new Firebase(getString(R.string.firebase_url));
 
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoader.getInstance().init(config);
+
         btnEmailLogin = (Button) findViewById(R.id.btn_email_sign_in);
         btnFbLogin = (Button) findViewById(R.id.btn_fb_login);
+        btnSignUp = (Button) findViewById(R.id.btn_email_sign_up);
 
-        if (ref.getAuth() != null) {
+        /*if (ref.getAuth() != null) {
             Intent intent = new Intent(Login.this,
                     MainActivity.class);
             startActivity(intent);
             this.finish();
-        }
+        }*/
 
         ProfileTracker profileTracker = new ProfileTracker() {
             @Override
@@ -56,7 +61,7 @@ public class Login extends Activity implements View.OnClickListener {
 
                 if (newProfile != null) {
                     String pictureUrl = newProfile.getProfilePictureUri(400, 400).toString();
-                    fireBaseManager.onFacebookAccessTokenChange(AccessToken.getCurrentAccessToken(), pictureUrl);
+                    fireBaseManager.onFacebookAccessTokenChange(Login.this,AccessToken.getCurrentAccessToken(), pictureUrl);
                 }
 
 
@@ -66,18 +71,29 @@ public class Login extends Activity implements View.OnClickListener {
         profileTracker.startTracking();
 
         btnFbLogin.setOnClickListener(this);
+        btnEmailLogin.setOnClickListener(this);
+        btnSignUp.setOnClickListener(this);
     }
 
 
     @Override
     public void onClick(View v) {
+
+
+        if(v == btnSignUp){
+            Intent intent = new Intent(this, SpringIndicator.class);
+            startActivity(intent);
+        }
+
+
         if (v == btnEmailLogin) {
 
         }
+
+
         if (v == btnFbLogin) {
             if (AccessToken.getCurrentAccessToken() != null) {
                 LoginManager.getInstance().logOut();
-
             } else {
                 LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "user_friends", "user_birthday"));
             }

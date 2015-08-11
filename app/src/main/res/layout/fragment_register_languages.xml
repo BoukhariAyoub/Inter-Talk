@@ -1,102 +1,123 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="10dp"
-    android:weightSum="1">
+    android:layout_gravity="center">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.25"
-        android:gravity="center_vertical|center_horizontal"
         android:orientation="vertical"
-        android:weightSum="1">
-
+        android:padding="10dp">
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:gravity="center">
 
             <AutoCompleteTextView
                 android:id="@+id/auto_city"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="3dp"
                 android:background="@drawable/et_form"
                 android:drawableLeft="@mipmap/ic_world_white"
                 android:drawableStart="@mipmap/ic_world_white"
                 android:hint="Location"
                 android:inputType="textNoSuggestions"
-                android:imeOptions="actionNext"
-                android:nextFocusDown="@id/et_email"
-                android:nextFocusForward="@id/et_email"
-                android:nextFocusRight="@id/et_email"
                 android:textColor="@color/white"
                 android:textColorHint="@color/transparent_light_grey"
                 android:textSize="15sp" />
+
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:orientation="horizontal">
-
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <AutoCompleteTextView
-                android:id="@+id/auto_languages"
+                android:id="@+id/auto_languages_known"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="3dp"
                 android:background="@drawable/et_form"
                 android:drawableLeft="@mipmap/ic_translation_white"
                 android:drawableStart="@mipmap/ic_translation_white"
-                android:hint="Languages"
-                android:inputType="textNoSuggestions"
+                android:hint="@string/languages_you_know"
                 android:imeOptions="actionNext"
-                android:nextFocusDown="@id/et_email"
-                android:nextFocusForward="@id/et_email"
-                android:nextFocusRight="@id/et_email"
+                android:inputType="textNoSuggestions"
+                android:paddingRight="3dp"
                 android:textColor="@color/white"
                 android:textColorHint="@color/transparent_light_grey"
                 android:textSize="15sp" />
+
+            <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/recyclerViewKnown"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/et_form"
+                android:padding="2dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <AutoCompleteTextView
+                android:id="@+id/auto_languages_wanted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="3dp"
+                android:paddingRight="3dp"
+                android:background="@drawable/et_form"
+                android:drawableLeft="@mipmap/ic_translation_white"
+                android:drawableStart="@mipmap/ic_translation_white"
+                android:hint="@string/languages_you_want"
+                android:inputType="textNoSuggestions"
+                android:textColor="@color/white"
+                android:textColorHint="@color/transparent_light_grey"
+                android:textSize="15sp" />
+
+            <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/recyclerViewWanted"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/et_form"
+                android:padding="5dp" />
+
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/recyclerView"
+            <Button
+                android:id="@+id/btn_next"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/transparent" />
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/et_form"
+                android:elevation="10dp"
+                android:text="Register"
+                android:textColor="@color/md_grey_100" />
 
-            <TextView
-                android:id="@+id/empty_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/White"
-                android:gravity="center"
-                android:text="NOTHING TO SEE"
-                android:visibility="gone" />
 
         </RelativeLayout>
 
 
-
     </LinearLayout>
-
-
-</LinearLayout>
+</RelativeLayout>

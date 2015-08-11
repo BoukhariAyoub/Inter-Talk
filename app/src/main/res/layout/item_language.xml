@@ -17,23 +17,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:paddingLeft="5dp"
+        android:paddingRight="3dp">
 
         <me.grantland.widget.AutofitTextView
             android:id="@+id/tv_language"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.80"
+            android:layout_weight="0.60"
             android:gravity="center_vertical"
             android:singleLine="true"
             />
 
         <ImageView
+            android:id="@+id/iv_level"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:clickable="true"
+            android:src="@mipmap/ic_advanced" />
+
+        <ImageView
             android:id="@+id/iv_cross"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.20"
+            android:layout_weight="0.25"
             android:clickable="true"
             android:src="@mipmap/ic_delete" />
 
