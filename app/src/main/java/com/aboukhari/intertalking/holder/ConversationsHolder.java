@@ -1,9 +1,6 @@
 package com.aboukhari.intertalking.holder;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,10 +8,11 @@ import android.widget.TextView;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
+import com.aboukhari.intertalking.Utils.Utils;
 import com.aboukhari.intertalking.model.Conversation;
+import com.aboukhari.intertalking.model.User;
 import com.firebase.client.Query;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -48,8 +46,7 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
         itemView.setOnClickListener(this);
     }
 
-    public void bindConversation(final Conversation conversation) {
-
+    public void bindConversation(final Conversation conversation, User friend) {
         final Long count = FireBaseManager.unreadMap.get(conversation.getRoomName()) == null ? 0L : FireBaseManager.unreadMap.get(conversation.getRoomName());
         mConversation = conversation;
 
@@ -59,27 +56,10 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
             view.setBackgroundColor(Color.TRANSPARENT);
         }
 
-        mDisplayNameTextView.setText(conversation.getFriendDisplayName(ref.getRef()));
+        mDisplayNameTextView.setText(friend.getDisplayName());
         mDateTextView.setText(DATE_FORMAT.format(conversation.getLastMessageDate()));
         mMessageTextView.setText(conversation.getLastMessage());
-
-        setImage(conversation, mImageView);
-    }
-
-    private void setImage(Conversation conversation, ImageView imageView) {
-
-        String dirPath = imageView.getContext().getFilesDir().getAbsolutePath() + File.separator + "pic-profile";
-
-        File imgFile = new File(Environment.getExternalStorageDirectory() + "/" + dirPath + "/" + conversation.extractFriendUid(ref.getRef()) + ".jpg");
-
-        if (imgFile.exists()) {
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            imageView.setImageBitmap(myBitmap);
-        } else {
-            Bitmap icon = BitmapFactory.decodeResource(imageView.getResources(),
-                    R.mipmap.ic_friends);
-            imageView.setImageBitmap(icon);
-        }
+        Utils.setImage(friend.getImageUrl(), mImageView);
     }
 
     @Override

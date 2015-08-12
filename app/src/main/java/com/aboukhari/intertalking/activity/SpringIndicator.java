@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -35,9 +34,9 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
         mNextButton = (Button) findViewById(R.id.btn_next);
         github.chenupt.springindicator.SpringIndicator springIndicator = (github.chenupt.springindicator.SpringIndicator) findViewById(R.id.indicator);
 
-        mUser = getIntent().getExtras().get("user") != null ? (User) getIntent().getExtras().get("user") : new User();
-
-        Log.d("natija user", "mUser spring = " + mUser);
+        // mUser = getIntent().getExtras().get("user") != null ? (User) getIntent().getExtras().get("user") : new User();
+        mUser = null;
+       // Log.d("natija user", "mUser spring = " + mUser);
        /* Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);*/
 

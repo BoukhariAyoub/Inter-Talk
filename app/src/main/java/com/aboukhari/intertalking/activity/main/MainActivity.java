@@ -15,6 +15,8 @@ import com.aboukhari.intertalking.adapter.TabsPagerAdapter;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.firebase.client.Firebase;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 
@@ -45,6 +47,9 @@ public class MainActivity extends ActionBarActivity implements
 
         fireBaseManager = new FireBaseManager(this);
         FacebookSdk.sdkInitialize(this);
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoader.getInstance().init(config); //TODO remove
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         actionBar = getSupportActionBar();

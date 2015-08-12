@@ -2,6 +2,11 @@ package com.aboukhari.intertalking.Utils;
 
 import android.content.Context;
 import android.os.Environment;
+import android.widget.ImageView;
+
+import com.aboukhari.intertalking.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -84,6 +89,21 @@ public abstract class Utils {
         Locale locale = new Locale(language, iso);
        return locale.getDisplayCountry();
 
+    }
+
+    public static void setImage(String imageUrl, final ImageView imageView) {
+
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.crop__ic_done)
+                .showImageForEmptyUri(R.drawable.crop__ic_cancel)
+                .showImageOnFail(R.mipmap.ic_avatar)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
+                .build();
+
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.displayImage(imageUrl, imageView, options);
     }
 
 

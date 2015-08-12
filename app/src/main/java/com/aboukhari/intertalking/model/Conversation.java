@@ -169,12 +169,12 @@ public class Conversation {
 
             }
         });
-
     }
 
     public String extractFriendUid(Firebase ref) {
-        String friendId = ref.getAuth().getUid().equals(firstUid) ? secondUid : firstUid;
-        return friendId;
+        String[] split = roomName.split("_");
+        String string = ref.getAuth().getUid().equals(split[0]) ? split[1] : split[0];
+        return string;
     }
 
     public String getFriendDisplayName(Firebase ref) {

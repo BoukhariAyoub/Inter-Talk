@@ -3,9 +3,12 @@ package com.aboukhari.intertalking.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
@@ -22,10 +25,11 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import java.util.Arrays;
 
 
-public class Login extends Activity implements View.OnClickListener {
+public class Login extends Activity implements View.OnClickListener,View.OnTouchListener {
 
 
     Button btnFbLogin, btnEmailLogin,btnSignUp;
+    EditText mEmailEditText, mPasswordEditText;
     Firebase ref;
     CallbackManager callbackManager;
 
@@ -46,6 +50,9 @@ public class Login extends Activity implements View.OnClickListener {
         btnEmailLogin = (Button) findViewById(R.id.btn_email_sign_in);
         btnFbLogin = (Button) findViewById(R.id.btn_fb_login);
         btnSignUp = (Button) findViewById(R.id.btn_email_sign_up);
+
+        mPasswordEditText = (EditText) findViewById(R.id.et_password);
+        mEmailEditText = (EditText) findViewById(R.id.et_email);
 
         /*if (ref.getAuth() != null) {
             Intent intent = new Intent(Login.this,
@@ -73,6 +80,7 @@ public class Login extends Activity implements View.OnClickListener {
         btnFbLogin.setOnClickListener(this);
         btnEmailLogin.setOnClickListener(this);
         btnSignUp.setOnClickListener(this);
+        mPasswordEditText.setOnTouchListener(this);
     }
 
 
@@ -106,6 +114,32 @@ public class Login extends Activity implements View.OnClickListener {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (v == mPasswordEditText) {
+
+
+            final int DRAWABLE_LEFT = 0;
+            final int DRAWABLE_TOP = 1;
+            final int DRAWABLE_RIGHT = 2;
+            final int DRAWABLE_BOTTOM = 3;
+
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (event.getRawX() >= (mPasswordEditText.getRight() - mPasswordEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                    mPasswordEditText.setTransformationMethod(null);
+                    return true;
+                }
+            }
+
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (event.getRawX() >= (mPasswordEditText.getRight() - mPasswordEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                    mPasswordEditText.setTransformationMethod(new PasswordTransformationMethod());
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 }
 

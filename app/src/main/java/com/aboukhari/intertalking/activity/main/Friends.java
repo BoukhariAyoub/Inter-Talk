@@ -45,8 +45,7 @@ public class Friends extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Friend friend = (Friend) listView.getItemAtPosition(position);
-                String roomName = fireBaseManager.createRoom(friend);
-                fireBaseManager.openRoom(roomName);
+                fireBaseManager.createRoom(friend);
             }
 
         });

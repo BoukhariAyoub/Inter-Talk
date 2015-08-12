@@ -71,8 +71,10 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
         mBirthDateEditText.setOnClickListener(this);
 
 
-        populateUser(mUser);
-        Log.d("natija user", mUser.toString());
+        if (mUser != null) {
+            populateUser(mUser);
+            Log.d("natija user", mUser.toString());
+        }
 
 
         return v;
@@ -185,14 +187,13 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
         mBirthDateEditText.setText(Utils.dateToString(user.getBirthday()));
 
 
-
         ImageLoader imageLoader = ImageLoader.getInstance();
 
 
         imageLoader.loadImage(user.getImageUrl(), new SimpleImageLoadingListener() {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                Log.d("natija image",loadedImage.getByteCount()+"");
+                Log.d("natija image", loadedImage.getByteCount() + "");
                 mAvatarImageView.setImageBitmap(loadedImage);
                 mAvatarImageView.addShadow();
                 mAvatarImageView.setBorderColor(getResources().getColor(R.color.md_grey_300));
@@ -202,7 +203,6 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
                 mAvatarImageView.addShadow();
             }
         });
-
 
 
     }

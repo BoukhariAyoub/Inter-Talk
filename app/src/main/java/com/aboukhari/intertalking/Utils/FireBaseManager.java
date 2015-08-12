@@ -1,6 +1,5 @@
 package com.aboukhari.intertalking.Utils;
 
-import android.app.DownloadManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -8,16 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.activity.ChatRoom;
 import com.aboukhari.intertalking.activity.Login;
-import com.aboukhari.intertalking.activity.SpringIndicator;
 import com.aboukhari.intertalking.activity.main.Conversations;
 import com.aboukhari.intertalking.activity.main.MainActivity;
 import com.aboukhari.intertalking.database.DatabaseManager;
@@ -30,6 +26,7 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -42,7 +39,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -81,8 +77,8 @@ public class FireBaseManager {
      * @return
      */
     public String createRoom(final Friend friend) {
-        User user = databaseManager.getCurrentUser(ref.getAuth().getUid());
-        final Conversation conversation = new Conversation(ref, ref.getAuth().getUid(), friend.getuId(), user.getDisplayName(), friend.getDisplayName());
+        //  User user = databaseManager.getCurrentUser(ref.getAuth().getUid());
+        final Conversation conversation = new Conversation(ref, ref.getAuth().getUid(), friend.getuId(), "", "");
         ref.child("room_names").child(conversation.getRoomName()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -102,12 +98,14 @@ public class FireBaseManager {
                     userRoom.setFriend(friend);
                     userRoom.setRoomName(conversation.getRoomName());
 
-                    //Add current room to database
-                    databaseManager.addUserRoom(userRoom);
 
                     //Add Room to friend's Rooms
                     ref.child("users").child(friend.getuId()).child("rooms").child(conversation.getRoomName()).setValue(0);
+
                 }
+
+                openRoom(conversation.getRoomName());
+
             }
 
             @Override
@@ -154,16 +152,31 @@ public class FireBaseManager {
 
     }
 
-    public void openRoom(String roomName) {
+    public void openRoom(final String roomName) {
         ref.getRoot().child("room_names").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Conversation conversation = dataSnapshot.getValue(Conversation.class);
 
-                Intent intent = new Intent(context, ChatRoom.class);
-                intent.putExtra("title", conversation.getFriendDisplayName(ref));
-                intent.putExtra("roomName", conversation.getRoomName());
-                context.startActivity(intent);
+
+                String friendUid = conversation.extractFriendUid(ref.getRoot());
+
+                ref.getRoot().child("users").child(friendUid).child("displayName").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Intent intent = new Intent(context, ChatRoom.class);
+                        intent.putExtra("title", dataSnapshot.getValue(String.class));
+                        intent.putExtra("roomName", roomName);
+                        context.startActivity(intent);
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+
+
             }
 
             @Override
@@ -214,49 +227,79 @@ public class FireBaseManager {
                 public void onAuthenticated(final AuthData authData) {
 
                     String email = authData.getProviderData().get("email").toString();
+                    Log.d("natija login ", " email = " + email);
 
                     ref.child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            String uid = authData.getUid();
-                            String email = "";
-                            Date birthday = new Date(0L);
-                            String displayName = "";
-                            String gender = "";
+                            //if user already exists
+                            if (dataSnapshot.exists()) {
+                                Log.d("natija login ", " dataSnapshot = " + dataSnapshot.getValue().toString());
 
-                            //     Log.d("natija auth data", authData.getProviderData().toString());
-
-                            //Set DisplayName
-                            if (authData.getProviderData().containsKey("displayName")) {
-                                displayName = authData.getProviderData().get("displayName").toString();
+                                //TODO login()
+                                Log.d("natija login ", " exists");
+                                Intent mainIntent = new Intent(context,
+                                        MainActivity.class);
+                                mainIntent.putExtra("id", "1");
+                                context.startActivity(mainIntent);
                             }
 
-                            //Set Picture
-                            downloadImage(authData.getUid(), pictureUrl);
+                            //user does not exists
+                            else {
+                                Log.d("natija login ", "does not exists");
+                                String uid = authData.getUid();
+                                String email = "";
+                                Date birthday = new Date(0L);
+                                String displayName = "";
+                                String gender = "";
 
 
-                            //Set Email
-                            if (authData.getProviderData().containsKey("email")) {
-                                email = authData.getProviderData().get("email").toString();
-                            }
-
-                            //Set Birthday & Gender
-                            if (authData.getProviderData().containsKey("cachedUserProfile")) {
-                                Map<String, Object> cachedUserProfile = (Map<String, Object>) authData.getProviderData().get("cachedUserProfile");
-                                if (cachedUserProfile.containsKey("birthday")) {
-                                    birthday = Utils.stringToDate(cachedUserProfile.get("birthday").toString());
+                                //Set DisplayName
+                                if (authData.getProviderData().containsKey("displayName")) {
+                                    displayName = authData.getProviderData().get("displayName").toString();
                                 }
-                                if (cachedUserProfile.containsKey("gender")) {
-                                    gender = cachedUserProfile.get("gender").toString();
+
+                                //Set Picture //TODO
+                                //  downloadImage(authData.getUid(), pictureUrl);
+
+
+                                //Set Email
+                                if (authData.getProviderData().containsKey("email")) {
+                                    email = authData.getProviderData().get("email").toString();
                                 }
+
+                                //Set Birthday & Gender
+                                if (authData.getProviderData().containsKey("cachedUserProfile")) {
+                                    Map<String, Object> cachedUserProfile = (Map<String, Object>) authData.getProviderData().get("cachedUserProfile");
+                                    if (cachedUserProfile.containsKey("birthday")) {
+                                        birthday = Utils.stringToDate(cachedUserProfile.get("birthday").toString());
+                                    }
+                                    if (cachedUserProfile.containsKey("gender")) {
+                                        gender = cachedUserProfile.get("gender").toString();
+                                    }
+                                }
+
+                                User user = new User(uid, displayName, email, birthday, gender);
+                                user.setImageUrl(pictureUrl);
+
+                                ObjectMapper m = new ObjectMapper();
+                                Map<String, Object> userMap = m.convertValue(user, Map.class);
+
+                                //Add User To Firebase
+                                ref.child("users").child(authData.getUid()).updateChildren(userMap);
+
+
+                                Intent mainIntent = new Intent(context,
+                                        MainActivity.class);
+                                mainIntent.putExtra("id", "1");
+                                context.startActivity(mainIntent);
+
+                               /* Intent intent = new Intent(context, SpringIndicator.class);
+                                intent.putExtra("user", user);
+                                Log.d("natija user", "from fb" + user);
+                                context.startActivity(intent);*/
                             }
 
-                            User user = new User(uid, displayName, email, birthday, gender);
-                            user.setImageUrl(pictureUrl);
-                            Intent intent = new Intent(context, SpringIndicator.class);
-                            intent.putExtra("user", user);
-                            Log.d("natija user", "from fb" + user);
-                            context.startActivity(intent);
 
 
 /*
@@ -289,10 +332,6 @@ public class FireBaseManager {
                     });
 
 
-                    Intent mainIntent = new Intent(context,
-                            MainActivity.class);
-                    mainIntent.putExtra("id", "1");
-                    context.startActivity(mainIntent);
                 }
 
                 @Override
@@ -304,6 +343,11 @@ public class FireBaseManager {
             ref.unauth();
         }
     }
+
+    public void login() {
+
+    }
+
 
     public void syncFacebookFriends(AccessToken token) {
         GraphRequest request = GraphRequest.newMyFriendsRequest(
@@ -320,18 +364,20 @@ public class FireBaseManager {
                                 String name = object.get("name").toString();
                                 String imageUrl = ((JSONObject) ((JSONObject) object.get("picture")).get("data")).get("url").toString();
                                 Friend friend = new Friend();
-                                friend.setDisplayName(name);
+                                //  friend.setDisplayName(name);
                                 friend.setuId(uid);
-                                downloadImage(uid, imageUrl);
-                                ref.child("users").child(ref.getAuth().getUid()).child("friends").child("facebook:" + uid).setValue(friend);
+                                ref.child("users").child(ref.getAuth().getUid()).child("friends").child(uid).setValue(friend);
+                                dialog.dismiss();
                             } catch (JSONException e) {
+                                dialog.dismiss();
+                                Log.e("natija ", e.getMessage());
                                 e.printStackTrace();
                             }
                         }
                     }
                 });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,picture.width(300).height(300)");
+        parameters.putString("fields", "id,name,picture.width(400).height(400)");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -352,29 +398,11 @@ public class FireBaseManager {
                 friend.setGender("female");
 
 
-            downloadImage(uid, imageUrl);
-
             User user = new User(uid, name, name, new Date(), "male");
 
             ref.child("users").child(uid).setValue(user);
             ref.child("users").child(ref.getAuth().getUid()).child("friends").child("facebook:" + uid).setValue(friend);
         }
-    }
-
-    public void downloadImage(String uid, final String url) {
-        String dirPath = context.getFilesDir().getAbsolutePath() + File.separator + "pic-profile";
-
-        File file = new File(Environment.getExternalStorageDirectory() + "/" + dirPath + "/" + uid + ".jpg");
-        if (file.exists()) {
-            file.delete();
-        }
-
-        DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url))
-                .setDestinationInExternalPublicDir(dirPath, uid + ".jpg")
-                .setVisibleInDownloadsUi(false);
-        dm.enqueue(request);
-
     }
 
     public void theRealDeal() {
@@ -410,7 +438,6 @@ public class FireBaseManager {
                                     updateRoom(roomName);
                                 }
                                 roomMessagesListenerMap.put(s, this);
-
                             }
 
                         }

@@ -49,7 +49,11 @@ public class ChatRoom extends Activity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             toolbar.setTitle(mTitle);
+            toolbar.setLogo(R.mipmap.ic_begginer);
+
         }
+
+
 
         listView = (ListView) findViewById(android.R.id.list);
 
@@ -61,6 +65,7 @@ public class ChatRoom extends Activity {
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
         EditText inputText = (EditText) findViewById(R.id.messageInput);
+
         inputText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -119,7 +124,6 @@ public class ChatRoom extends Activity {
         });
 
         FireBaseManager.currentRoom = roomName;
-        FireBaseManager.currentRoom = "hoho";//TODO delete this
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.aboukhari.intertalking.adapter;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Message> {
 
     public ChatListAdapter(Query ref, Activity activity, int layout, String uid) {
         super(ref, Message.class, layout, activity);
-        this.uid     = uid;
+        this.uid = uid;
     }
 
     /**
@@ -39,7 +40,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Message> {
      * when there is a data change, and we are given an instance of a View that corresponds to the layout that we passed
      * to the constructor, as well as a single <code>Chat</code> instance that represents the current data to bind.
      *
-     * @param view A view instance corresponding to the layout we passed to the constructor.
+     * @param view    A view instance corresponding to the layout we passed to the constructor.
      * @param message An instance representing the current state of a chat message
      */
 
@@ -47,14 +48,14 @@ public class ChatListAdapter extends FirebaseListAdapter<Message> {
     @Override
     protected void populateView(View view, Message message) {
         // Map a Chat object to an entry in our listview
-
+        Log.d("natija message",message.toString());
         String author = message.getAuthor();
-        TextView authorText = (TextView) view.findViewById(R.id.author);
+       // TextView authorText = (TextView) view.findViewById(R.id.author);
         TextView messageText = (TextView) view.findViewById(R.id.message);
         TextView dateText = (TextView) view.findViewById(R.id.date);
         LinearLayout linearChat = (LinearLayout) view.findViewById(R.id.linear_chat);
         LinearLayout linearMessage = (LinearLayout) view.findViewById(R.id.linear_message);
-        authorText.setText(author + ": ");
+     //   authorText.setText(author + ": ");
         // If the message was sent by this user, color it differently
         if (author.equals(uid)) {
             view.setBackgroundColor(Color.TRANSPARENT);
@@ -70,7 +71,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Message> {
             linearMessage.setBackgroundDrawable(drawable);
         }
 
-     //   translateMessage(chat.getMessage(),messageText);
+        //   translateMessage(chat.getMessage(),messageText);
         messageText.setText(message.getMessage());
 
         CHAT_MSG_DATE_FORMAT.setTimeZone(TimeZone.getDefault());

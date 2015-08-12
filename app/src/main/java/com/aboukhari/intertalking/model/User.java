@@ -3,16 +3,21 @@ package com.aboukhari.intertalking.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by aboukhari on 23/07/2015.
  */
 
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @DatabaseTable(tableName = "user")
 public class User implements Parcelable {
 
@@ -48,7 +53,33 @@ public class User implements Parcelable {
     @DatabaseField
     String imageUrl;
 
+    @JsonIgnore
+    List friends;
+
+    @JsonIgnore
+    Collection rooms;
+
     public User() {
+    }
+
+    @JsonIgnore
+    public List getFriends() {
+        return friends;
+    }
+
+    @JsonIgnore
+    public void setFriends(List friends) {
+        this.friends = friends;
+    }
+
+    @JsonIgnore
+    public Collection getRooms() {
+        return rooms;
+    }
+
+    @JsonIgnore
+    public void setRooms(Collection rooms) {
+        this.rooms = rooms;
     }
 
     public User(String uid,String displayName, String email, Date birthday, String gender) {

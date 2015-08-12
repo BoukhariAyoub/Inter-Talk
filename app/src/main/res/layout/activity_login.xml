@@ -46,42 +46,65 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
+
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/et_form"
+                android:drawableLeft="@mipmap/ic_username_white"
+                android:drawableStart="@mipmap/ic_username_white"
+                android:ems="10"
+                android:focusableInTouchMode="true"
+                android:hint="Display Name"
+                android:imeOptions="actionNext"
+                android:inputType="textCapWords"
+                android:textColor="@color/white"
+                android:textColorHint="@color/transparent_light_grey"
+                android:textSize="15sp"
+                android:visibility="gone" />
+
             <EditText
                 android:id="@+id/et_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/et_form"
                 android:drawableLeft="@mipmap/ic_email_white"
                 android:drawableStart="@mipmap/ic_email_white"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"
                 android:ems="10"
+                android:focusable="true"
+                android:gravity="center_vertical"
                 android:hint="Email"
-                android:inputType="textPassword"
-                android:background="@drawable/et_form"
-                android:textColorHint="@color/md_grey_100" />
+                android:inputType="textEmailAddress"
+                android:textColorHint="@color/md_grey_100"
+                android:textSize="15sp"
+                />
+
 
             <EditText
-                android:id="@+id/editText2"
+                android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="3dp"
-                android:paddingRight="3dp"
                 android:background="@drawable/et_form"
+                android:drawableEnd="@mipmap/ic_eye_light"
+                android:drawableRight="@mipmap/ic_eye_light"
                 android:drawableLeft="@mipmap/ic_password_white"
                 android:drawableStart="@mipmap/ic_password_white"
+                android:ems="10"
                 android:hint="Password"
-                android:inputType="textNoSuggestions"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
                 android:textColor="@color/white"
                 android:textColorHint="@color/transparent_light_grey"
                 android:textSize="15sp" />
 
             <LinearLayout
-                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal"
                 android:weightSum="2">
 
@@ -90,10 +113,10 @@
                     style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
                     android:layout_weight="1"
                     android:background="#6626A4CE"
                     android:text="Login"
-                    android:layout_marginRight="2dp"
                     android:textColor="@color/md_white_1000"
                     android:textStyle="bold" />
 
@@ -102,10 +125,10 @@
                     style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
                     android:background="#66007C9A"
                     android:text="Sign Up"
-                    android:layout_marginLeft="2dp"
                     android:textColor="@color/md_white_1000"
                     android:textStyle="bold" />
 
@@ -117,8 +140,7 @@
                 android:layout_height="1dp"
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp"
-                />
+                android:layout_marginRight="50dp" />
 
             <Button
                 android:id="@+id/btn_fb_login"

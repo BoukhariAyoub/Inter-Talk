@@ -10,9 +10,10 @@
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#7F8FA6"
+        android:background="@drawable/et_form"
         style="@style/Base.Theme.AppCompat.Light.DarkActionBar"
-        android:minHeight="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
+        android:minHeight="?attr/actionBarSize">
+    </android.support.v7.widget.Toolbar>
 
     <ListView
         android:id="@android:id/list"
@@ -31,21 +32,25 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
-
-
         <EditText
             android:id="@+id/messageInput"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:hint="@string/your_message"
+            android:imeOptions="actionDone"
             android:inputType="textMultiLine"
-            android:maxLines="10"
-            android:singleLine="false" />
+            android:textColor="@color/gray"
+            android:textColorHint="@color/gray"
+            android:textSize="15sp"
+            android:maxLines="10"/>
 
         <ImageButton
             android:id="@+id/sendButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="bottom"
             android:background="@color/transparent"
             android:maxLines="10"

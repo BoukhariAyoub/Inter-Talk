@@ -11,6 +11,7 @@ import com.aboukhari.intertalking.Utils.DateComparator;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.holder.ConversationsHolder;
 import com.aboukhari.intertalking.model.Conversation;
+import com.aboukhari.intertalking.model.User;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.FirebaseError;
@@ -209,9 +210,23 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
 
 
     @Override
-    public void onBindViewHolder(final ConversationsHolder holder, int position) {
+    public void onBindViewHolder(final ConversationsHolder holder, final int position) {
         final Conversation conversation = models.get(position);
-        holder.bindConversation(conversation);
+
+        ref.getRef().getRoot().child("users").child(conversation.extractFriendUid(ref.getRef())).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    User friend = dataSnapshot.getValue(User.class);
+                    holder.bindConversation(conversation,friend);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 
     @Override

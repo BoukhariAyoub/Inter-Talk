@@ -30,4 +30,7 @@
     <string name="language_level_3">Advanced</string>
     <string name="language_level_4">Native</string>
 
+    <!-- CHAT ROOM -->
+    <string name="your_message">Your Message...</string>
+
 </resources>

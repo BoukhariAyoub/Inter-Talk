@@ -3,14 +3,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/linear_chat"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="right">
+    android:gravity="right"
+    android:orientation="horizontal"
+    android:minHeight="80dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="10dp"
+    android:layout_height="80dp">
 
-    <TextView
-        android:id="@+id/author"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/linear_message"
@@ -19,7 +19,7 @@
         android:layout_marginBottom="1dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="3dp"
+        android:layout_gravity="top"
         android:background="@drawable/message_me_shape"
         android:orientation="vertical">
 
@@ -29,7 +29,6 @@
             android:layout_height="wrap_content"
             android:textColor="#FFF"
             android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@id/author"
             />
 
         <TextView
@@ -43,6 +42,15 @@
             android:textColor="#ddd"
             android:textStyle="italic" />
     </LinearLayout>
+
+
+    <com.aboukhari.intertalking.Utils.RoundedImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/iv_profile"
+        android:layout_gravity="top"
+        android:src="@drawable/user"/>
+
 
 
 </LinearLayout>

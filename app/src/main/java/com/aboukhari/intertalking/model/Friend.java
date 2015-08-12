@@ -33,20 +33,19 @@ public class Friend {
     @DatabaseField
     private String gender;
 
-    @DatabaseField
-    private int age;
+
+
 
     public Friend() {
     }
 
-    public Friend(String uId, String displayName, String spokenLanguages, String city, String country, String gender, Date birthdate) {
+    public Friend(String uId, String displayName, String spokenLanguages, String city, String country, String gender) {
         this.uId = uId;
         this.displayName = displayName;
         this.spokenLanguages = spokenLanguages;
         this.city = city;
         this.country = country;
         this.gender = gender;
-        this.age = birthDateToAge(birthdate);
     }
 
     public Friend(String uId, String displayName) {
@@ -102,13 +101,7 @@ public class Friend {
         this.gender = gender;
     }
 
-    public int getAge() {
-        return age;
-    }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
 
     private int birthDateToAge(Date birthdate) {
 
