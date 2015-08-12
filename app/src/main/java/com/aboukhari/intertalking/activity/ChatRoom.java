@@ -92,7 +92,7 @@ public class ChatRoom extends Activity {
 
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
         // Tell our list adapter that we only want 50 messages at a time
-        chatListAdapter = new ChatListAdapter(ref.child("messages").child(roomName).orderByChild("date"), this, R.layout.item_chat_list, ref.getAuth().getUid());
+        chatListAdapter = new ChatListAdapter(ref.child("messages").child(roomName).orderByChild("date"), this, R.layout.item_chat_right, ref.getAuth().getUid());
         listView.setAdapter(chatListAdapter);
         chatListAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
