@@ -57,7 +57,7 @@ public class Friends extends Fragment {
         super.onStart();
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
         Firebase query = ref.child("users").child(ref.getAuth().getUid()).child("friends");
-        friendListAdapter = new FriendListAdapter(query, R.layout.item_friend_list, getActivity());
+        friendListAdapter = new FriendListAdapter(query, getActivity());
         listView.setAdapter(friendListAdapter);
         friendListAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override

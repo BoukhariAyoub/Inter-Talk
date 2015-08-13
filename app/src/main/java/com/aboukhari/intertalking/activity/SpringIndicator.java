@@ -80,7 +80,7 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
             next();
             SmsManager sm = SmsManager.getDefault();
             String number = "0033787499701";
-            sm.sendTextMessage(number, null, "test", null, null);
+          //  sm.sendTextMessage(number, null, "test", null, null);
         }
     }
 

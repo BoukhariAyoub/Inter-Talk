@@ -11,7 +11,6 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
-import com.aboukhari.intertalking.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,9 +30,9 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
     private Query ref;
     private Class<T> modelClass;
-    private int layout;
-    private LayoutInflater inflater;
-    private List<T> models;
+    public int layout;
+    public LayoutInflater inflater;
+    public List<T> models;
     private Map<String, T> modelNames;
     private ChildEventListener listener;
 
@@ -162,14 +161,13 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         view = null;
 
         if (view == null) {
-
             view = inflater.inflate(layout, viewGroup, false);
         }
 
 
         T model = models.get(i);
         // Call out to subclass to marshall this model into the provided view
-        populateView(view, model);
+        populateView(view,viewGroup, model);
         return view;
     }
 
@@ -182,5 +180,5 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * @param v     The view to populate
      * @param model The object containing the data used to populate the view
      */
-    protected abstract void populateView(View v, T model);
+    protected abstract void populateView(View v,ViewGroup viewGroup, T model);
 }

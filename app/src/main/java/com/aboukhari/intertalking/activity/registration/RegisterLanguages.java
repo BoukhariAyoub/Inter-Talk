@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Locale;
 
 import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
@@ -73,7 +71,6 @@ public class RegisterLanguages extends Fragment {
         mPlaceAutoComplete.setOnItemClickListener(setPlacesOnClickListener());
 
         Language[] lang = getAllLanguages();
-        Log.d("natija lang", Arrays.toString(lang));
         mLanguageAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, lang);
         mLanguagesAutoComplete.setAdapter(mLanguageAdapter);
         mLanguagesAutoComplete.setOnItemClickListener(setLanguagesOnClickListener());
@@ -172,9 +169,6 @@ public class RegisterLanguages extends Fragment {
                             break;
                     }
                 }
-
-
-                Log.d("natija click place", place.getInfo());
                 mChosenPlace = place;
             }
 
@@ -203,7 +197,7 @@ public class RegisterLanguages extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Language language = (Language) parent.getItemAtPosition(position);
-                mRecyclerAdapter.addItem(0, language);
+                mRecyclerAdapter.addItem(language);
                 mLanguagesAutoComplete.setText("");
             }
         };

@@ -98,7 +98,6 @@ public class ChatRoom extends Activity {
             @Override
             public void onChanged() {
                 super.onChanged();
-                // Log.d("natija", "gotMessage");
                 listView.setSelection(chatListAdapter.getCount() - 1);
             }
         });

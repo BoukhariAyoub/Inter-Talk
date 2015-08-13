@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,7 +22,6 @@ import com.aboukhari.intertalking.Utils.Utils;
 import com.aboukhari.intertalking.activity.SpringIndicator;
 import com.aboukhari.intertalking.model.User;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.soundcloud.android.crop.Crop;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -73,10 +71,7 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
 
         if (mUser != null) {
             populateUser(mUser);
-            Log.d("natija user", mUser.toString());
         }
-
-
         return v;
     }
 
@@ -167,8 +162,6 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
     private void pickImage() {
         Intent intent = (new Intent("android.intent.action.GET_CONTENT")).setType("image/*");
         startActivityForResult(intent, Crop.REQUEST_PICK);
-        Log.d("natija crop", "pick image");
-
     }
 
     @Override
@@ -189,21 +182,7 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
 
         ImageLoader imageLoader = ImageLoader.getInstance();
 
-
-        imageLoader.loadImage(user.getImageUrl(), new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                Log.d("natija image", loadedImage.getByteCount() + "");
-                mAvatarImageView.setImageBitmap(loadedImage);
-                mAvatarImageView.addShadow();
-                mAvatarImageView.setBorderColor(getResources().getColor(R.color.md_grey_300));
-                mAvatarImageView.setBorderWidth(1);
-                mAvatarImageView.setSelectorStrokeColor(getResources().getColor(R.color.white));
-                mAvatarImageView.setSelectorStrokeWidth(1);
-                mAvatarImageView.addShadow();
-            }
-        });
-
+Utils.setImage(user.getImageUrl(),mAvatarImageView);
 
     }
 }

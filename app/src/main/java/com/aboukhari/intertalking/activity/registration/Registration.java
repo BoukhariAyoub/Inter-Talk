@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TabHost;
@@ -20,7 +20,7 @@ import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
 
-public class Registration extends ActionBarActivity implements
+public class Registration extends AppCompatActivity implements
         ActionBar.TabListener, View.OnClickListener {
 
     private FireBaseManager fireBaseManager;

@@ -3,6 +3,7 @@ package com.aboukhari.intertalking.adapter;
 import android.app.Activity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,13 +31,13 @@ public class FriendListAdapter extends FirebaseListAdapter<Friend> {
 
     Firebase ref;
 
-    public FriendListAdapter(Query ref, int layout, Activity activity) {
-        super(ref, Friend.class, layout, activity);
+    public FriendListAdapter(Query ref,Activity activity) {
+        super(ref, Friend.class, R.layout.item_friend_list, activity);
         this.ref = ref.getRef();
     }
 
     @Override
-    protected void populateView(final View view, final Friend friend) {
+    protected void populateView(final View view,ViewGroup viewGroup, final Friend friend) {
 
         ref.getRoot().child("users").child(friend.getuId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

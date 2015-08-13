@@ -93,8 +93,7 @@ public class GeoNames extends ActionBarActivity implements AdapterView.OnItemCli
                     }
                 });
             }
-            // String city = RestClient.get().getCityDetails(cityEditText.getText().toString()).toString();
-            //  Log.d("natija city",city);
+
 
 
         }

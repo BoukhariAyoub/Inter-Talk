@@ -1,10 +1,15 @@
 package com.aboukhari.intertalking.Utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.aboukhari.intertalking.R;
+import com.aboukhari.intertalking.model.User;
+import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -36,18 +41,18 @@ public abstract class Utils {
         }
     }
 
-    public static  String dateToString(Date date) {
+    public static String dateToString(Date date) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         return formatter.format(date);
     }
 
-    public static void exportDB(String dataBaseName){
+    public static void exportDB(String dataBaseName) {
         File sd = Environment.getExternalStorageDirectory();
         File data = Environment.getDataDirectory();
-        FileChannel source=null;
-        FileChannel destination=null;
-        String currentDBPath = "/data/"+ "com.aboukhari.intertalking" +"/databases/"+dataBaseName;
+        FileChannel source = null;
+        FileChannel destination = null;
+        String currentDBPath = "/data/" + "com.aboukhari.intertalking" + "/databases/" + dataBaseName;
         String backupDBPath = dataBaseName;
         File currentDB = new File(data, currentDBPath);
         File backupDB = new File(sd, backupDBPath);
@@ -57,7 +62,7 @@ public abstract class Utils {
             destination.transferFrom(source, 0, source.size());
             source.close();
             destination.close();
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -69,7 +74,7 @@ public abstract class Utils {
         return friendId + "_" + myId;
     }
 
-    public static String loadJSONFromAsset(Context context,String fileName) {
+    public static String loadJSONFromAsset(Context context, String fileName) {
         String json;
         try {
             InputStream is = context.getAssets().open(fileName);
@@ -85,9 +90,9 @@ public abstract class Utils {
         return json;
     }
 
-    public static String getCountryByIso(String language,String iso){
+    public static String getCountryByIso(String language, String iso) {
         Locale locale = new Locale(language, iso);
-       return locale.getDisplayCountry();
+        return locale.getDisplayCountry();
 
     }
 
@@ -104,6 +109,37 @@ public abstract class Utils {
 
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.displayImage(imageUrl, imageView, options);
+    }
+
+
+    public static void saveUserToPreferences(Context context, User user) {
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        prefsEditor.putString("user", json);
+        prefsEditor.apply();
+
+        Log.d("natija pref"," user before = " + user);
+
+        Log.d("natija pref"," contain user ? = " + mPrefs.contains("user"));
+
+
+    }
+
+    public static User getUserFromPreferences(Context context) {
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        Gson gson = new Gson();
+        String json = mPrefs.getString("user", "");
+        User user = gson.fromJson(json, User.class);
+
+        Log.d("natija pref"," contain user ? = " + mPrefs.contains("user"));
+        Log.d("natija pref"," current user json= " + json);
+        Log.d("natija pref"," current user real= " + user);
+
+        return user;
+
     }
 
 

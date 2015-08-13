@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -25,10 +24,10 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import java.util.Arrays;
 
 
-public class Login extends Activity implements View.OnClickListener,View.OnTouchListener {
+public class Login extends Activity implements View.OnClickListener, View.OnTouchListener {
 
 
-    Button btnFbLogin, btnEmailLogin,btnSignUp;
+    Button btnFbLogin, btnEmailLogin, btnSignUp;
     EditText mEmailEditText, mPasswordEditText;
     Firebase ref;
     CallbackManager callbackManager;
@@ -39,7 +38,7 @@ public class Login extends Activity implements View.OnClickListener,View.OnTouch
         Firebase.setAndroidContext(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
-        ref.getDefaultConfig().setPersistenceEnabled(true);
+        //  ref.getDefaultConfig().setPersistenceEnabled(true);
         final FireBaseManager fireBaseManager = new FireBaseManager(this);
         callbackManager = CallbackManager.Factory.create();
         ref = new Firebase(getString(R.string.firebase_url));
@@ -64,11 +63,9 @@ public class Login extends Activity implements View.OnClickListener,View.OnTouch
         ProfileTracker profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
-                Log.d("natija", "profile change");
-
                 if (newProfile != null) {
                     String pictureUrl = newProfile.getProfilePictureUri(400, 400).toString();
-                    fireBaseManager.onFacebookAccessTokenChange(Login.this,AccessToken.getCurrentAccessToken(), pictureUrl);
+                    fireBaseManager.onFacebookAccessTokenChange(Login.this, AccessToken.getCurrentAccessToken(), pictureUrl);
                 }
 
 
@@ -88,14 +85,14 @@ public class Login extends Activity implements View.OnClickListener,View.OnTouch
     public void onClick(View v) {
 
 
-        if(v == btnSignUp){
+        if (v == btnSignUp) {
             Intent intent = new Intent(this, SpringIndicator.class);
             startActivity(intent);
         }
 
 
         if (v == btnEmailLogin) {
-
+//TODO LOGIN EMAIL PASSWORD
         }
 
 
@@ -119,10 +116,7 @@ public class Login extends Activity implements View.OnClickListener,View.OnTouch
         if (v == mPasswordEditText) {
 
 
-            final int DRAWABLE_LEFT = 0;
-            final int DRAWABLE_TOP = 1;
             final int DRAWABLE_RIGHT = 2;
-            final int DRAWABLE_BOTTOM = 3;
 
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 if (event.getRawX() >= (mPasswordEditText.getRight() - mPasswordEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {

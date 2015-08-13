@@ -57,8 +57,6 @@ public class Conversation {
         dateCreated = new Date();
         lastMessage = "";
         lastMessageDate = new Date(0);
-        this.firstDisplayName = firstDisplayName;
-        this.secondDisplayName = secondDisplayName;
         updateLastMessage(ref);
     }
 

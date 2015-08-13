@@ -1,7 +1,6 @@
 package com.aboukhari.intertalking.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -63,8 +62,6 @@ public class CitiesAutoCompleteAdapter extends ArrayAdapter<Place> implements Fi
             protected void publishResults(CharSequence constraint, FilterResults results) {
 
                 if (results != null && results.count > 0) {
-                    Log.d("natija publish", (String) constraint);
-                    Log.d("natija publish", String.valueOf(results.count));
                     notifyDataSetChanged();
                 } else {
                     notifyDataSetInvalidated();

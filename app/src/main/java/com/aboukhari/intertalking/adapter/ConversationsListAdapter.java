@@ -74,7 +74,6 @@ public class ConversationsListAdapter extends BaseAdapter {
 
                 final String roomName = dataSnapshot.getKey();
                 final Conversation model = dataSnapshot.getValue(ConversationsListAdapter.this.modelClass);
-                Log.d("natija", dataSnapshot.toString());
                 ConversationsListAdapter.this.ref.getRef().getRoot().child("users").child(uid).child("rooms").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

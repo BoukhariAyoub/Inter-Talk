@@ -58,7 +58,8 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
     }
 
 
-    public void addItem(int position, Language language) {
+    public void addItem(Language language) {
+        int position = 0;
         languages.add(position, language);
         mLanguageAdapter.remove(language);
         mLanguageAdapter.notifyDataSetChanged();

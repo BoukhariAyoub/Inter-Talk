@@ -2,6 +2,7 @@ package com.aboukhari.intertalking.adapter;
 
 import android.app.Activity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.aboukhari.intertalking.R;
@@ -31,7 +32,7 @@ public class RoomListAdapter extends FirebaseListAdapter<UserRoom> {
 
 
     @Override
-    protected void populateView(View view, UserRoom room) {
+    protected void populateView(View view,ViewGroup viewGroup, UserRoom room) {
         ((TextView) view.findViewById(R.id.tv_name)).setText(room.getRoomName());
         ((TextView) view.findViewById(R.id.tv_date)).setText(DATE_FORMAT.format(room.getLastSeen()));
     }

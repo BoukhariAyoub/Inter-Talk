@@ -69,7 +69,6 @@ public class FireBaseManager {
 
     }
 
-
     /**
      * Create Room if not exists
      *
@@ -122,7 +121,6 @@ public class FireBaseManager {
      *
      * @param roomName
      */
-
     private void updateRoom(final String roomName) {
 
         ref.getRoot().child("messages").child(roomName).orderByChild("date").limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -130,7 +128,6 @@ public class FireBaseManager {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.exists()) {
-                    Log.d("natija conv ", String.valueOf(dataSnapshot));
                     Map<String, Message> value = (Map<String, Message>) dataSnapshot.getValue();
                     Object key = value.keySet().toArray()[0];
                     Map<String, Object> chat = (Map<String, Object>) value.get(key);
@@ -152,31 +149,31 @@ public class FireBaseManager {
 
     }
 
+
+    /**
+     * @param roomName
+     */
     public void openRoom(final String roomName) {
         ref.getRoot().child("room_names").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Conversation conversation = dataSnapshot.getValue(Conversation.class);
-
-
                 String friendUid = conversation.extractFriendUid(ref.getRoot());
-
-                ref.getRoot().child("users").child(friendUid).child("displayName").addListenerForSingleValueEvent(new ValueEventListener() {
+                ref.getRoot().child("users").child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        User friend = dataSnapshot.getValue(User.class);
                         Intent intent = new Intent(context, ChatRoom.class);
-                        intent.putExtra("title", dataSnapshot.getValue(String.class));
+                        intent.putExtra("title", friend.getDisplayName());
                         intent.putExtra("roomName", roomName);
+                        intent.putExtra("imageUrl", friend.getImageUrl());
                         context.startActivity(intent);
                     }
 
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
-
                     }
                 });
-
-
             }
 
             @Override
@@ -186,7 +183,10 @@ public class FireBaseManager {
         });
     }
 
-
+    /**
+     * @param title
+     * @param text
+     */
     public void showNotification(String title, String text) {
         //  PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, Friends.class), 0);
         Resources r = context.getResources();
@@ -204,7 +204,6 @@ public class FireBaseManager {
         notificationManager.notify(0, notification);
     }
 
-
     /**
      * Remove New Message Listener
      *
@@ -221,32 +220,33 @@ public class FireBaseManager {
 
     public void onFacebookAccessTokenChange(final Context context, final AccessToken token, final String pictureUrl) {
         if (token != null) {
-
             ref.authWithOAuthToken("facebook", token.getToken(), new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(final AuthData authData) {
 
                     String email = authData.getProviderData().get("email").toString();
-                    Log.d("natija login ", " email = " + email);
 
                     ref.child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             //if user already exists
                             if (dataSnapshot.exists()) {
-                                Log.d("natija login ", " dataSnapshot = " + dataSnapshot.getValue().toString());
+
+                                DataSnapshot dataUser = dataSnapshot.getChildren().iterator().next();
+
+                                User user = dataUser.getValue(User.class);
+                                Utils.saveUserToPreferences(context, user);
 
                                 //TODO login()
-                                Log.d("natija login ", " exists");
                                 Intent mainIntent = new Intent(context,
                                         MainActivity.class);
-                                mainIntent.putExtra("id", "1");
                                 context.startActivity(mainIntent);
+
+
                             }
 
                             //user does not exists
                             else {
-                                Log.d("natija login ", "does not exists");
                                 String uid = authData.getUid();
                                 String email = "";
                                 Date birthday = new Date(0L);
@@ -294,35 +294,15 @@ public class FireBaseManager {
                                 mainIntent.putExtra("id", "1");
                                 context.startActivity(mainIntent);
 
+                                Log.d("natija pref", "2nd gateway");
+                                Utils.saveUserToPreferences(context, user);
+
+
                                /* Intent intent = new Intent(context, SpringIndicator.class);
                                 intent.putExtra("user", user);
                                 Log.d("natija user", "from fb" + user);
                                 context.startActivity(intent);*/
                             }
-
-
-
-/*
-                            if (!dataSnapshot.exists()) {
-
-                                ObjectMapper m = new ObjectMapper();
-                                Map<String, Object> userMap = m.convertValue(user, Map.class);
-
-                                //Add User To Firebase
-                                ref.child("users").child(authData.getUid()).updateChildren(userMap);
-
-
-                            } else {
-                                // Get existing user Id
-                                HashMap<String, Object> map = ((HashMap<String, Object>) dataSnapshot.getValue());
-                                String id = map.keySet().iterator().next();
-
-                                Map<String, Object> userMap = new HashMap<>();
-                                userMap.put("email", email);
-                                userMap.put("birthday", birthday.getTime());
-                                userMap.put("gender", gender);
-                                ref.child("users").child(id).updateChildren(userMap);
-                            }*/
                         }
 
                         @Override
@@ -484,10 +464,10 @@ public class FireBaseManager {
     /* retrieve the count of unread messages */
     public void checkUnread(final String roomName) {
         Firebase refUserRooms = ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms");
+
         refUserRooms.child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("natija list", dataSnapshot.toString());
                 Long lastRead = dataSnapshot.getValue(Long.class);
                 Query refUnreadChat = ref.getRoot().child("messages").child(roomName).orderByChild("date").startAt(lastRead);
 
@@ -495,7 +475,6 @@ public class FireBaseManager {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         long count = dataSnapshot.getChildrenCount();
-                        Log.d("natija unread count", "last read count " + roomName + " - " + count);
                         unreadMap.put(roomName, count);
                         updateRoom(roomName);
                         Conversations.conversationsRecyclerAdapter.notifyDataSetChanged();
