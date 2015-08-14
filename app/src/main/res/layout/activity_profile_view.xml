@@ -1,0 +1,193 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.aboukhari.intertalking.activity.profile.ProfileView">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_blue_white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center|center_vertical|center_horizontal"
+            android:orientation="vertical">
+
+
+            <com.aboukhari.intertalking.Utils.CircularImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/iv_avatar"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/bg_9" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="BOUKHARI AYOUB"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/ic_world_white"
+                android:gravity="center"
+                android:text="Meknes, Morocco"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent_grey"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp">
+
+
+            <TextView
+                android:id="@+id/tv_status_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/ic_username_white"
+                android:gravity="center"
+                android:text="Who Am I"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="The European languages are members of the same family. Their separate existence is a myth. For science, music, sport, etc."
+                android:layout_below="@+id/tv_status_title"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+
+            <TextView
+                android:id="@+id/tv_spoken_languages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/ic_world_white"
+                android:gravity="center"
+                android:text="Languages I Speak"
+                android:layout_below="@+id/tv_status"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/recyclerViewKnown"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/tv_spoken_languages"
+                android:layout_marginBottom="3dp"
+
+                android:layout_marginTop="10dp"
+                android:padding="2dp" />
+
+            <TextView
+                android:id="@+id/tv_wanted_languages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/recyclerViewKnown"
+                android:drawableLeft="@mipmap/ic_world_white"
+                android:gravity="center"
+                android:text="Languages I Want To Learn"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/recyclerViewWanted"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/tv_wanted_languages"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="10dp"
+                android:padding="2dp" />
+
+
+
+
+
+        </RelativeLayout>
+    </ScrollView>
+
+    </LinearLayout>
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/menu2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        fab:menu_animationDelayPerItem="0"
+        fab:menu_colorNormal="@color/md_blue_300"
+        fab:menu_colorPressed="@color/md_blue_500"
+        fab:menu_colorRipple="@color/md_blue_600"
+        fab:menu_shadowColor="#444">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_friends"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="#E75043"
+            fab:fab_colorRipple="#99FFFFFF"
+            fab:fab_label="Add Friend" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_email"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="#E75043"
+            fab:fab_colorRipple="#99FFFFFF"
+            fab:fab_label="Send Message" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_delete"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="#E75043"
+            fab:fab_colorRipple="#99FFFFFF"
+            fab:fab_label="Block/Report" />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
+</RelativeLayout>

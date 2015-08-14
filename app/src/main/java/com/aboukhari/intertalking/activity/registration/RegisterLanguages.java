@@ -85,11 +85,7 @@ public class RegisterLanguages extends Fragment {
 
 
     private Language[] getAllLanguages() {
-
-
         mLanguagesList = jsonToLanguages(Utils.loadJSONFromAsset(getActivity(), "languages.json"));
-
-
         return mLanguagesList.toArray(new Language[mLanguagesList.size()]);
     }
 
@@ -127,7 +123,6 @@ public class RegisterLanguages extends Fragment {
         mRecyclerView.setItemAnimator(new OvershootInLeftAnimator());
         mRecyclerAdapter = new LanguagesRecyclerAdapter(this.getActivity(),getSelectedLanguages(),mLanguageAdapter);
         mRecyclerView.setAdapter(mRecyclerAdapter);
-
     }
 
 

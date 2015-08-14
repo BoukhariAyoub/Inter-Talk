@@ -517,4 +517,6 @@
 
     <color name="transparent_light_grey">#E6FFFFFF</color>
     <color name="transparent_grey">#1A000000</color>
+    <color name="transparent_lighter_grey">#80FFFFFF</color>
+
 </resources>
