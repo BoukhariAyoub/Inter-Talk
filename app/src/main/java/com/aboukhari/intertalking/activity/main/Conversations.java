@@ -75,8 +75,7 @@ public class Conversations extends Fragment {
                 listView.setSelection(conversationListAdapter.getCount() - 1);
             }
         });*/
-
-        conversationsRecyclerAdapter = new ConversationsRecyclerAdapter(query, fireBaseManager);
+        conversationsRecyclerAdapter = new ConversationsRecyclerAdapter(getActivity(),query, fireBaseManager);
         conversationsRecyclerAdapter.setHasStableIds(true);
         MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(getActivity(),1);
         MyLayoutManager myLayoutManager = new MyLayoutManager(getActivity());

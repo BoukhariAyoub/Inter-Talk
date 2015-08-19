@@ -51,6 +51,8 @@ dependencies {
     compile 'com.soundcloud.android:android-crop:1.0.0@aar'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile 'com.github.clans:fab:1.5.5'
+    compile 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
+    compile 'com.cloudinary:cloudinary-android:1.2.1'
 
 
 }

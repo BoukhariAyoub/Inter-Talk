@@ -14,19 +14,16 @@ public class Language {
 
 
     String iso;
-    String name;
     int level;
 
     public Language(String iso) {
         this.iso = iso;
-        name = new Locale(iso).getDisplayLanguage();
         level = LEVEL_BEGINNER;
     }
 
     public Language(String iso, int level) {
         this.iso = iso;
         this.level = level;
-        name = new Locale(iso).getDisplayLanguage().toUpperCase();
     }
 
     public String getIso() {
@@ -34,7 +31,8 @@ public class Language {
     }
 
     public String getName() {
-        return name;
+        return  new Locale(iso).getDisplayLanguage().toUpperCase();
+
     }
 
     public int getLevel() {
@@ -55,6 +53,6 @@ public class Language {
 
     @Override
     public String toString() {
-        return name;
+        return getName();
     }
 }

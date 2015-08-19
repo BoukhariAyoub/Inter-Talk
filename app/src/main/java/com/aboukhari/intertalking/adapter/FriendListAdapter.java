@@ -30,9 +30,11 @@ public class FriendListAdapter extends FirebaseListAdapter<Friend> {
      */
 
     Firebase ref;
+    Activity activity;
 
     public FriendListAdapter(Query ref,Activity activity) {
         super(ref, Friend.class, R.layout.item_friend_list, activity);
+        this.activity = activity;
         this.ref = ref.getRef();
     }
 
@@ -50,7 +52,7 @@ public class FriendListAdapter extends FirebaseListAdapter<Friend> {
                     displayNameTextView.setText(name);
 
                     ImageView imageView = ((ImageView) view.findViewById(R.id.iv_profile));
-                    Utils.setImage(imageUrl, imageView);
+                    Utils.setImage(activity,imageUrl, imageView);
                 } else {
                     ref.getRoot().child("users").child(ref.getAuth().getUid()).child("friends").child(friend.getuId()).removeValue();
                 }

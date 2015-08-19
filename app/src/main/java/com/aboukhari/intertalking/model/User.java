@@ -3,14 +3,14 @@ package com.aboukhari.intertalking.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.aboukhari.intertalking.Utils.Utils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * Created by aboukhari on 23/07/2015.
@@ -20,7 +20,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @DatabaseTable(tableName = "user")
 public class User implements Parcelable {
-
 
 
     @DatabaseField(id = true)
@@ -42,10 +41,10 @@ public class User implements Parcelable {
     String spokenLanguages;
 
     @DatabaseField
-    String city;
+    String placeId;
 
     @DatabaseField
-    String country;
+    String placeName;
 
     @DatabaseField
     String gender;
@@ -53,42 +52,29 @@ public class User implements Parcelable {
     @DatabaseField
     String imageUrl;
 
-    @JsonIgnore
-    List friends;
+    HashMap<String,Integer> languages;
 
-    @JsonIgnore
-    Collection rooms;
 
     public User() {
     }
 
-    @JsonIgnore
-    public List getFriends() {
-        return friends;
-    }
 
-    @JsonIgnore
-    public void setFriends(List friends) {
-        this.friends = friends;
-    }
 
-    @JsonIgnore
-    public Collection getRooms() {
-        return rooms;
-    }
-
-    @JsonIgnore
-    public void setRooms(Collection rooms) {
-        this.rooms = rooms;
-    }
-
-    public User(String uid,String displayName, String email, Date birthday, String gender) {
+    public User(String uid, String displayName, String email, Date birthday, String gender) {
         this.uid = uid;
         this.email = email;
         this.dateAdded = new Date();
         this.birthday = birthday;
         this.displayName = displayName;
         this.gender = gender;
+    }
+
+    public HashMap<String, Integer> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(HashMap<String, Integer> languages) {
+        this.languages = languages;
     }
 
     public String getUid() {
@@ -140,20 +126,20 @@ public class User implements Parcelable {
         this.spokenLanguages = spokenLanguages;
     }
 
-    public String getCity() {
-        return city;
+    public String getPlaceId() {
+        return placeId;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
-    public String getCountry() {
-        return country;
+    public String getPlaceName() {
+        return placeName;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
     }
 
     public Date getBirthday() {
@@ -172,6 +158,13 @@ public class User implements Parcelable {
         this.imageUrl = imageUrl;
     }
 
+    @JsonIgnore
+    public int getAge() {
+        return Utils.getAgeFromDate(this.birthday);
+    }
+
+
+
     @Override
     public String toString() {
         return "User{" +
@@ -181,8 +174,8 @@ public class User implements Parcelable {
                 ", birthday=" + birthday +
                 ", displayName='" + displayName + '\'' +
                 ", spokenLanguages='" + spokenLanguages + '\'' +
-                ", city='" + city + '\'' +
-                ", country='" + country + '\'' +
+                ", placeId='" + placeId + '\'' +
+                ", placeName='" + placeName + '\'' +
                 ", gender='" + gender + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
@@ -201,8 +194,8 @@ public class User implements Parcelable {
         dest.writeLong(birthday != null ? birthday.getTime() : -1);
         dest.writeString(this.displayName);
         dest.writeString(this.spokenLanguages);
-        dest.writeString(this.city);
-        dest.writeString(this.country);
+        dest.writeString(this.placeId);
+        dest.writeString(this.placeName);
         dest.writeString(this.gender);
         dest.writeString(this.imageUrl);
     }
@@ -216,8 +209,8 @@ public class User implements Parcelable {
         this.birthday = tmpBirthday == -1 ? null : new Date(tmpBirthday);
         this.displayName = in.readString();
         this.spokenLanguages = in.readString();
-        this.city = in.readString();
-        this.country = in.readString();
+        this.placeId = in.readString();
+        this.placeName = in.readString();
         this.gender = in.readString();
         this.imageUrl = in.readString();
     }

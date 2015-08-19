@@ -2,16 +2,27 @@ package com.aboukhari.intertalking.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.model.User;
+import com.cloudinary.Cloudinary;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,8 +32,12 @@ import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by aboukhari on 16/07/2015.
@@ -96,8 +111,11 @@ public abstract class Utils {
 
     }
 
-    public static void setImage(String imageUrl, final ImageView imageView) {
-
+    public static void setImage(Context context, String imageUrl, final ImageView imageView) {
+        if (!ImageLoader.getInstance().isInited()) {
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).build();
+            ImageLoader.getInstance().init(config);
+        }
         DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.crop__ic_done)
                 .showImageForEmptyUri(R.drawable.crop__ic_cancel)
@@ -106,6 +124,7 @@ public abstract class Utils {
                 .cacheOnDisk(true)
                 .considerExifParams(true)
                 .build();
+
 
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.displayImage(imageUrl, imageView, options);
@@ -120,9 +139,9 @@ public abstract class Utils {
         prefsEditor.putString("user", json);
         prefsEditor.apply();
 
-        Log.d("natija pref"," user before = " + user);
+        Log.d("natija pref", " user before = " + user);
 
-        Log.d("natija pref"," contain user ? = " + mPrefs.contains("user"));
+        Log.d("natija pref", " contain user ? = " + mPrefs.contains("user"));
 
 
     }
@@ -134,12 +153,88 @@ public abstract class Utils {
         String json = mPrefs.getString("user", "");
         User user = gson.fromJson(json, User.class);
 
-        Log.d("natija pref"," contain user ? = " + mPrefs.contains("user"));
-        Log.d("natija pref"," current user json= " + json);
-        Log.d("natija pref"," current user real= " + user);
+        Log.d("natija pref", " contain user ? = " + mPrefs.contains("user"));
+        Log.d("natija pref", " current user json= " + json);
+        Log.d("natija pref", " current user real= " + user);
 
         return user;
 
+    }
+
+    public static int getAgeFromDate(Date date) {
+
+        Calendar now = Calendar.getInstance();
+        Calendar dob = Calendar.getInstance();
+        dob.setTime(date);
+        if (dob.after(now)) {
+            throw new IllegalArgumentException("Can't be born in the future");
+        }
+        int year1 = now.get(Calendar.YEAR);
+        int year2 = dob.get(Calendar.YEAR);
+        int age = year1 - year2;
+        int month1 = now.get(Calendar.MONTH);
+        int month2 = dob.get(Calendar.MONTH);
+        if (month2 > month1) {
+            age--;
+        } else if (month1 == month2) {
+            int day1 = now.get(Calendar.DAY_OF_MONTH);
+            int day2 = dob.get(Calendar.DAY_OF_MONTH);
+            if (day2 > day1) {
+                age--;
+            }
+        }
+
+        return age;
+    }
+
+    public static ArrayList<User> generateRandomUsers(Context context) {
+        String json = loadJSONFromAsset(context, "users.json");
+        ArrayList<User> users = new ArrayList<>();
+        try {
+            JsonParser jsonParser = new JsonParser();
+            JsonArray jsonArray = (JsonArray) jsonParser.parse(json);
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
+                Gson gson = new GsonBuilder()
+                        .setDateFormat("MM/dd/yyyy").create();
+                User user = gson.fromJson(jsonObject, User.class);
+                users.add(user);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public static String getCountyIso(Context context) {
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        return tm.getSimCountryIso();
+    }
+
+    public static Map<String, Object> objectToMap(Object object) {
+        ObjectMapper m = new ObjectMapper();
+        Map<String, Object> userMap = m.convertValue(object, Map.class);
+        return userMap;
+    }
+
+    public static Cloudinary getCloudinary() {
+
+        Map config = new HashMap();
+        config.put("cloud_name", "dvn1zs11q");
+        config.put("api_key", "637982581753689");
+        config.put("api_secret", "OZEhUlBooq7Vybql2uCo3JK4Heg");
+        Cloudinary cloudinary = new Cloudinary(config);
+
+        return cloudinary;
+
+    }
+
+    public static Bitmap loadBitmapFromView(View v) {
+        Bitmap b = Bitmap.createBitmap( v.getLayoutParams().width, v.getLayoutParams().height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
+        v.draw(c);
+        return b;
     }
 
 

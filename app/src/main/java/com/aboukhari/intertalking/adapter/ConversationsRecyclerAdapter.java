@@ -1,5 +1,6 @@
 package com.aboukhari.intertalking.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,10 +35,11 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
     private Map<String, Conversation> modelNames;
     private ChildEventListener listener;
     private FireBaseManager fireBaseManager;
+    private Context context;
 
-
-    public ConversationsRecyclerAdapter(Query ref, FireBaseManager fireBaseManager) {
+    public ConversationsRecyclerAdapter(Context context, Query ref, FireBaseManager fireBaseManager) {
         this.ref = ref;
+        this.context = context;
         this.fireBaseManager = fireBaseManager;
 
         models = new ArrayList<>();
@@ -205,7 +207,7 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
     public ConversationsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_conversation_list, parent, false);
-        return new ConversationsHolder(view, ref, fireBaseManager);
+        return new ConversationsHolder(context,view, ref, fireBaseManager);
     }
 
 
@@ -218,7 +220,7 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     User friend = dataSnapshot.getValue(User.class);
-                    holder.bindConversation(conversation,friend);
+                    holder.bindConversation(conversation, friend);
                 }
             }
 

@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,19 +20,22 @@ import android.widget.Toast;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.CircularImageView;
+import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.Utils.Utils;
-import com.aboukhari.intertalking.activity.SpringIndicator;
 import com.aboukhari.intertalking.model.User;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.cloudinary.Cloudinary;
 import com.soundcloud.android.crop.Crop;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
 
@@ -41,7 +46,9 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
     EditText mUserNameEditText, mEmailEditText, mPasswordEditText, mBirthDateEditText;
     SegmentedGroup mSegmentedGroup;
     HashMap<String, Integer> mGenderMap = new HashMap<>();
-    User mUser;
+    InputStream mInputStream;
+    Date selectedBirthdate;
+    Bitmap bitmap;
 
     @Nullable
     @Override
@@ -56,7 +63,6 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
         mPasswordEditText = (EditText) v.findViewById(R.id.et_password);
         mBirthDateEditText = (EditText) v.findViewById(R.id.et_birthday);
         mSegmentedGroup = (SegmentedGroup) v.findViewById(R.id.segmented2);
-        mUser = ((SpringIndicator) getActivity()).getmUser();
 
         mGenderMap.put("female", R.id.radio_female);
         mGenderMap.put("male", R.id.radio_male);
@@ -69,9 +75,6 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
         mBirthDateEditText.setOnClickListener(this);
 
 
-        if (mUser != null) {
-            populateUser(mUser);
-        }
         return v;
     }
 
@@ -84,7 +87,6 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
         } else if (requestCode == Crop.REQUEST_CROP) {
             handleCrop(resultCode, data);
         }
-
     }
 
     private void beginCrop(Uri source) {
@@ -97,7 +99,10 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
         if (resultCode == getActivity().RESULT_OK) {
             try {
                 InputStream inputStream = getActivity().getContentResolver().openInputStream(Crop.getOutput(result));
+                mInputStream = inputStream;
                 Bitmap bmp = BitmapFactory.decodeStream(inputStream);
+                bitmap = bmp;
+
                 mAvatarImageView.setImageBitmap(bmp);
                 mAvatarImageView.addShadow();
                 mAvatarImageView.setBorderColor(getResources().getColor(R.color.md_grey_300));
@@ -105,6 +110,7 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
                 mAvatarImageView.setSelectorStrokeColor(getResources().getColor(R.color.white));
                 mAvatarImageView.setSelectorStrokeWidth(1);
                 mAvatarImageView.addShadow();
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -135,7 +141,6 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (v == mPasswordEditText) {
-
 
             final int DRAWABLE_LEFT = 0;
             final int DRAWABLE_TOP = 1;
@@ -169,6 +174,7 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
         String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
         Date d = Utils.stringToDate(date);
         mBirthDateEditText.setText(date);
+        selectedBirthdate = d;
     }
 
 
@@ -178,11 +184,81 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
         int radio = mGenderMap.get(user.getGender());
         mSegmentedGroup.check(radio);
         mBirthDateEditText.setText(Utils.dateToString(user.getBirthday()));
+        Utils.setImage(getActivity(), user.getImageUrl(), mAvatarImageView);
+    }
 
 
-        ImageLoader imageLoader = ImageLoader.getInstance();
+    public CircularImageView getmAvatarImageView() {
+        return mAvatarImageView;
+    }
 
-Utils.setImage(user.getImageUrl(),mAvatarImageView);
+    @Override
+    public void onPause() {
+        super.onPause();
+
 
     }
+
+    public User register(User user) {
+        user.setDisplayName(mUserNameEditText.getText().toString());
+        user.setEmail(mEmailEditText.getText().toString());
+        String gender = mGenderMap.get("male").equals(mSegmentedGroup.getCheckedRadioButtonId()) ? "male" : "female";
+        user.setGender(gender);
+        user.setBirthday(selectedBirthdate);
+        FireBaseManager.getInstance(getActivity()).addUserToFireBase(user);
+
+        new UploadImage().execute(bitmap, user.getUid());
+
+        Log.d("natija user", user.toString());
+
+        return user;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+
+    private class UploadImage extends AsyncTask<Object, Integer, String[]> {
+
+
+        @Override
+        protected String[] doInBackground(Object... params) {
+            try {
+
+                Log.d("natija", "params = " + params.toString());
+                Bitmap bitmap = (Bitmap) params[0];
+                String uid = params[1].toString();
+
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100 /*ignored for PNG*/, bos);
+                byte[] bitmapdata = bos.toByteArray();
+                ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
+
+                Map map = Utils.getCloudinary().uploader().upload(bs, Cloudinary.asMap("public_id", uid));
+                String[] s = new String[2];
+                s[0] = uid;
+                s[1] = map.get("url").toString();
+                return s ;
+
+
+            } catch (Exception e) {
+                Log.e("natija cloud", e.getMessage());
+
+            }
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(String[] s) {
+            super.onPostExecute(s);
+            String uid = s[0];
+            String imageUrl = s[1];
+            FireBaseManager.getInstance(getActivity()).addImageToUser(uid, imageUrl);
+        }
+    }
+
+
 }

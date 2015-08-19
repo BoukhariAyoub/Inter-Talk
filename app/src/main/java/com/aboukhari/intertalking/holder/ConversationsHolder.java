@@ -1,5 +1,6 @@
 package com.aboukhari.intertalking.holder;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -31,10 +32,12 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm");
     private Conversation mConversation;
     private View view;
+    private Context context;
 
-    public ConversationsHolder(View itemView, Query ref, FireBaseManager fireBaseManager) {
+    public ConversationsHolder(Context context, View itemView, Query ref, FireBaseManager fireBaseManager) {
         super(itemView);
         this.ref = ref;
+        this.context = context;
         this.view = itemView;
         this.fireBaseManager = fireBaseManager;
 
@@ -59,7 +62,7 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
         mDisplayNameTextView.setText(friend.getDisplayName());
         mDateTextView.setText(DATE_FORMAT.format(conversation.getLastMessageDate()));
         mMessageTextView.setText(conversation.getLastMessage());
-        Utils.setImage(friend.getImageUrl(), mImageView);
+        Utils.setImage(context, friend.getImageUrl(), mImageView);
     }
 
     @Override

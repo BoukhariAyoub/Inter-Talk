@@ -20,13 +20,13 @@ import com.aboukhari.intertalking.database.DatabaseManager;
 import com.aboukhari.intertalking.model.Conversation;
 import com.aboukhari.intertalking.model.Friend;
 import com.aboukhari.intertalking.model.Message;
+import com.aboukhari.intertalking.model.Place;
 import com.aboukhari.intertalking.model.User;
 import com.aboukhari.intertalking.model.UserRoom;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -39,6 +39,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -60,6 +61,9 @@ public class FireBaseManager {
     public static String currentRoom = null;
     Map<String, ChildEventListener> roomMessagesListenerMap = new HashMap<>();
 
+    public static FireBaseManager getInstance(Context ctx) {
+        return new FireBaseManager(ctx);
+    }
 
     public FireBaseManager(Context context) {
         Firebase.setAndroidContext(context);
@@ -279,14 +283,19 @@ public class FireBaseManager {
                                     }
                                 }
 
+
                                 User user = new User(uid, displayName, email, birthday, gender);
                                 user.setImageUrl(pictureUrl);
+                                //TODO REMOVE
+                                HashMap<String, Integer> langs = new HashMap<>();
+                                langs.put("en", 0);
+                                langs.put("fr", 3);
+                                langs.put("ar", 2);
 
-                                ObjectMapper m = new ObjectMapper();
-                                Map<String, Object> userMap = m.convertValue(user, Map.class);
 
+                                user.setLanguages(langs);
                                 //Add User To Firebase
-                                ref.child("users").child(authData.getUid()).updateChildren(userMap);
+                                addNewUserToFireBase(user);
 
 
                                 Intent mainIntent = new Intent(context,
@@ -324,10 +333,6 @@ public class FireBaseManager {
         }
     }
 
-    public void login() {
-
-    }
-
 
     public void syncFacebookFriends(AccessToken token) {
         GraphRequest request = GraphRequest.newMyFriendsRequest(
@@ -362,28 +367,6 @@ public class FireBaseManager {
         request.executeAsync();
     }
 
-    public void generateDummyFriends() {
-
-        for (int i = 1; i <= 15; i++) {
-            String fbid = "" + i;
-            String uid = "dump:" + fbid;
-            String name = "Friend No " + i;
-            String imageUrl = "http://dummyimage.com/300/ffffff/000000.jpg&text=" + name;
-            Friend friend = new Friend();
-            friend.setDisplayName(name);
-            friend.setuId(uid);
-            if (i % 2 == 0)
-                friend.setGender("male");
-            else
-                friend.setGender("female");
-
-
-            User user = new User(uid, name, name, new Date(), "male");
-
-            ref.child("users").child(uid).setValue(user);
-            ref.child("users").child(ref.getAuth().getUid()).child("friends").child("facebook:" + uid).setValue(friend);
-        }
-    }
 
     public void theRealDeal() {
         final Firebase refUserRooms = ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms");
@@ -395,7 +378,6 @@ public class FireBaseManager {
 
                     final String roomName = snapRoom.getKey();
                     //  checkUnread(roomName);
-
 
                     final Firebase refRoomMessages = ref.getRoot().child("messages").child(roomName);
 
@@ -500,6 +482,47 @@ public class FireBaseManager {
         Intent intent = new Intent(ctx, Login.class);
         ctx.startActivity(intent);
 
+    }
+
+
+    public void addGeneratedUsers() {
+        ArrayList<User> users = Utils.generateRandomUsers(context);
+        for (User user : users) {
+            Map<String, Object> userMap = Utils.objectToMap(user);
+            ref.child("users").child(user.getUid()).updateChildren(userMap);
+        }
+    }
+
+    /**
+     * Add Place To DataBase
+     *
+     * @param place
+     */
+    public void addPlace(Place place) {
+        ref.getRoot().child("places").child(place.getId()).setValue(place);
+    }
+
+    public void addLanguages(User user) {
+        //  ref.getRoot().child("languages").child(place.getId()).setValue(place);
+        HashMap<String, Integer> langs = user.getLanguages();
+
+        //   for(String iso : map.St)
+
+    }
+
+
+    public void addUserToFireBase(User user) {
+        Map<String, Object> userMap = Utils.objectToMap(user);
+        ref.child("users").child(user.getUid()).updateChildren(userMap);
+    }
+
+    private void addNewUserToFireBase(User user) {
+        Map<String, Object> userMap = Utils.objectToMap(user);
+        ref.child("users").child(user.getUid()).updateChildren(userMap);
+    }
+
+    public void addImageToUser(String uid, String imageUrl) {
+        ref.child("users").child(uid).child("imageUrl").setValue(imageUrl);
     }
 
 

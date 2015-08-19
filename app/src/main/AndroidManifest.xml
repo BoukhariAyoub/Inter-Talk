@@ -18,6 +18,19 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+
+
+        <receiver
+            android:name=".adapter.MyReceiver"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -27,7 +40,9 @@
         <activity
             android:name=".activity.Login"
             android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.Light"
             android:screenOrientation="portrait" >
+
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,7 +51,6 @@
             </intent-filter>
 
         </activity>
-        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
         <activity
             android:name=".activity.ChatRoom"
             android:label="@string/title_activity_chat_room"
@@ -48,15 +62,6 @@
             android:screenOrientation="portrait" >
         </activity>
 
-        <receiver
-            android:name=".adapter.MyReceiver"
-            android:enabled="true"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
-                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
-            </intent-filter>
-        </receiver>
 
         <activity
             android:name=".activity.GeoNames"
@@ -81,14 +86,19 @@
         </activity>
         <activity
             android:name=".activity.profile.ProfileView"
-            android:label="@string/title_activity_profile_view" >
-
-
-
+            android:label="@string/title_activity_profile_view"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.profile.ProfileEdit"
-            android:label="@string/title_activity_profile_edit" >
+            android:label="@string/title_activity_profile_edit"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".activity.FindUsers"
+            android:label="@string/title_activity_find_users"
+            android:screenOrientation="portrait">
+
         </activity>
     </application>
 

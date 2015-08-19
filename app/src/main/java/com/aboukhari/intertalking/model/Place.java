@@ -1,5 +1,7 @@
 package com.aboukhari.intertalking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Created by aboukhari on 07/08/2015.
  */
@@ -18,6 +20,10 @@ public class Place {
     public Place(String id, String description) {
         this.id = id;
         this.description = description;
+    }
+
+    public Place(){
+
     }
 
     public String getId() {
@@ -78,6 +84,7 @@ public class Place {
     }
 
 
+    @JsonIgnore
     public String getInfo() {
         return "Place{" +
                 "id='" + id + '\'' +

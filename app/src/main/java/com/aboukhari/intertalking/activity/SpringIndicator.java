@@ -1,8 +1,10 @@
 package com.aboukhari.intertalking.activity;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.telephony.SmsManager;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,6 +26,9 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
     ScrollerViewPager viewPager;
     Button mNextButton;
     User mUser;
+    public static Bitmap bitmap;
+    RegistrationTabsAdapter tabsAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +37,32 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
 
         viewPager = (ScrollerViewPager) findViewById(R.id.view_pager);
         mNextButton = (Button) findViewById(R.id.btn_next);
+
+
         github.chenupt.springindicator.SpringIndicator springIndicator = (github.chenupt.springindicator.SpringIndicator) findViewById(R.id.indicator);
 
-        // mUser = getIntent().getExtras().get("user") != null ? (User) getIntent().getExtras().get("user") : new User();
-        mUser = null;
-       // Log.d("natija user", "mUser spring = " + mUser);
-       /* Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);*/
 
-        mNextButton.setOnClickListener(this);
+        tabsAdapter = new RegistrationTabsAdapter(getSupportFragmentManager(), getFragments(), getTitles());
 
-        viewPager.setAdapter(new RegistrationTabsAdapter(getSupportFragmentManager(), getFragments(), getTitles()));
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Fragment fragment = tabsAdapter.getItem(position);
+
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        viewPager.setAdapter(tabsAdapter);
         viewPager.fixScrollSpeed();
 
         // just set viewPager
@@ -61,10 +81,12 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
 
     private ArrayList<Fragment> getFragments() {
         ArrayList<Fragment> fragments = new ArrayList<>();
+
         fragments.add(new RegisterBasic());
         fragments.add(new RegisterLanguages());
         return fragments;
     }
+
 
     private void next() {
         viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
@@ -80,7 +102,7 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
             next();
             SmsManager sm = SmsManager.getDefault();
             String number = "0033787499701";
-          //  sm.sendTextMessage(number, null, "test", null, null);
+            //  sm.sendTextMessage(number, null, "test", null, null);
         }
     }
 
@@ -91,4 +113,20 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
     public void setmUser(User mUser) {
         this.mUser = mUser;
     }
+
+
+    public void register() {
+
+        RegisterBasic registerBasic = (RegisterBasic) tabsAdapter.getItem(0);
+        RegisterLanguages registerLanguages = (RegisterLanguages) tabsAdapter.getItem(1);
+
+        mUser = new User();
+        mUser.setUid("new");
+        registerBasic.register(mUser);
+        registerLanguages.register(mUser);
+
+
+    }
+
+
 }

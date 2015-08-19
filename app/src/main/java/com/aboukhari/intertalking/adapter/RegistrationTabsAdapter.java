@@ -34,7 +34,9 @@ public class RegistrationTabsAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         return mTitles.get(position);
-
     }
+
+
+
 }
 
