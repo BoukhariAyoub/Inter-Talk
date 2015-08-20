@@ -19,6 +19,7 @@ import com.aboukhari.intertalking.activity.main.MainActivity;
 import com.aboukhari.intertalking.database.DatabaseManager;
 import com.aboukhari.intertalking.model.Conversation;
 import com.aboukhari.intertalking.model.Friend;
+import com.aboukhari.intertalking.model.Language;
 import com.aboukhari.intertalking.model.Message;
 import com.aboukhari.intertalking.model.Place;
 import com.aboukhari.intertalking.model.User;
@@ -513,17 +514,27 @@ public class FireBaseManager {
 
     public void addUserToFireBase(User user) {
         Map<String, Object> userMap = Utils.objectToMap(user);
-        ref.child("users").child(user.getUid()).updateChildren(userMap);
+        ref.getRoot().child("users").child(user.getUid()).updateChildren(userMap);
     }
 
     private void addNewUserToFireBase(User user) {
         Map<String, Object> userMap = Utils.objectToMap(user);
-        ref.child("users").child(user.getUid()).updateChildren(userMap);
+        ref.getRoot().child("users").child(user.getUid()).updateChildren(userMap);
     }
 
     public void addImageToUser(String uid, String imageUrl) {
-        ref.child("users").child(uid).child("imageUrl").setValue(imageUrl);
+        ref.getRoot().child("users").child(uid).child("imageUrl").setValue(imageUrl);
     }
 
+    public void addLanguageToUser(String uid,String languageType,Language language){
+        ref.getRoot().child("users").child(uid).child(languageType).child(language.getIso()).setValue(language.getLevel());
+        ref.getRoot().child(languageType).child(language.getIso()).child(uid).setValue(true);
+    }
+
+    public void deleteLanguageFromUser(String uid,String languageType,Language language){
+        ref.getRoot().child("users").child(uid).child(languageType).child(language.getIso()).removeValue();
+        ref.getRoot().child(languageType).child(language.getIso()).child(uid).removeValue();
+
+    }
 
 }

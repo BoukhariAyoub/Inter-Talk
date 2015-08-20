@@ -3,7 +3,6 @@ package com.aboukhari.intertalking.activity.registration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,17 +43,14 @@ import retrofit.client.Response;
  */
 public class RegisterLanguages extends Fragment implements View.OnClickListener {
 
-    private AutoCompleteTextView mPlaceAutoComplete, mLanguagesAutoComplete;
-    LanguagesRecyclerAdapter mRecyclerAdapter;
+    private AutoCompleteTextView mPlaceAutoComplete, mLanguagesKnownAutoComplete, mLanguagesWantedAutoComplete;
 
     Button btnRegister;
-    RecyclerView mRecyclerView;
+    RecyclerView mRecyclerViewKnown, mRecyclerViewWanted;
     ArrayList<Language> mLanguagesList;
     CitiesAutoCompleteAdapter mCityAdapter;
-    ArrayAdapter<Language> mLanguageAdapter;
     Place mChosenPlace;
-    ArrayList<Language> mChosenLanguages = new ArrayList<>();
-    FireBaseManager fireBaseManager;
+
 
 
     @Override
@@ -66,23 +62,38 @@ public class RegisterLanguages extends Fragment implements View.OnClickListener 
 
 
         mPlaceAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.auto_city);
-        mLanguagesAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.auto_languages_known);
+
 
         mCityAdapter = new CitiesAutoCompleteAdapter(getActivity(), android.R.layout.simple_list_item_1, Locale.getDefault().getLanguage());
         mPlaceAutoComplete.setThreshold(2);
         mPlaceAutoComplete.setAdapter(mCityAdapter);
         mPlaceAutoComplete.setOnItemClickListener(setPlacesOnClickListener());
 
-        mLanguageAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, getAllLanguages());
-        mLanguagesAutoComplete.setAdapter(mLanguageAdapter);
-        mLanguagesAutoComplete.setOnItemClickListener(setLanguagesOnClickListener());
 
+        mLanguagesKnownAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.auto_languages_known);
+        mLanguagesWantedAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.auto_languages_wanted);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewKnown);
-        setupRecyclerView();
+        mRecyclerViewKnown = (RecyclerView) view.findViewById(R.id.recyclerViewKnown);
+        mRecyclerViewWanted = (RecyclerView) view.findViewById(R.id.recyclerViewWanted);
+
+        setUpLanguageViews(mLanguagesKnownAutoComplete, mRecyclerViewKnown);
+        setUpLanguageViews(mLanguagesWantedAutoComplete, mRecyclerViewWanted);
 
 
         return view;
+    }
+
+    private void setUpLanguageViews(AutoCompleteTextView autoCompleteTextView, RecyclerView recyclerView) {
+        ArrayAdapter<Language> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, getAllLanguages());
+        autoCompleteTextView.setAdapter(arrayAdapter);
+        LanguagesRecyclerAdapter recyclerAdapter = new LanguagesRecyclerAdapter(getActivity(), new ArrayList<Language>(), arrayAdapter);
+        autoCompleteTextView.setOnItemClickListener(setLanguagesOnClickListener(recyclerAdapter, autoCompleteTextView));
+
+        recyclerView.setHasFixedSize(false);
+        MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(getActivity(), 3);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setItemAnimator(new OvershootInLeftAnimator());
+        recyclerView.setAdapter(recyclerAdapter);
     }
 
 
@@ -92,9 +103,9 @@ public class RegisterLanguages extends Fragment implements View.OnClickListener 
     }
 
 
-    private ArrayList<Language> getSelectedLanguages() {
-        ArrayList<Language> languages = new ArrayList<>();
-        return languages;
+    private ArrayList<Language> getSelectedLanguages(RecyclerView recyclerView) {
+        LanguagesRecyclerAdapter adapter = (LanguagesRecyclerAdapter) recyclerView.getAdapter();
+        return adapter.getLanguages();
     }
 
 
@@ -117,63 +128,30 @@ public class RegisterLanguages extends Fragment implements View.OnClickListener 
     }
 
 
-    private void setupRecyclerView() {
-        mRecyclerView.setHasFixedSize(false);
-        MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(getActivity(), 3);
-        mRecyclerView.setLayoutManager(gridLayoutManager);
-        mRecyclerView.setItemAnimator(new OvershootInLeftAnimator());
-        mRecyclerAdapter = new LanguagesRecyclerAdapter(this.getActivity(), getSelectedLanguages(), mLanguageAdapter);
-        mRecyclerView.setAdapter(mRecyclerAdapter);
+    private AdapterView.OnItemClickListener setLanguagesOnClickListener(final LanguagesRecyclerAdapter adapter, final AutoCompleteTextView autoCompleteTextView) {
+        return new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Language language = (Language) parent.getItemAtPosition(position);
+                adapter.addItem(language);
+                autoCompleteTextView.setText("");
+            }
+        };
     }
-
 
     private AdapterView.OnItemClickListener setPlacesOnClickListener() {
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mChosenPlace = (Place) parent.getItemAtPosition(position);
-
             }
         };
     }
-
-    private AdapterView.OnItemClickListener setLanguagesOnClickListener() {
-        return new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Language language = (Language) parent.getItemAtPosition(position);
-                mRecyclerAdapter.addItem(language);
-                mLanguagesAutoComplete.setText("");
-            }
-        };
-    }
-
-
-    private void updatePlace(final Place place) {
-
-    }
-
 
     public void register(final User user) {
 
-        RestClient.get(RestClient.GOOGLE_MAPS_ENDPOINT).getPlaceDetails(mChosenPlace.getId(), "en", Variables.GOOGLE_API_KEY, new Callback<JsonElement>() {
-            @Override
-            public void success(JsonElement json, Response response) {
-                /*Set Place To User*/
-                mChosenPlace = jSonToPlace(json);
-                user.setPlaceId(mChosenPlace.getId());
-                user.setPlaceName(mChosenPlace.getDescription());
-                FireBaseManager.getInstance(getActivity()).addPlace(mChosenPlace);
-                FireBaseManager.getInstance(getActivity()).addUserToFireBase(user);
-                Log.d("natija","WE HERE");
-            }
-
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
+        registerLanguages(user);
+        registerPlace(user);
 
     }
 
@@ -220,8 +198,47 @@ public class RegisterLanguages extends Fragment implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-
         ((SpringIndicator) getActivity()).register();
+    }
 
+
+    private void registerLanguages(User user) {
+        ArrayList<Language> knownLanguages = getSelectedLanguages(mRecyclerViewKnown);
+        ArrayList<Language> wantedLanguages = getSelectedLanguages(mRecyclerViewWanted);
+
+        FireBaseManager fireBaseManager = new FireBaseManager(getActivity());
+
+        for (Language language : knownLanguages) {
+            String languageType = "knownLanguages";
+            fireBaseManager.addLanguageToUser(user.getUid(), languageType, language);
+        }
+
+        for (Language language : wantedLanguages) {
+            String languageType = "wantedLanguages";
+            fireBaseManager.addLanguageToUser(user.getUid(), languageType, language);
+        }
+
+    }
+
+    private void registerPlace(final User user) {
+        RestClient.get(RestClient.GOOGLE_MAPS_ENDPOINT).getPlaceDetails(mChosenPlace.getId(), "en", Variables.GOOGLE_API_KEY, new Callback<JsonElement>() {
+            @Override
+            public void success(JsonElement json, Response response) {
+                /*Set Place To User*/
+                mChosenPlace = jSonToPlace(json);
+                user.setPlaceId(mChosenPlace.getId());
+                user.setPlaceName(mChosenPlace.getDescription());
+                FireBaseManager.getInstance(getActivity()).addPlace(mChosenPlace);
+                FireBaseManager.getInstance(getActivity()).addUserToFireBase(user);
+
+
+            }
+
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
     }
 }

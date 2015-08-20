@@ -12,7 +12,6 @@ import com.aboukhari.intertalking.holder.LanguagesViewHolder;
 import com.aboukhari.intertalking.model.Language;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by aboukhari on 06/08/2015.
@@ -21,7 +20,7 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
 
 
     Context context;
-    private List<Language> languages;
+    private ArrayList<Language> languages;
     ArrayAdapter<Language> mLanguageAdapter;
     LanguagesViewHolder mHolder;
 
@@ -57,6 +56,9 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
         return super.getItemId(position);
     }
 
+    public ArrayList<Language> getLanguages() {
+        return languages;
+    }
 
     public void addItem(Language language) {
         int position = 0;
