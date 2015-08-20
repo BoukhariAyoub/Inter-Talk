@@ -77,8 +77,9 @@
                 android:focusable="true"
                 android:gravity="center_vertical"
                 android:hint="Email"
+                android:textColor="@color/white"
                 android:inputType="textEmailAddress"
-                android:textColorHint="@color/md_grey_100"
+                android:textColorHint="@color/white"
                 android:textSize="15sp"
                 />
 

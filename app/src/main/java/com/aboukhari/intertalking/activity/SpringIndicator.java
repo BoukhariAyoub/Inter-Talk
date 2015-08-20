@@ -13,9 +13,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.aboukhari.intertalking.R;
+import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.activity.registration.RegisterBasic;
 import com.aboukhari.intertalking.activity.registration.RegisterLanguages;
 import com.aboukhari.intertalking.adapter.RegistrationTabsAdapter;
+import com.aboukhari.intertalking.model.Language;
 import com.aboukhari.intertalking.model.User;
 
 import java.util.ArrayList;
@@ -27,7 +29,6 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
 
     ScrollerViewPager viewPager;
     Button mNextButton;
-    User mUser;
     public static Bitmap bitmap;
     RegistrationTabsAdapter tabsAdapter;
 
@@ -108,13 +109,7 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
         }
     }
 
-    public User getmUser() {
-        return mUser;
-    }
 
-    public void setmUser(User mUser) {
-        this.mUser = mUser;
-    }
 
 
     public void register() {
@@ -122,21 +117,25 @@ public class SpringIndicator extends FragmentActivity implements OnClickListener
         RegisterBasic registerBasic = (RegisterBasic) tabsAdapter.getItem(0);
         RegisterLanguages registerLanguages = (RegisterLanguages) tabsAdapter.getItem(1);
 
-        mUser = new User();
-        mUser.setUid("new");
-        registerBasic.register(mUser);
-        registerLanguages.register(mUser);
+        User user = registerBasic.updateUser();
+        String password = registerBasic.getPassword();
+        Bitmap bitmap = registerBasic.getBitmap();
+        String placeId = registerLanguages.getPlaceId();
+        ArrayList<Language> known = registerLanguages.getKnownLanguages();
+        ArrayList<Language> wanted = registerLanguages.getWantedLanguages();
 
+
+        FireBaseManager.getInstance(this).createUser(user,password,bitmap,placeId,known,wanted );
 
 
     }
 
-    private void sendMail(String email){
+    private void sendMail(String email) {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"recipient@example.com"});
+        i.putExtra(Intent.EXTRA_EMAIL, new String[]{"recipient@example.com"});
         i.putExtra(Intent.EXTRA_SUBJECT, "subject of email");
-        i.putExtra(Intent.EXTRA_TEXT   , "body of email");
+        i.putExtra(Intent.EXTRA_TEXT, "body of email");
         try {
             startActivity(Intent.createChooser(i, "Send mail..."));
         } catch (android.content.ActivityNotFoundException ex) {

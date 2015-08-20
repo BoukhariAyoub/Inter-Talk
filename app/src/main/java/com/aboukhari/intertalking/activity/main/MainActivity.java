@@ -1,6 +1,7 @@
 package com.aboukhari.intertalking.activity.main;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -11,6 +12,7 @@ import android.view.MenuItem;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
+import com.aboukhari.intertalking.activity.FindUsers;
 import com.aboukhari.intertalking.adapter.TabsPagerAdapter;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
@@ -110,6 +112,11 @@ public class MainActivity extends ActionBarActivity implements
         }
         if (id == R.id.action_dummy_friends) {
             fireBaseManager.addGeneratedUsers();
+        }
+
+        if (id == R.id.action_find_users) {
+            Intent intent = new Intent(this,FindUsers.class);
+            startActivity(intent);
         }
 
         if (id == R.id.action_log_out) {

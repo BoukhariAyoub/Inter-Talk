@@ -63,7 +63,7 @@ public class ProfileView extends Activity {
         MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(this, 3);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setItemAnimator(new OvershootInLeftAnimator());
-        LanguagesRecyclerAdapter recyclerAdapter = new LanguagesRecyclerAdapter(this, getSelectedLanguages(), mLanguageAdapter);
+        LanguagesRecyclerAdapter recyclerAdapter = new LanguagesRecyclerAdapter(this, getSelectedLanguages(), mLanguageAdapter,false);
         recyclerView.setAdapter(recyclerAdapter);
     }
 

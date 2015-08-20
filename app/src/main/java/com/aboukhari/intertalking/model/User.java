@@ -52,6 +52,9 @@ public class User implements Parcelable {
     @DatabaseField
     String imageUrl;
 
+    @DatabaseField
+    Boolean isFirstLogin;
+
     HashMap<String,Integer> languages;
 
 
@@ -163,6 +166,13 @@ public class User implements Parcelable {
         return Utils.getAgeFromDate(this.birthday);
     }
 
+    public Boolean getFirstLogin() {
+        return isFirstLogin;
+    }
+
+    public void setFirstLogin(Boolean firstLogin) {
+        this.isFirstLogin = firstLogin;
+    }
 
 
     @Override

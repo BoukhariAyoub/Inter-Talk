@@ -11,6 +11,7 @@ import android.widget.EditText;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
+import com.aboukhari.intertalking.activity.registration.SignUpEmail;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -59,6 +60,10 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
             startActivity(intent);
             this.finish();
         }*/
+        String email = getIntent().getStringExtra("email");
+        if (email != null) {
+            mEmailEditText.setText(email);
+        }
 
         ProfileTracker profileTracker = new ProfileTracker() {
             @Override
@@ -86,13 +91,13 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
 
 
         if (v == btnSignUp) {
-            Intent intent = new Intent(this, SpringIndicator.class);
+            Intent intent = new Intent(this, SignUpEmail.class);
             startActivity(intent);
         }
 
 
         if (v == btnEmailLogin) {
-//TODO LOGIN EMAIL PASSWORD
+            FireBaseManager.getInstance(this).loginUserWithPassword(mEmailEditText.getText().toString().trim(),mPasswordEditText.getText().toString().trim());
         }
 
 

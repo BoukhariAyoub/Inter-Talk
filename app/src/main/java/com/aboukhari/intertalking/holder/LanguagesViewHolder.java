@@ -23,7 +23,7 @@ public class LanguagesViewHolder extends RecyclerView.ViewHolder implements View
 
     int[] mIcons = new int[]{R.mipmap.ic_begginer, R.mipmap.ic_intermediate, R.mipmap.ic_advanced, R.mipmap.ic_native};
 
-    public LanguagesViewHolder(Context context, View itemView) {
+    public LanguagesViewHolder(Context context, View itemView,boolean known) {
         super(itemView);
 
         this.context = context;
@@ -32,6 +32,9 @@ public class LanguagesViewHolder extends RecyclerView.ViewHolder implements View
         mLevelImageView = (ImageView) itemView.findViewById(R.id.iv_level);
         mCrossImageView.setOnClickListener(this);
         mLevelImageView.setOnClickListener(this);
+        if(!known){
+            mLevelImageView.setVisibility(View.GONE);
+        }
     }
 
     public LanguagesViewHolder bindLanguage(Language language, int position) {

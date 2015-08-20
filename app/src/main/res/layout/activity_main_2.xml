@@ -1,0 +1,75 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:elevation="4dp"
+        app:collapseIcon="@android:drawable/ic_delete"
+        app:navigationIcon="@android:drawable/stat_notify_chat"
+        app:popupTheme="@style/Theme.AppCompat.NoActionBar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="Toolbar Title"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:id="@+id/iv_next_fragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_navigate_next_white_36dp" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+    <Button
+        android:visibility="gone"
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:elevation="10dp"
+        android:text="NEXT >"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/white"/>
+
+    <github.chenupt.springindicator.viewpager.ScrollerViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/btn_next"
+        android:layout_below="@id/toolbar"
+        android:layout_gravity="center" />
+
+    <github.chenupt.springindicator.SpringIndicator
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        app:siIndicatorColor="@color/primary"
+        app:siSelectedTextColor="@android:color/white"
+        app:siTextColor="@color/secondary_text"
+        app:siTextSize="12sp"
+        android:layout_alignParentBottom="true"/>
+
+
+
+
+
+</RelativeLayout>

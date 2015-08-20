@@ -43,12 +43,13 @@
             android:theme="@style/Theme.AppCompat.Light"
             android:screenOrientation="portrait" >
 
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
 
         </activity>
         <activity
@@ -68,15 +69,12 @@
             android:label="@string/title_activity_geo_names"
             android:screenOrientation="portrait" >
         </activity>
-        <activity
-            android:name=".activity.registration.Registration"
-            android:label="@string/title_activity_registration"
-            android:screenOrientation="portrait" >
-        </activity>
+
         <activity
             android:name=".activity.Main2Activity"
             android:label="@string/title_activity_main2"
             android:screenOrientation="portrait" >
+
         </activity>
         <activity
             android:name=".activity.SpringIndicator"
@@ -97,8 +95,13 @@
         <activity
             android:name=".activity.FindUsers"
             android:label="@string/title_activity_find_users"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:screenOrientation="portrait">
-
+        </activity>
+        <activity
+            android:name=".activity.registration.SignUpEmail"
+            android:label="@string/title_activity_find_users"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

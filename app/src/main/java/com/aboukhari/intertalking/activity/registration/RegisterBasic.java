@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,22 +18,17 @@ import android.widget.Toast;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.CircularImageView;
-import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.Utils.Utils;
 import com.aboukhari.intertalking.model.User;
-import com.cloudinary.Cloudinary;
 import com.soundcloud.android.crop.Crop;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
 
@@ -188,9 +181,6 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
     }
 
 
-    public CircularImageView getmAvatarImageView() {
-        return mAvatarImageView;
-    }
 
     @Override
     public void onPause() {
@@ -199,17 +189,13 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
 
     }
 
-    public User register(User user) {
+    public User updateUser() {
+        User user = new User();
         user.setDisplayName(mUserNameEditText.getText().toString());
         user.setEmail(mEmailEditText.getText().toString());
         String gender = mGenderMap.get("male").equals(mSegmentedGroup.getCheckedRadioButtonId()) ? "male" : "female";
         user.setGender(gender);
         user.setBirthday(selectedBirthdate);
-        FireBaseManager.getInstance(getActivity()).addUserToFireBase(user);
-
-        new UploadImage().execute(bitmap, user.getUid());
-
-        Log.d("natija user", user.toString());
 
         return user;
     }
@@ -218,47 +204,12 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
         return bitmap;
     }
 
-
-    private class UploadImage extends AsyncTask<Object, Integer, String[]> {
-
-
-        @Override
-        protected String[] doInBackground(Object... params) {
-            try {
-
-                Log.d("natija", "params = " + params.toString());
-                Bitmap bitmap = (Bitmap) params[0];
-                String uid = params[1].toString();
-
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100 /*ignored for PNG*/, bos);
-                byte[] bitmapdata = bos.toByteArray();
-                ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
-
-                Map map = Utils.getCloudinary().uploader().upload(bs, Cloudinary.asMap("public_id", uid));
-                String[] s = new String[2];
-                s[0] = uid;
-                s[1] = map.get("url").toString();
-                return s ;
-
-
-            } catch (Exception e) {
-                Log.e("natija cloud", e.getMessage());
-
-            }
-
-            return null;
-
-        }
-
-        @Override
-        protected void onPostExecute(String[] s) {
-            super.onPostExecute(s);
-            String uid = s[0];
-            String imageUrl = s[1];
-            FireBaseManager.getInstance(getActivity()).addImageToUser(uid, imageUrl);
-        }
+    public String getPassword(){
+        return  mPasswordEditText.getText().toString();
     }
+
+
+
 
 
 }

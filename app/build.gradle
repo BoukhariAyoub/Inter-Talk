@@ -53,6 +53,4 @@ dependencies {
     compile 'com.github.clans:fab:1.5.5'
     compile 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
     compile 'com.cloudinary:cloudinary-android:1.2.1'
-
-
 }

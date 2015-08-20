@@ -38,5 +38,6 @@ public class RegistrationTabsAdapter extends FragmentPagerAdapter {
 
 
 
+
 }
 

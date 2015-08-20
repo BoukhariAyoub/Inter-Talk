@@ -6,14 +6,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.activity.ChatRoom;
 import com.aboukhari.intertalking.activity.Login;
+import com.aboukhari.intertalking.activity.Main2Activity;
 import com.aboukhari.intertalking.activity.main.Conversations;
 import com.aboukhari.intertalking.activity.main.MainActivity;
 import com.aboukhari.intertalking.database.DatabaseManager;
@@ -24,6 +27,8 @@ import com.aboukhari.intertalking.model.Message;
 import com.aboukhari.intertalking.model.Place;
 import com.aboukhari.intertalking.model.User;
 import com.aboukhari.intertalking.model.UserRoom;
+import com.aboukhari.intertalking.retrofit.RestClient;
+import com.aboukhari.intertalking.task.UploadImage;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -35,6 +40,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,6 +52,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by aboukhari on 24/07/2015.
@@ -287,16 +297,10 @@ public class FireBaseManager {
 
                                 User user = new User(uid, displayName, email, birthday, gender);
                                 user.setImageUrl(pictureUrl);
-                                //TODO REMOVE
-                                HashMap<String, Integer> langs = new HashMap<>();
-                                langs.put("en", 0);
-                                langs.put("fr", 3);
-                                langs.put("ar", 2);
 
 
-                                user.setLanguages(langs);
                                 //Add User To Firebase
-                                addNewUserToFireBase(user);
+                                addUserToFireBase(user);
 
 
                                 Intent mainIntent = new Intent(context,
@@ -494,14 +498,6 @@ public class FireBaseManager {
         }
     }
 
-    /**
-     * Add Place To DataBase
-     *
-     * @param place
-     */
-    public void addPlace(Place place) {
-        ref.getRoot().child("places").child(place.getId()).setValue(place);
-    }
 
     public void addLanguages(User user) {
         //  ref.getRoot().child("languages").child(place.getId()).setValue(place);
@@ -517,24 +513,210 @@ public class FireBaseManager {
         ref.getRoot().child("users").child(user.getUid()).updateChildren(userMap);
     }
 
-    private void addNewUserToFireBase(User user) {
-        Map<String, Object> userMap = Utils.objectToMap(user);
-        ref.getRoot().child("users").child(user.getUid()).updateChildren(userMap);
-    }
 
     public void addImageToUser(String uid, String imageUrl) {
         ref.getRoot().child("users").child(uid).child("imageUrl").setValue(imageUrl);
     }
 
-    public void addLanguageToUser(String uid,String languageType,Language language){
+    public void addLanguageToUser(String uid, String languageType, Language language) {
         ref.getRoot().child("users").child(uid).child(languageType).child(language.getIso()).setValue(language.getLevel());
         ref.getRoot().child(languageType).child(language.getIso()).child(uid).setValue(true);
     }
 
-    public void deleteLanguageFromUser(String uid,String languageType,Language language){
+    public void deleteLanguageFromUser(String uid, String languageType, Language language) {
         ref.getRoot().child("users").child(uid).child(languageType).child(language.getIso()).removeValue();
         ref.getRoot().child(languageType).child(language.getIso()).child(uid).removeValue();
 
     }
 
+
+    public void createUser(final String email) {
+        Long.toHexString(Double.doubleToLongBits(Math.random()));
+        String password = Long.toHexString(Double.doubleToLongBits(Math.random()));
+        ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
+            @Override
+            public void onSuccess(Map<String, Object> result) {
+                String uid = result.get("uid").toString();
+                User user = new User();
+                user.setUid(uid);
+                user.setEmail(email);
+                user.setFirstLogin(true);
+
+                addUserToFireBase(user);
+
+                Utils.saveUserToPreferences(context, user);
+
+
+                ref.resetPassword(email, new Firebase.ResultHandler() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(context, "A password has been sent to the email you entred", Toast.LENGTH_LONG);
+                        Log.d("natija pass", "A password has been sent to the email you entred");
+                    }
+
+                    @Override
+                    public void onError(FirebaseError firebaseError) {
+                        Toast.makeText(context, "There Was an error sending an email please", Toast.LENGTH_LONG);
+                        Log.d("natija pass", "There Was an error sending an email please : " + firebaseError.getMessage());
+
+                    }
+                });
+            }
+
+            @Override
+            public void onError(FirebaseError firebaseError) {
+                Log.e("natija pass", firebaseError.getMessage());
+            }
+        });
+
+    }
+
+    public void createUser(final User user, String password, final Bitmap bitmap, final String placeId, final ArrayList<Language> knownLanguages, final ArrayList<Language> wantedLanguages) {
+        String email = user.getEmail();
+        ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
+            @Override
+            public void onSuccess(Map<String, Object> result) {
+                String uid = result.get("uid").toString();
+                user.setUid(uid);
+                addUserToFireBase(user);
+                new UploadImage(context).execute(bitmap, uid);
+                registerPlace(user, placeId);
+                registerLanguages(user, knownLanguages, wantedLanguages);
+            }
+
+            @Override
+            public void onError(FirebaseError firebaseError) {
+                // there was an error
+            }
+        });
+    }
+
+    public void updateFirstLoginProfile(final User user, String oldPassword, String newPassword, final Bitmap bitmap, final String placeId, final ArrayList<Language> knownLanguages, final ArrayList<Language> wantedLanguages) {
+        String email = user.getEmail();
+        ref.changePassword(email, oldPassword, newPassword, new Firebase.ResultHandler() {
+            @Override
+            public void onSuccess() {
+                user.setFirstLogin(false);
+                addUserToFireBase(user);
+                new UploadImage(context).execute(bitmap, user.getUid());
+                registerPlace(user, placeId);
+                registerLanguages(user, knownLanguages, wantedLanguages);
+            }
+
+            @Override
+            public void onError(FirebaseError firebaseError) {
+
+            }
+        });
+    }
+
+
+    private void registerPlace(final User user, String placeId) {
+        RestClient.get(RestClient.GOOGLE_MAPS_ENDPOINT).getPlaceDetails(placeId, "en", Variables.GOOGLE_API_KEY, new Callback<JsonElement>() {
+            @Override
+            public void success(JsonElement json, Response response) {
+                /*Set Place To User*/
+                Place place = Utils.jSonToPlace(json);
+                FireBaseManager.getInstance(context).addPlaceToUser(place, user);
+            }
+
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+
+    private void registerLanguages(User user, ArrayList<Language> knownLanguages, ArrayList<Language> wantedLanguages) {
+
+
+        for (Language language : knownLanguages) {
+            String languageType = "knownLanguages";
+            addLanguageToUser(user.getUid(), languageType, language);
+        }
+
+        for (Language language : wantedLanguages) {
+            String languageType = "wantedLanguages";
+            addLanguageToUser(user.getUid(), languageType, language);
+        }
+
+    }
+
+    /**
+     * add place to User
+     *
+     * @param place
+     * @param user
+     */
+    public void addPlaceToUser(Place place, User user) {
+        ref.getRoot().child("places").child(place.getId()).setValue(place);
+        ref.getRoot().child("users").child(user.getUid()).child("place").child("placeId").setValue(place.getId());
+        ref.getRoot().child("users").child(user.getUid()).child("place").child("placeName").setValue(place.getDescription());
+    }
+
+
+    public void loginUserWithPassword(final String email, final String password) {
+        ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
+            @Override
+            public void onAuthenticated(AuthData authData) {
+                Log.d("natija auth", " auth data = " + authData);
+            /*    Map map = authData.getProviderData();
+                String email = map.get("email").toString();
+*/
+                final Boolean isTemporaryPassword = (Boolean) authData.getProviderData().get("isTemporaryPassword");
+                final String uid = authData.getAuth().get("uid").toString();
+
+
+//TODO check if first login
+                if (isTemporaryPassword) {
+                    Intent intent = new Intent(context, Main2Activity.class);
+                    intent.putExtra("uid", uid);
+                    intent.putExtra("email", email);
+                    intent.putExtra("password", password);
+                    context.startActivity(intent);
+                } else {
+                    //TODO getCurrentUser and Update Shared Preferences
+
+                    ref.getRoot().child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            User user = dataSnapshot.getValue(User.class);
+
+                            if (user.getFirstLogin()) {
+                                Intent intent = new Intent(context, Main2Activity.class);
+                                intent.putExtra("uid", uid);
+                                intent.putExtra("email", email);
+                                intent.putExtra("password", password);
+                                context.startActivity(intent);
+                            } else {
+
+                                Utils.saveUserToPreferences(context, user);
+                                Intent intent = new Intent(context, MainActivity.class);
+                                context.startActivity(intent);
+
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
+
+
+                }
+
+
+            }
+
+            @Override
+            public void onAuthenticationError(FirebaseError firebaseError) {
+                Log.e("natija", firebaseError.getMessage());
+            }
+        });
+    }
 }

@@ -23,11 +23,13 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
     private ArrayList<Language> languages;
     ArrayAdapter<Language> mLanguageAdapter;
     LanguagesViewHolder mHolder;
+    boolean know;
 
 
-    public LanguagesRecyclerAdapter(Context context, ArrayList<Language> languages, ArrayAdapter<Language> languageAdapter) {
+    public LanguagesRecyclerAdapter(Context context, ArrayList<Language> languages, ArrayAdapter<Language> languageAdapter,boolean know) {
         this.context = context;
         this.languages = languages;
+        this.know = know;
         mLanguageAdapter = languageAdapter;
     }
 
@@ -35,7 +37,7 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
     public LanguagesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_language, parent, false);
-        return new LanguagesViewHolder(context, view);
+        return new LanguagesViewHolder(context, view,know);
     }
 
     @Override

@@ -12,12 +12,14 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.aboukhari.intertalking.R;
+import com.aboukhari.intertalking.model.Place;
 import com.aboukhari.intertalking.model.User;
 import com.cloudinary.Cloudinary;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -137,7 +139,7 @@ public abstract class Utils {
         Gson gson = new Gson();
         String json = gson.toJson(user);
         prefsEditor.putString("user", json);
-        prefsEditor.apply();
+        prefsEditor.commit();
 
         Log.d("natija pref", " user before = " + user);
 
@@ -237,5 +239,44 @@ public abstract class Utils {
         return b;
     }
 
+    public static Place jSonToPlace(JsonElement json) {
+        Place place = new Place();
+        JsonObject placeJson = json.getAsJsonObject().get("result").getAsJsonObject();
+
+        place.setId(placeJson.get("place_id").getAsString());
+        place.setDescription(placeJson.get("formatted_address").getAsString());
+        place.setUrl(placeJson.get("url").getAsString());
+
+
+        JsonObject location = placeJson.get("geometry").getAsJsonObject().get("location").getAsJsonObject();
+        place.setLatitude(location.get("lat").getAsDouble());
+        place.setLongitude(location.get("lng").getAsDouble());
+
+
+        JsonArray components = placeJson.get("address_components").getAsJsonArray();
+
+
+        for (JsonElement comp : components) {
+            JsonObject jsonComp = comp.getAsJsonObject();
+            JsonArray types = jsonComp.get("types").getAsJsonArray();
+            String shortName = jsonComp.get("short_name").getAsString();
+            String longName = jsonComp.get("long_name").getAsString();
+
+            String type = types.get(0).getAsString();
+
+            switch (type) {
+                case "locality":
+                    place.setCity(longName);
+                    break;
+                case "administrative_area_level_1":
+                    place.setRegion(shortName);
+                    break;
+                case "country":
+                    place.setCountry(shortName);
+                    break;
+            }
+        }
+        return place;
+    }
 
 }

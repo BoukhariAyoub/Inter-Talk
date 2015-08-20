@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <LinearLayout
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/md_teal_50"
+        android:orientation="vertical"
+        android:padding="10dp"
+        >
+
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="What Are You ?"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/primary_dark"
+            android:textSize="30sp" />
+
+        <info.hoang8f.android.segmented.SegmentedGroup xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/segmented2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            segmentedgroup:border_width="1dp"
+            segmentedgroup:tint_color="@color/transparent_light_grey">
+
+            <RadioButton
+                android:id="@+id/radio_male"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:drawableLeft="@mipmap/ic_man_white"
+                android:drawableStart="@mipmap/ic_man_white"
+                android:text="Male" />
+
+            <RadioButton
+                android:id="@+id/radio_female"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableLeft="@mipmap/ic_female_white"
+                android:drawableStart="@mipmap/ic_female_white"
+                android:text="Female" />
+
+        </info.hoang8f.android.segmented.SegmentedGroup>
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            android:text="Type Your Display Name. It will be displayed to your contacts"/>
+
+
+
+    </LinearLayout>
+
+</RelativeLayout>
