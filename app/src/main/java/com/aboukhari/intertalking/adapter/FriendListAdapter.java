@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.Utils;
-import com.aboukhari.intertalking.model.Friend;
+import com.aboukhari.intertalking.model.User;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -19,7 +19,7 @@ import com.firebase.client.ValueEventListener;
 /**
  * Created by aboukhari on 16/07/2015.
  */
-public class FriendListAdapter extends FirebaseListAdapter<Friend> {
+public class FriendListAdapter extends FirebaseListAdapter<User> {
 
     /**
      * @param ref      The Firebase location to watch for data changes. Can also be a slice of a location, using some
@@ -33,15 +33,16 @@ public class FriendListAdapter extends FirebaseListAdapter<Friend> {
     Activity activity;
 
     public FriendListAdapter(Query ref,Activity activity) {
-        super(ref, Friend.class, R.layout.item_friend_list, activity);
+        super(ref, User.class, R.layout.item_friend_list, activity);
         this.activity = activity;
         this.ref = ref.getRef();
     }
 
-    @Override
-    protected void populateView(final View view,ViewGroup viewGroup, final Friend friend) {
 
-        ref.getRoot().child("users").child(friend.getuId()).addListenerForSingleValueEvent(new ValueEventListener() {
+    @Override
+    protected void populateView(final View view,ViewGroup viewGroup, final User friend) {
+
+        ref.getRoot().child("users").child(friend.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -50,11 +51,10 @@ public class FriendListAdapter extends FirebaseListAdapter<Friend> {
                     String imageUrl = dataSnapshot.child("imageUrl").getValue(String.class);
                     TextView displayNameTextView = (TextView) view.findViewById(R.id.tv_display_name);
                     displayNameTextView.setText(name);
-
                     ImageView imageView = ((ImageView) view.findViewById(R.id.iv_profile));
-                    Utils.setImage(activity,imageUrl, imageView);
+                    Utils.loadImage(activity, imageUrl, imageView);
                 } else {
-                    ref.getRoot().child("users").child(ref.getAuth().getUid()).child("friends").child(friend.getuId()).removeValue();
+                    ref.getRoot().child("users").child(ref.getAuth().getUid()).child("friends").child(friend.getUid()).removeValue();
                 }
             }
 
@@ -63,10 +63,6 @@ public class FriendListAdapter extends FirebaseListAdapter<Friend> {
                 Log.e("natija data", "cancel " + firebaseError);
             }
         });
-
-        //setImage(friend, imageView);
-
-
     }
 
 

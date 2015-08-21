@@ -11,6 +11,7 @@ import android.widget.EditText;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
+import com.aboukhari.intertalking.activity.main.MainActivity;
 import com.aboukhari.intertalking.activity.registration.SignUpEmail;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -54,12 +55,14 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
         mPasswordEditText = (EditText) findViewById(R.id.et_password);
         mEmailEditText = (EditText) findViewById(R.id.et_email);
 
-        /*if (ref.getAuth() != null) {
+        if (ref.getAuth() != null) {
+            FireBaseManager.getInstance(this).addCurrentUserChangeListener();
             Intent intent = new Intent(Login.this,
                     MainActivity.class);
             startActivity(intent);
             this.finish();
-        }*/
+        }
+
         String email = getIntent().getStringExtra("email");
         if (email != null) {
             mEmailEditText.setText(email);
@@ -72,10 +75,10 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
                     String pictureUrl = newProfile.getProfilePictureUri(400, 400).toString();
                     fireBaseManager.onFacebookAccessTokenChange(Login.this, AccessToken.getCurrentAccessToken(), pictureUrl);
                 }
-
-
             }
         };
+
+
 
         profileTracker.startTracking();
 

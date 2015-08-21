@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/bg_blue_white" />
+        android:src="@color/primary" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -96,10 +96,10 @@
                     android:id="@+id/tv_status_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@mipmap/ic_username"
+                    android:drawableLeft="@mipmap/ic_username_white"
                     android:gravity="center"
                     android:text="Who Am I"
-                    android:textColor="@color/gray_dark"
+                    android:textColor="@color/primary"
                     android:textSize="15sp" />
 
                 <TextView
@@ -117,11 +117,11 @@
                     android:id="@+id/tv_spoken_languages"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@mipmap/ic_birthdate"
+                    android:drawableLeft="@mipmap/ic_birthdate_white"
                     android:gravity="center"
                     android:text="Languages I Speak"
                     android:layout_below="@+id/tv_status"
-                    android:textColor="@color/gray_dark"
+                    android:textColor="@color/primary"
                     android:textSize="15sp" />
 
                 <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -139,10 +139,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/recyclerViewKnown"
-                    android:drawableLeft="@mipmap/ic_birthdate"
+                    android:drawableLeft="@mipmap/ic_birthdate_white"
                     android:gravity="center"
                     android:text="Languages I Want To Learn"
-                    android:textColor="@color/gray_dark"
+                    android:textColor="@color/primary"
                     android:textSize="15sp" />
 
                 <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -191,13 +191,13 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         fab:menu_animationDelayPerItem="0"
-        fab:menu_colorNormal="@color/md_blue_300"
-        fab:menu_colorPressed="@color/md_blue_500"
-        fab:menu_colorRipple="@color/md_blue_600"
+        fab:menu_colorNormal="@color/md_teal_A700"
+        fab:menu_colorPressed="@color/md_teal_A400"
+        fab:menu_colorRipple="@color/md_teal_A100"
         fab:menu_shadowColor="#444">
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab12"
+            android:id="@+id/fab_add_friend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_friends"
@@ -207,7 +207,7 @@
             fab:fab_label="Add Friend" />
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab22"
+            android:id="@+id/fab_send_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_email"
@@ -217,7 +217,7 @@
             fab:fab_label="Send Message" />
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab32"
+            android:id="@+id/fab_block"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_delete"

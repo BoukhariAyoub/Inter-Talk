@@ -10,8 +10,6 @@
         android:layout_height="wrap_content"
         android:background="@color/primary"
         android:elevation="4dp"
-        app:collapseIcon="@android:drawable/ic_delete"
-        app:navigationIcon="@android:drawable/stat_notify_chat"
         app:popupTheme="@style/Theme.AppCompat.NoActionBar">
 
         <RelativeLayout
@@ -26,12 +24,30 @@
                 android:text="Toolbar Title"
                 android:textColor="@color/white" />
 
+            <TextView
+                android:id="@+id/tv_next_fragement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NEXT"
+                android:textSize="15sp"
+                android:textColor="@color/white"
+                android:layout_centerVertical="true"
+                android:drawableRight="@drawable/ic_arrow_forward_white_24dp"
+                android:drawableEnd="@drawable/ic_arrow_forward_white_24dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"/>
+
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/iv_next_fragment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/ic_navigate_next_white_36dp" />
+                android:src="@drawable/ic_arrow_forward_white_36dp"
+                android:layout_marginRight="10dp"/>
         </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>

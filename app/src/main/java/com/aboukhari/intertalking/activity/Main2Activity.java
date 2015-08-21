@@ -4,21 +4,18 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.Utils.Utils;
-import com.aboukhari.intertalking.activity.registration.RegisterBirthday;
-import com.aboukhari.intertalking.activity.registration.RegisterGender;
+import com.aboukhari.intertalking.activity.registration.RegisterFusion;
 import com.aboukhari.intertalking.activity.registration.RegisterImage;
 import com.aboukhari.intertalking.activity.registration.RegisterLanguageKnown;
 import com.aboukhari.intertalking.activity.registration.RegisterLanguageWanted;
-import com.aboukhari.intertalking.activity.registration.RegisterName;
 import com.aboukhari.intertalking.activity.registration.RegisterPassword;
 import com.aboukhari.intertalking.activity.registration.RegisterPlace;
 import com.aboukhari.intertalking.adapter.RegistrationTabsAdapter;
@@ -34,10 +31,19 @@ public class Main2Activity extends FragmentActivity implements View.OnClickListe
 
     ScrollerViewPager viewPager;
     Button mNextButton;
-    ImageView mNextFragmentImageView;
     RegistrationTabsAdapter tabsAdapter;
     User mUser;
-    String mPassword,mUid,mEmail;
+    String mPassword, mUid, mEmail;
+    TextView mNextFragment;
+
+    RegisterPassword registerPassword ;
+    RegisterFusion registerFusion;
+    RegisterPlace registerPlace;
+    RegisterLanguageKnown registerLanguageKnown;
+    RegisterLanguageWanted registerLanguageWanted;
+    RegisterImage registerImage;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +56,8 @@ public class Main2Activity extends FragmentActivity implements View.OnClickListe
         mEmail = getIntent().getStringExtra("email");
         mUser = Utils.getUserFromPreferences(this);
 
-        mNextFragmentImageView = (ImageView) findViewById(R.id.iv_next_fragment);
+        mNextFragment = (TextView) findViewById(R.id.tv_next_fragement);
+
         viewPager = (ScrollerViewPager) findViewById(R.id.view_pager);
 
         tabsAdapter = new RegistrationTabsAdapter(getSupportFragmentManager(), getFragments(), getTitles());
@@ -61,7 +68,7 @@ public class Main2Activity extends FragmentActivity implements View.OnClickListe
 
         // just set viewPager
         springIndicator.setViewPager(viewPager);
-        mNextFragmentImageView.setOnClickListener(this);
+        mNextFragment.setOnClickListener(this);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -71,11 +78,19 @@ public class Main2Activity extends FragmentActivity implements View.OnClickListe
 
             @Override
             public void onPageSelected(int position) {
+                int icon;
+                String text;
                 if (position == tabsAdapter.getCount() - 1) {
-                    mNextFragmentImageView.setImageDrawable(ContextCompat.getDrawable(Main2Activity.this,R.drawable.ic_check_white_36dp));
+                    icon = R.drawable.ic_done_white_24dp;
+                    text = "DONE";
                 } else {
-                    mNextFragmentImageView.setImageDrawable(ContextCompat.getDrawable(Main2Activity.this,R.drawable.ic_navigate_next_white_36dp));
+                    icon = R.drawable.ic_arrow_forward_white_24dp;
+                    text = "NEXT";
+
                 }
+
+                mNextFragment.setCompoundDrawablesWithIntrinsicBounds(0, 0, icon, 0);
+                mNextFragment.setText(text);
             }
 
             @Override
@@ -89,24 +104,9 @@ public class Main2Activity extends FragmentActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == mNextFragmentImageView.getId()) {
 
-            if (viewPager.getCurrentItem() == tabsAdapter.getCount() - 1) {
-                registerUser();
-            }
-            else {
-                viewPager.setCurrentItem(viewPager.getCurrentItem()+1);
-            }
-        }
-    }
-
-
-    public void goToNextFragment(){
-        if (viewPager.getCurrentItem() == tabsAdapter.getCount() - 1) {
-            registerUser();
-        }
-        else {
-            viewPager.setCurrentItem(viewPager.getCurrentItem()+ 1);
+        if (v.getId() == mNextFragment.getId()) {
+            goToNextFragment();
         }
     }
 
@@ -119,8 +119,7 @@ public class Main2Activity extends FragmentActivity implements View.OnClickListe
         titles.add("4");
         titles.add("5");
         titles.add("6");
-        titles.add("7");
-        titles.add("8");
+
 
         return titles;
     }
@@ -128,31 +127,28 @@ public class Main2Activity extends FragmentActivity implements View.OnClickListe
     private ArrayList<Fragment> getFragments() {
         ArrayList<Fragment> fragments = new ArrayList<>();
 
-        fragments.add(new RegisterPassword());
-        fragments.add(new RegisterName());
-        fragments.add(new RegisterBirthday());
-        fragments.add(new RegisterGender());
-        fragments.add(new RegisterPlace());
-        fragments.add(new RegisterLanguageKnown());
-        fragments.add(new RegisterLanguageWanted());
-        fragments.add(new RegisterImage());
+
+       registerPassword = new RegisterPassword();
+        registerFusion = new RegisterFusion();
+        registerPlace = new RegisterPlace();
+        registerLanguageKnown = new RegisterLanguageKnown();
+        registerLanguageWanted = new RegisterLanguageWanted();
+        registerImage = new RegisterImage();
+        fragments.add(registerPassword);
+        fragments.add(registerFusion);
+        fragments.add(registerPlace);
+        fragments.add(registerLanguageKnown);
+        fragments.add(registerLanguageWanted);
+        fragments.add(registerImage);
         return fragments;
     }
 
     private void registerUser() {
-        RegisterPassword registerPassword = (RegisterPassword) tabsAdapter.getItem(0);
-        RegisterName registerName = (RegisterName) tabsAdapter.getItem(1);
-        RegisterBirthday registerBirthday = (RegisterBirthday) tabsAdapter.getItem(2);
-        RegisterGender registerGender = (RegisterGender) tabsAdapter.getItem(3);
-        RegisterPlace registerPlace = (RegisterPlace) tabsAdapter.getItem(4);
-        RegisterLanguageKnown registerLanguageKnown = (RegisterLanguageKnown) tabsAdapter.getItem(5);
-        RegisterLanguageWanted registerLanguageWanted = (RegisterLanguageWanted) tabsAdapter.getItem(6);
-        RegisterImage registerImage = (RegisterImage) tabsAdapter.getItem(7);
 
         String password = registerPassword.getPassword();
-        String name = registerName.getName();
-        Date birthDate = registerBirthday.getBirthdate();
-        String gender = registerGender.getGender();
+        String name = registerFusion.getName();
+        Date birthDate = registerFusion.getBirthdate();
+        String gender = registerFusion.getGender();
         String placeId = registerPlace.getPlaceId();
         Bitmap bitmap = registerImage.getBitmap();
 
@@ -168,8 +164,17 @@ public class Main2Activity extends FragmentActivity implements View.OnClickListe
         ArrayList<Language> wanted = registerLanguageWanted.getWantedLanguages();
 
 
-        FireBaseManager.getInstance(this).updateFirstLoginProfile(user,mPassword,password,bitmap,placeId,known,wanted);
+        FireBaseManager.getInstance(this).updateFirstLoginProfile(user, mPassword, password, bitmap, placeId, known, wanted);
 
+    }
+
+
+    public void goToNextFragment() {
+        if (viewPager.getCurrentItem() == tabsAdapter.getCount() - 1) {
+            registerUser();
+        } else {
+            viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+        }
     }
 
 }

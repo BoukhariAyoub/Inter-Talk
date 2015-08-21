@@ -14,7 +14,7 @@
         android:orderInCategory="100" app:showAsAction="never" />
 
 
-    <item android:id="@+id/action_dummy_friends" android:title="Dummy Friends"
+    <item android:id="@+id/action_dummy_friends" android:title="View My Profile"
         android:orderInCategory="100" app:showAsAction="never" />
 
     <item android:id="@+id/action_log_out" android:title="Log Out"

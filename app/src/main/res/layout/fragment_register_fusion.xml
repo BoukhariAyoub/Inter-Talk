@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <LinearLayout
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="Name"
+            android:textColor="@color/primary_dark"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:background="@color/transparent_light_grey"
+            android:ems="10"
+            android:hint=""
+            android:imeOptions="actionDone"
+            android:inputType="textCapWords"
+            android:textColor="@color/secondary_text"
+            android:textSize="25sp" />
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            android:text="Type Your Display Name. It will be displayed to your contacts"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="When were you born?"
+            android:textColor="@color/primary_dark"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/et_birthday"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:background="@color/transparent_light_grey"
+            android:ems="10"
+            android:hint="01/01/1990"
+            android:imeOptions="actionNext"
+            android:inputType="textCapWords"
+            android:nextFocusDown="@id/et_email"
+            android:nextFocusForward="@id/et_email"
+            android:nextFocusRight="@id/et_email"
+            android:textColor="@color/secondary_text"
+            android:focusableInTouchMode="false"
+            android:textColorHint="@color/gray_light"
+            android:drawableRight="@android:drawable/ic_menu_my_calendar"
+            android:textSize="25sp" />
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            android:text="Choose Your BirthDate."/>
+
+
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="What Are You ?"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/primary_dark"
+            android:textSize="20sp" />
+
+        <info.hoang8f.android.segmented.SegmentedGroup xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/segmented2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            segmentedgroup:border_width="1dp">
+
+            <RadioButton
+                android:id="@+id/radio_male"
+                style="@style/RadioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:textColor="@color/Aqua"
+                android:drawableLeft="@mipmap/ic_man_white"
+                android:drawableStart="@mipmap/ic_man_white"
+                android:text="Male" />
+
+            <RadioButton
+                android:id="@+id/radio_female"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableLeft="@mipmap/ic_female_white"
+                android:drawableStart="@mipmap/ic_female_white"
+                android:text="Female" />
+
+        </info.hoang8f.android.segmented.SegmentedGroup>
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_text"
+            android:text="Type Your Display Name. It will be displayed to your contacts"/>
+
+
+
+
+
+
+    </LinearLayout>
+
+</RelativeLayout>

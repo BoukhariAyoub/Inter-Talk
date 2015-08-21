@@ -288,13 +288,6 @@ public class ConversationsListAdapter extends BaseAdapter {
 
 
 
-
-
-
-
-
-
-
     private void setImage(Conversation conversation, ImageView imageView) {
 
         String dirPath = imageView.getContext().getFilesDir().getAbsolutePath() + File.separator + "pic-profile";

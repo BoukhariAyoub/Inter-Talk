@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -113,7 +112,7 @@ public abstract class Utils {
 
     }
 
-    public static void setImage(Context context, String imageUrl, final ImageView imageView) {
+    public static void loadImage(Context context, String imageUrl, final ImageView imageView) {
         if (!ImageLoader.getInstance().isInited()) {
             ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).build();
             ImageLoader.getInstance().init(config);
@@ -140,12 +139,6 @@ public abstract class Utils {
         String json = gson.toJson(user);
         prefsEditor.putString("user", json);
         prefsEditor.commit();
-
-        Log.d("natija pref", " user before = " + user);
-
-        Log.d("natija pref", " contain user ? = " + mPrefs.contains("user"));
-
-
     }
 
     public static User getUserFromPreferences(Context context) {
@@ -154,10 +147,6 @@ public abstract class Utils {
         Gson gson = new Gson();
         String json = mPrefs.getString("user", "");
         User user = gson.fromJson(json, User.class);
-
-        Log.d("natija pref", " contain user ? = " + mPrefs.contains("user"));
-        Log.d("natija pref", " current user json= " + json);
-        Log.d("natija pref", " current user real= " + user);
 
         return user;
 
@@ -232,7 +221,7 @@ public abstract class Utils {
     }
 
     public static Bitmap loadBitmapFromView(View v) {
-        Bitmap b = Bitmap.createBitmap( v.getLayoutParams().width, v.getLayoutParams().height, Bitmap.Config.ARGB_8888);
+        Bitmap b = Bitmap.createBitmap(v.getLayoutParams().width, v.getLayoutParams().height, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
         v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
         v.draw(c);

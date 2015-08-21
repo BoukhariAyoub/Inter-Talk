@@ -90,9 +90,9 @@ public class FireBaseManager {
      * @param friend
      * @return
      */
-    public String createRoom(final Friend friend) {
+    public String createRoom(final User friend) {
         //  User user = databaseManager.getCurrentUser(ref.getAuth().getUid());
-        final Conversation conversation = new Conversation(ref, ref.getAuth().getUid(), friend.getuId(), "", "");
+        final Conversation conversation = new Conversation(ref, ref.getAuth().getUid(), friend.getUid(), "", "");
         ref.child("room_names").child(conversation.getRoomName()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -114,7 +114,7 @@ public class FireBaseManager {
 
 
                     //Add Room to friend's Rooms
-                    ref.child("users").child(friend.getuId()).child("rooms").child(conversation.getRoomName()).setValue(0);
+                    ref.child("users").child(friend.getUid()).child("rooms").child(conversation.getRoomName()).setValue(0);
 
                 }
 
@@ -324,8 +324,6 @@ public class FireBaseManager {
 
                         }
                     });
-
-
                 }
 
                 @Override
@@ -371,7 +369,6 @@ public class FireBaseManager {
         request.setParameters(parameters);
         request.executeAsync();
     }
-
 
     public void theRealDeal() {
         final Firebase refUserRooms = ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms");
@@ -447,7 +444,6 @@ public class FireBaseManager {
         ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").child(roomName).setValue(now);
     }
 
-
     /* retrieve the count of unread messages */
     public void checkUnread(final String roomName) {
         Firebase refUserRooms = ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms");
@@ -489,22 +485,13 @@ public class FireBaseManager {
 
     }
 
-
     public void addGeneratedUsers() {
         ArrayList<User> users = Utils.generateRandomUsers(context);
         for (User user : users) {
+            user.setUid("Random:" + user.getUid());
             Map<String, Object> userMap = Utils.objectToMap(user);
             ref.child("users").child(user.getUid()).updateChildren(userMap);
         }
-    }
-
-
-    public void addLanguages(User user) {
-        //  ref.getRoot().child("languages").child(place.getId()).setValue(place);
-        HashMap<String, Integer> langs = user.getLanguages();
-
-        //   for(String iso : map.St)
-
     }
 
 
@@ -514,8 +501,8 @@ public class FireBaseManager {
     }
 
 
-    public void addImageToUser(String uid, String imageUrl) {
-        ref.getRoot().child("users").child(uid).child("imageUrl").setValue(imageUrl);
+    public void addImageToUser(User user, String imageUrl) {
+        ref.getRoot().child("users").child(user.getUid()).child("imageUrl").setValue(imageUrl);
     }
 
     public void addLanguageToUser(String uid, String languageType, Language language) {
@@ -579,7 +566,7 @@ public class FireBaseManager {
                 String uid = result.get("uid").toString();
                 user.setUid(uid);
                 addUserToFireBase(user);
-                new UploadImage(context).execute(bitmap, uid);
+                new UploadImage(context, user).execute(bitmap);
                 registerPlace(user, placeId);
                 registerLanguages(user, knownLanguages, wantedLanguages);
             }
@@ -598,9 +585,13 @@ public class FireBaseManager {
             public void onSuccess() {
                 user.setFirstLogin(false);
                 addUserToFireBase(user);
-                new UploadImage(context).execute(bitmap, user.getUid());
+                new UploadImage(context, user).execute(bitmap);
                 registerPlace(user, placeId);
                 registerLanguages(user, knownLanguages, wantedLanguages);
+
+                Intent intent = new Intent(context, Login.class);
+                context.startActivity(intent);
+
             }
 
             @Override
@@ -630,8 +621,6 @@ public class FireBaseManager {
 
 
     private void registerLanguages(User user, ArrayList<Language> knownLanguages, ArrayList<Language> wantedLanguages) {
-
-
         for (Language language : knownLanguages) {
             String languageType = "knownLanguages";
             addLanguageToUser(user.getUid(), languageType, language);
@@ -641,7 +630,6 @@ public class FireBaseManager {
             String languageType = "wantedLanguages";
             addLanguageToUser(user.getUid(), languageType, language);
         }
-
     }
 
     /**
@@ -658,6 +646,8 @@ public class FireBaseManager {
 
 
     public void loginUserWithPassword(final String email, final String password) {
+        Log.d("natija", "email = " + email);
+        Log.d("natija", "password = " + password);
         ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
@@ -718,5 +708,40 @@ public class FireBaseManager {
                 Log.e("natija", firebaseError.getMessage());
             }
         });
+    }
+
+
+    /**
+     * Listener That update current Local Database On firebase change
+     */
+    public void addCurrentUserChangeListener() {
+        String uid = ref.getAuth().getUid();
+        ref.getRoot().child("users").child(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                Utils.saveUserToPreferences(context, user);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
+
+
+    public void addFriend(User friend) {
+        String uid = ref.getAuth().getUid();
+        ref.child("users").child(uid).child("friends").child(friend.getUid()).setValue(true);
+        ref.child("users").child(friend.getUid()).child("friends").child(uid).setValue(false);
+    }
+
+
+    public void acceptFriend(User friend) {
+
+    }
+
+    public void getCurrentTime(){
     }
 }

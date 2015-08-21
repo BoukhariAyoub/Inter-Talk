@@ -177,7 +177,7 @@ public class RegisterBasic extends Fragment implements View.OnTouchListener, Vie
         int radio = mGenderMap.get(user.getGender());
         mSegmentedGroup.check(radio);
         mBirthDateEditText.setText(Utils.dateToString(user.getBirthday()));
-        Utils.setImage(getActivity(), user.getImageUrl(), mAvatarImageView);
+        Utils.loadImage(getActivity(), user.getImageUrl(), mAvatarImageView);
     }
 
 

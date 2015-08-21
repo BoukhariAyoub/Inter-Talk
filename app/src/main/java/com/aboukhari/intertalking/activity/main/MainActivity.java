@@ -12,7 +12,9 @@ import android.view.MenuItem;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
+import com.aboukhari.intertalking.Utils.Utils;
 import com.aboukhari.intertalking.activity.FindUsers;
+import com.aboukhari.intertalking.activity.profile.ProfileView;
 import com.aboukhari.intertalking.adapter.TabsPagerAdapter;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
@@ -24,7 +26,6 @@ public class MainActivity extends ActionBarActivity implements
         ActionBar.TabListener {
 
     private FireBaseManager fireBaseManager;
-    private Firebase ref;
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
@@ -43,7 +44,6 @@ public class MainActivity extends ActionBarActivity implements
         setContentView(R.layout.activity_main);
 
         Firebase.setAndroidContext(this);
-        ref = new Firebase(getString(R.string.firebase_url));
 
         fireBaseManager = new FireBaseManager(this);
         FacebookSdk.sdkInitialize(this);
@@ -111,7 +111,10 @@ public class MainActivity extends ActionBarActivity implements
             //  Utils.exportDB("intertalk");
         }
         if (id == R.id.action_dummy_friends) {
-            fireBaseManager.addGeneratedUsers();
+            Intent intent = new Intent(this, ProfileView.class);
+            intent.putExtra("user", Utils.getUserFromPreferences(this));
+            startActivity(intent);
+
         }
 
         if (id == R.id.action_find_users) {

@@ -21,7 +21,7 @@ public class UserRoom {
     private Date lastSeen;
 
     @DatabaseField(foreign = true,columnName = "friend_id")
-    private Friend friend;
+    private User friend;
 
     public UserRoom() {
     }
@@ -42,11 +42,11 @@ public class UserRoom {
         this.lastSeen = lastSeen;
     }
 
-    public Friend getFriend() {
+    public User getFriend() {
         return friend;
     }
 
-    public void setFriend(Friend friend) {
+    public void setFriend(User friend) {
         this.friend = friend;
     }
 

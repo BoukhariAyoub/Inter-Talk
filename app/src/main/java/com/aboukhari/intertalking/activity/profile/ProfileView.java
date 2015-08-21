@@ -5,50 +5,64 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Explode;
 import android.transition.Fade;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aboukhari.intertalking.R;
+import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.Utils.Utils;
 import com.aboukhari.intertalking.adapter.LanguagesRecyclerAdapter;
 import com.aboukhari.intertalking.adapter.MyGridLayoutManager;
 import com.aboukhari.intertalking.model.Language;
 import com.aboukhari.intertalking.model.User;
+import com.github.clans.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 
 import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
 
-public class ProfileView extends Activity {
+public class ProfileView extends Activity implements View.OnClickListener {
 
     RecyclerView recyclerViewKnown, recyclerViewWanted;
     TextView mDisplayTextView, mPlaceTextView;
     ImageView mAvatarImageView;
+    FloatingActionButton fabAddFriend, fabSendMessage;
+    User user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_view_2);
 
-        User user = getIntent().getParcelableExtra("user");
+        user = getIntent().getParcelableExtra("user");
 
 
         mDisplayTextView = (TextView) findViewById(R.id.tv_display_name);
         mPlaceTextView = (TextView) findViewById(R.id.tv_place);
         mAvatarImageView = (ImageView) findViewById(R.id.iv_avatar);
 
+        fabAddFriend = (FloatingActionButton) findViewById(R.id.fab_add_friend);
+        fabSendMessage = (FloatingActionButton) findViewById(R.id.fab_send_message);
+
+        fabAddFriend.setOnClickListener(this);
+        fabSendMessage.setOnClickListener(this);
+
+
         mDisplayTextView.setText(user.getDisplayName());
         mPlaceTextView.setText(user.getPlaceId() + " , " + user.getPlaceName());
-        Utils.setImage(this, user.getImageUrl(), mAvatarImageView);
+        Utils.loadImage(this, user.getImageUrl(), mAvatarImageView);
 
 
         recyclerViewKnown = (RecyclerView) findViewById(R.id.recyclerViewKnown);
         recyclerViewWanted = (RecyclerView) findViewById(R.id.recyclerViewWanted);
 
-        setupWindowAnimations();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            setupWindowAnimations();
+        }
 
 
         setupRecyclerView(recyclerViewKnown);
@@ -63,7 +77,7 @@ public class ProfileView extends Activity {
         MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(this, 3);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setItemAnimator(new OvershootInLeftAnimator());
-        LanguagesRecyclerAdapter recyclerAdapter = new LanguagesRecyclerAdapter(this, getSelectedLanguages(), mLanguageAdapter,false);
+        LanguagesRecyclerAdapter recyclerAdapter = new LanguagesRecyclerAdapter(this, getSelectedLanguages(), mLanguageAdapter, false);
         recyclerView.setAdapter(recyclerAdapter);
     }
 
@@ -82,13 +96,16 @@ public class ProfileView extends Activity {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setupWindowAnimations() {
-        Explode explode = new Explode();
-        explode.setDuration(2000);
-        getWindow().setExitTransition(explode);
 
         Fade fade = new Fade();
         fade.setDuration(2000);
         getWindow().setReenterTransition(fade);
     }
 
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == fabAddFriend.getId()) {
+            FireBaseManager.getInstance(this).addFriend(user);
+        }
+    }
 }

@@ -515,8 +515,8 @@
     <color name="mdtp_accent_color">#2196F3</color>
     <color name="mdtp_accent_color_dark">#1976D2</color>
 
-    <color name="radio_button_selected_color">#ff33b5e5</color>
-    <color name="radio_button_unselected_color">#40FFFFFF</color>
+    <color name="radio_button_selected_color">@color/primary</color>
+    <color name="radio_button_unselected_color">@color/WhiteSmoke</color>
 
     <color name="transparent_light_grey">#E6FFFFFF</color>
     <color name="transparent_grey">#1A000000</color>

@@ -47,7 +47,7 @@ public class FindUsers extends AppCompatActivity {
         TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
 
         toolbar.setTitle("");
-        mTitle.setText("Search For Conntacts");
+        mTitle.setText("Search For Contacts");
         setSupportActionBar(toolbar);
 
         toolbar.setNavigationIcon(R.mipmap.ic_begginer);
@@ -59,7 +59,10 @@ public class FindUsers extends AppCompatActivity {
         mRecyclerView.setAdapter(recyclerAdapter);
         mRecyclerView.setItemAnimator(new FadeInAnimator());
 
-        setupWindowAnimations();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            setupWindowAnimations();
+
+        }
 
 
     }
@@ -67,10 +70,6 @@ public class FindUsers extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setupWindowAnimations() {
-       /* Explode explode = new Explode();
-        explode.setDuration(2000);
-        getWindow().setExitTransition(explode);
-*/
         Fade fade = new Fade();
         fade.setDuration(2000);
         getWindow().setReturnTransition(fade);

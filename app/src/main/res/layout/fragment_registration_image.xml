@@ -12,7 +12,6 @@
         android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/md_teal_50"
         android:orientation="vertical"
         android:padding="10dp"
         >
@@ -37,7 +36,7 @@
             android:scaleType="fitCenter"
             android:src="@drawable/avatar_2"
             app:circular_border="true"
-            app:circular_border_color="@color/primary_light"
+            app:circular_border_color="@color/md_teal_300"
             />
 
         <TextView

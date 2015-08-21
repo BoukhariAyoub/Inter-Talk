@@ -12,8 +12,9 @@ import android.widget.ListView;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
-import com.aboukhari.intertalking.adapter.FriendListAdapter;
+import com.aboukhari.intertalking.adapter.FriendsListAdapter;
 import com.aboukhari.intertalking.model.Friend;
+import com.aboukhari.intertalking.model.User;
 import com.firebase.client.Firebase;
 import com.firebase.client.ValueEventListener;
 
@@ -23,7 +24,7 @@ public class Friends extends Fragment {
     private Firebase ref;
     private ValueEventListener connectedListener;
     private ListView listView;
-    private FriendListAdapter friendListAdapter;
+    private FriendsListAdapter friendListAdapter;
     private FireBaseManager fireBaseManager;
 
     @Nullable
@@ -44,8 +45,8 @@ public class Friends extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Friend friend = (Friend) listView.getItemAtPosition(position);
-                fireBaseManager.createRoom(friend);
+                User user = (User) listView.getItemAtPosition(position);
+                fireBaseManager.createRoom(user);
             }
 
         });
@@ -57,7 +58,7 @@ public class Friends extends Fragment {
         super.onStart();
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
         Firebase query = ref.child("users").child(ref.getAuth().getUid()).child("friends");
-        friendListAdapter = new FriendListAdapter(query, getActivity());
+        friendListAdapter = new FriendsListAdapter(query, getActivity());
         listView.setAdapter(friendListAdapter);
         friendListAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override

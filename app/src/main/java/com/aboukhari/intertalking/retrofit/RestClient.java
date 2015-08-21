@@ -27,6 +27,7 @@ public class RestClient {
     private static RestAdapter.Builder BUIlDER;
 
     public final static String GOOGLE_MAPS_ENDPOINT = "https://maps.googleapis.com/maps/api/";
+    public final static String TIME_ENDPOINT = "http://www.timeapi.org/";
 
     //private static String ENDPOINT = "http://gd.geobytes.com/";
     private static String ENDPOINT;

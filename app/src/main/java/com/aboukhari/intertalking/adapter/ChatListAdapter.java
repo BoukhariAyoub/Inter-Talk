@@ -70,7 +70,7 @@ public class ChatListAdapter extends FirebaseListAdapter<Message> {
         CHAT_MSG_DATE_FORMAT.setTimeZone(TimeZone.getDefault());
         dateText.setText(CHAT_MSG_DATE_FORMAT.format(message.getDate()));
 
-        Utils.setImage(activity,imageUrl, imageView);
+        Utils.loadImage(activity, imageUrl, imageView);
 
 
         return view;
