@@ -118,9 +118,9 @@ public abstract class Utils {
             ImageLoader.getInstance().init(config);
         }
         DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.crop__ic_done)
-                .showImageForEmptyUri(R.drawable.crop__ic_cancel)
-                .showImageOnFail(R.mipmap.ic_avatar)
+                .showImageOnLoading(R.drawable.abc_spinner_textfield_background_material)
+                .showImageForEmptyUri(R.drawable.avatar_2)
+                .showImageOnFail(R.drawable.avatar_2)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .considerExifParams(true)
@@ -177,6 +177,8 @@ public abstract class Utils {
 
         return age;
     }
+
+
 
     public static ArrayList<User> generateRandomUsers(Context context) {
         String json = loadJSONFromAsset(context, "users.json");

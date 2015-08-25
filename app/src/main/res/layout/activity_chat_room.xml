@@ -5,14 +5,46 @@
     android:background="@color/WhiteSmoke"
     tools:context="com.aboukhari.intertalking.activity.ChatRoom">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+       <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/toolbar"
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/et_form"
-        style="@style/Base.Theme.AppCompat.Light.DarkActionBar"
-        android:minHeight="?attr/actionBarSize">
+        android:background="@color/primary"
+        android:elevation="4dp"
+        app:popupTheme="@style/Theme.AppCompat.NoActionBar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center_vertical">
+
+            <com.github.siyamed.shapeimageview.CircularImageView
+                android:layout_gravity="center"
+                android:id="@+id/iv_avatar"
+                android:layout_width="42dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/ic_arrow_forward_white_36dp"
+                android:layout_marginRight="10dp"/>
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/iv_avatar"
+                android:text="Toolbar Title"
+                android:textColor="@color/white" />
+
+        </RelativeLayout>
+
     </android.support.v7.widget.Toolbar>
 
     <ListView

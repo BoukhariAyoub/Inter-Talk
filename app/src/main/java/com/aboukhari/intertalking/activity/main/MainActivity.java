@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.Utils.Utils;
-import com.aboukhari.intertalking.activity.FindUsers;
+import com.aboukhari.intertalking.activity.search.FindUsers;
 import com.aboukhari.intertalking.activity.profile.ProfileView;
 import com.aboukhari.intertalking.adapter.TabsPagerAdapter;
 import com.facebook.AccessToken;

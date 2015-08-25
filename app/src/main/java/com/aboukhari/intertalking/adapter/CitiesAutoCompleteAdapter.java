@@ -5,7 +5,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 
-import com.aboukhari.intertalking.Utils.Variables;
+import com.aboukhari.intertalking.Utils.Constants;
 import com.aboukhari.intertalking.model.Place;
 import com.aboukhari.intertalking.retrofit.RestClient;
 import com.google.gson.JsonArray;
@@ -73,7 +73,7 @@ public class CitiesAutoCompleteAdapter extends ArrayAdapter<Place> implements Fi
     }
 
     private ArrayList<Place> mapsJsonToPlaces(String constraint) {
-        JsonElement json = RestClient.get(RestClient.GOOGLE_MAPS_ENDPOINT).autoCompleteCity(constraint.toString(), "(cities)", language, Variables.GOOGLE_API_KEY);
+        JsonElement json = RestClient.get(RestClient.GOOGLE_MAPS_ENDPOINT).autoCompleteCity(constraint.toString(), "(cities)", language, Constants.GOOGLE_API_KEY);
         ArrayList<Place> places = new ArrayList<>();
         JsonArray predictions = json.getAsJsonObject().getAsJsonArray("predictions");
         for (int i = 0, size = predictions.size(); i < size; i++) {

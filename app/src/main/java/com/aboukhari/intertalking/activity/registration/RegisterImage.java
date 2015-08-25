@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.aboukhari.intertalking.R;
-import com.aboukhari.intertalking.Utils.CircularImageView;
+import com.github.siyamed.shapeimageview.CircularImageView;
 import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
@@ -62,14 +62,7 @@ public class RegisterImage extends Fragment implements View.OnClickListener {
                 InputStream inputStream = getActivity().getContentResolver().openInputStream(Crop.getOutput(result));
                 Bitmap bmp = BitmapFactory.decodeStream(inputStream);
                 bitmap = bmp;
-
                 mAvatarImageView.setImageBitmap(bmp);
-                mAvatarImageView.addShadow();
-                mAvatarImageView.setBorderColor(getResources().getColor(R.color.md_grey_300));
-                mAvatarImageView.setBorderWidth(1);
-                mAvatarImageView.setSelectorStrokeColor(getResources().getColor(R.color.white));
-                mAvatarImageView.setSelectorStrokeWidth(1);
-                mAvatarImageView.addShadow();
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

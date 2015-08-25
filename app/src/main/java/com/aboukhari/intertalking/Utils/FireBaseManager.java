@@ -39,6 +39,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
+import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.JsonElement;
 
@@ -179,9 +180,8 @@ public class FireBaseManager {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User friend = dataSnapshot.getValue(User.class);
                         Intent intent = new Intent(context, ChatRoom.class);
-                        intent.putExtra("title", friend.getDisplayName());
+                        intent.putExtra("friend", friend);
                         intent.putExtra("roomName", roomName);
-                        intent.putExtra("imageUrl", friend.getImageUrl());
                         context.startActivity(intent);
                     }
 
@@ -370,6 +370,26 @@ public class FireBaseManager {
         request.executeAsync();
     }
 
+    public void addListenerToRoom(String s) {
+        if (!roomMessagesListenerMap.containsKey(s)) {
+
+           /* if (roomMessagesListenerMap.containsKey(dataSnapshot.getKey())) {
+                updateRoom(roomName); // Update Last message
+            }
+            checkUnread(roomName);
+
+            if (roomName.equals(currentRoom)) {
+                updateLastRead(roomName);
+                updateRoom(roomName);
+            } else {
+                updateRoom(roomName);
+            }
+            roomMessagesListenerMap.put(s, this);*/
+        }
+    }
+
+    /*
+    * Add Listener For every room in user's rooms*/
     public void theRealDeal() {
         final Firebase refUserRooms = ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms");
         refUserRooms.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -386,18 +406,22 @@ public class FireBaseManager {
                     refRoomMessages.addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
+                            Log.d("the real deal", "s = " + s);
+                            Log.d("the real deal", "dataSnapshot = " + dataSnapshot);
+                            Log.d("the real deal", "getKey = " + dataSnapshot.getKey());
                             //if the listener is not already added
                             if (!roomMessagesListenerMap.containsKey(s)) {
+
+                                checkUnread(roomName);
 
                                 if (roomMessagesListenerMap.containsKey(dataSnapshot.getKey())) {
                                     updateRoom(roomName); // Update Last message
                                 }
-                                checkUnread(roomName);
 
 
                                 if (roomName.equals(currentRoom)) {
                                     updateLastRead(roomName);
+                                    updateRoom(roomName);
                                 } else {
                                     updateRoom(roomName);
                                 }
@@ -441,11 +465,12 @@ public class FireBaseManager {
 
     public void updateLastRead(String roomName) {
         Date now = Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime();
-        ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").child(roomName).setValue(now);
+        ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms").child(roomName).setValue(ServerValue.TIMESTAMP);
     }
 
     /* retrieve the count of unread messages */
     public void checkUnread(final String roomName) {
+        Log.d("the real deal","check unread");
         Firebase refUserRooms = ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms");
 
         refUserRooms.child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -494,12 +519,10 @@ public class FireBaseManager {
         }
     }
 
-
     public void addUserToFireBase(User user) {
         Map<String, Object> userMap = Utils.objectToMap(user);
         ref.getRoot().child("users").child(user.getUid()).updateChildren(userMap);
     }
-
 
     public void addImageToUser(User user, String imageUrl) {
         ref.getRoot().child("users").child(user.getUid()).child("imageUrl").setValue(imageUrl);
@@ -515,7 +538,6 @@ public class FireBaseManager {
         ref.getRoot().child(languageType).child(language.getIso()).child(uid).removeValue();
 
     }
-
 
     public void createUser(final String email) {
         Long.toHexString(Double.doubleToLongBits(Math.random()));
@@ -601,9 +623,8 @@ public class FireBaseManager {
         });
     }
 
-
     private void registerPlace(final User user, String placeId) {
-        RestClient.get(RestClient.GOOGLE_MAPS_ENDPOINT).getPlaceDetails(placeId, "en", Variables.GOOGLE_API_KEY, new Callback<JsonElement>() {
+        RestClient.get(RestClient.GOOGLE_MAPS_ENDPOINT).getPlaceDetails(placeId, "en", Constants.GOOGLE_API_KEY, new Callback<JsonElement>() {
             @Override
             public void success(JsonElement json, Response response) {
                 /*Set Place To User*/
@@ -618,7 +639,6 @@ public class FireBaseManager {
             }
         });
     }
-
 
     private void registerLanguages(User user, ArrayList<Language> knownLanguages, ArrayList<Language> wantedLanguages) {
         for (Language language : knownLanguages) {
@@ -640,8 +660,8 @@ public class FireBaseManager {
      */
     public void addPlaceToUser(Place place, User user) {
         ref.getRoot().child("places").child(place.getId()).setValue(place);
-        ref.getRoot().child("users").child(user.getUid()).child("place").child("placeId").setValue(place.getId());
-        ref.getRoot().child("users").child(user.getUid()).child("place").child("placeName").setValue(place.getDescription());
+        ref.getRoot().child("users").child(user.getUid()).child("placeId").setValue(place.getId());
+        ref.getRoot().child("users").child(user.getUid()).child("placeName").setValue(place.getDescription());
     }
 
 
@@ -652,14 +672,11 @@ public class FireBaseManager {
             @Override
             public void onAuthenticated(AuthData authData) {
                 Log.d("natija auth", " auth data = " + authData);
-            /*    Map map = authData.getProviderData();
-                String email = map.get("email").toString();
-*/
                 final Boolean isTemporaryPassword = (Boolean) authData.getProviderData().get("isTemporaryPassword");
                 final String uid = authData.getAuth().get("uid").toString();
 
 
-//TODO check if first login
+                //TODO check if first login
                 if (isTemporaryPassword) {
                     Intent intent = new Intent(context, Main2Activity.class);
                     intent.putExtra("uid", uid);
@@ -697,9 +714,7 @@ public class FireBaseManager {
                         }
                     });
 
-
                 }
-
 
             }
 
@@ -742,6 +757,14 @@ public class FireBaseManager {
 
     }
 
-    public void getCurrentTime(){
+    public void getCurrentTime() {
+    }
+
+
+    public void theRealRealDeal() {
+
+        final Firebase refMessages = ref.getRoot().child("messages");
+
+
     }
 }

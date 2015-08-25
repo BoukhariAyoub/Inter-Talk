@@ -3,6 +3,7 @@ package com.aboukhari.intertalking.holder;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,6 +53,8 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
     public void bindConversation(final Conversation conversation, User friend) {
         final Long count = FireBaseManager.unreadMap.get(conversation.getRoomName()) == null ? 0L : FireBaseManager.unreadMap.get(conversation.getRoomName());
         mConversation = conversation;
+        Log.d("natija read", " count = " + count);
+        Log.d("natija read", " unreadMap = " + FireBaseManager.unreadMap);
 
         if (count > 0) {
             view.setBackgroundColor(view.getResources().getColor(R.color.md_grey_300));

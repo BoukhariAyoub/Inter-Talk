@@ -12,9 +12,11 @@ import android.widget.AutoCompleteTextView;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.Utils;
+import com.aboukhari.intertalking.adapter.CitiesAutoCompleteAdapter;
 import com.aboukhari.intertalking.adapter.LanguagesRecyclerAdapter;
 import com.aboukhari.intertalking.adapter.MyGridLayoutManager;
 import com.aboukhari.intertalking.model.Language;
+import com.aboukhari.intertalking.model.Place;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +33,9 @@ public class RegisterLanguageKnown extends Fragment {
     private AutoCompleteTextView mLanguagesKnownAutoComplete;
     RecyclerView mRecyclerViewKnown;
     ArrayList<Language> mLanguagesList;
+    CitiesAutoCompleteAdapter mCityAdapter;
+    Place mChosenPlace;
+    private AutoCompleteTextView mPlaceAutoComplete;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 

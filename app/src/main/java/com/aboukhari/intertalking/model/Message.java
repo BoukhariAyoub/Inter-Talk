@@ -27,10 +27,7 @@ public class Message {
     private String author;
 
     @JsonIgnore
-    Map<String, String> time;
-
-    @JsonIgnore
-    Long time2;
+    Long date;
 
     @SuppressWarnings("unused")
     private Message() {
@@ -39,7 +36,6 @@ public class Message {
     public Message(String message, String author) {
         this.message = message;
         this.author = author;
-        this.time = ServerValue.TIMESTAMP;
         Log.d("natija date", ServerValue.TIMESTAMP.toString());
 
     }
@@ -55,7 +51,7 @@ public class Message {
 
     @JsonIgnore
     public Date getDate() {
-        return new Date(time2);
+        return new Date(date);
     }
 
     @Override
@@ -68,13 +64,13 @@ public class Message {
     }
 
 
-    @JsonProperty("time")
+    @JsonProperty("date")
     public Map<String, String> getTime() {
-        return time;
+        return ServerValue.TIMESTAMP;
     }
 
-    @JsonProperty("time")
+    @JsonProperty("date")
     public void setTime(Long time) {
-        this.time2 = time;
+        this.date = time;
     }
 }

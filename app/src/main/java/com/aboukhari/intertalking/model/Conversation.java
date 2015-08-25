@@ -100,6 +100,15 @@ public class Conversation {
         this.secondDisplayName = secondDisplayName;
     }
 
+    @Override
+    public String toString() {
+        return "Conversation{" +
+                "lastMessage='" + lastMessage + '\'' +
+                ", lastMessageDate=" + lastMessageDate +
+                ", roomName='" + roomName + '\'' +
+                '}';
+    }
+
     public String getRoomName() {
         return roomName;
     }

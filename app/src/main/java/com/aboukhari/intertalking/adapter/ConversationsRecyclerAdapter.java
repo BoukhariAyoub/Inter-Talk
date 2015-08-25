@@ -37,7 +37,7 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
     private FireBaseManager fireBaseManager;
     private Context context;
 
-    public ConversationsRecyclerAdapter(Context context, Query ref, FireBaseManager fireBaseManager) {
+    public ConversationsRecyclerAdapter(Context context, Query ref, final FireBaseManager fireBaseManager) {
         this.ref = ref;
         this.context = context;
         this.fireBaseManager = fireBaseManager;
@@ -49,7 +49,8 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
         listener = this.ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, final String previousChildName) {
-
+                //add listener to the new conv
+                fireBaseManager.theRealDeal();
                 final String roomName = dataSnapshot.getKey();
                 final Conversation model = dataSnapshot.getValue(Conversation.class);
                 ConversationsRecyclerAdapter.this.ref.getRef().getRoot().child("users").child(uid).child("rooms").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -100,11 +101,13 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         int index = models.indexOf(oldModel);
 
-                        models.set(index, newModel);
-                        modelNames.put(modelName, newModel);
+                        if (index >= 0) {
+                            models.set(index, newModel);
+                            modelNames.put(modelName, newModel);
 
-                        Collections.sort(models, new DateComparator());
-                        notifyDataSetChanged();
+                            Collections.sort(models, new DateComparator());
+                            notifyDataSetChanged();
+                        }
                     }
 
                     @Override
@@ -207,7 +210,7 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
     public ConversationsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_conversation_list, parent, false);
-        return new ConversationsHolder(context,view, ref, fireBaseManager);
+        return new ConversationsHolder(context, view, ref, fireBaseManager);
     }
 
 

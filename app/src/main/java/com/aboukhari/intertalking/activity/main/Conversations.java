@@ -101,7 +101,6 @@ public class Conversations extends Fragment {
     public void onStop() {
         super.onStop();
         conversationsRecyclerAdapter.cleanup();
-        //  conversationListAdapter.cleanup();
     }
 
 

@@ -8,16 +8,19 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
+import com.aboukhari.intertalking.Utils.Utils;
 import com.aboukhari.intertalking.activity.main.Conversations;
-import com.aboukhari.intertalking.adapter.ChatListAdapter;
+import com.aboukhari.intertalking.adapter.MessagesListAdapter;
 import com.aboukhari.intertalking.database.DatabaseManager;
 import com.aboukhari.intertalking.model.Message;
+import com.aboukhari.intertalking.model.User;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -28,10 +31,9 @@ public class ChatRoom extends Activity {
 
     private Firebase ref;
     private ValueEventListener connectedListener;
-    private ChatListAdapter chatListAdapter;
+    private MessagesListAdapter messagesListAdapter;
     private ListView listView;
     private String roomName;
-    private String mTitle;
     private DatabaseManager databaseManager;
     private FireBaseManager fireBaseManager;
 
@@ -42,18 +44,18 @@ public class ChatRoom extends Activity {
         setContentView(R.layout.activity_chat_room);
 
         databaseManager = DatabaseManager.getInstance(this);
-
         fireBaseManager = new FireBaseManager(this);
-        roomName = getIntent().getStringExtra("roomName");
-        mTitle = getIntent().getStringExtra("title");
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            toolbar.setTitle(mTitle);
-            toolbar.setLogo(R.mipmap.ic_begginer);
+        ImageView avatarImageView = (ImageView) findViewById(R.id.iv_avatar);
+        TextView textView = (TextView) findViewById(R.id.toolbar_title);
 
-        }
+        roomName = getIntent().getStringExtra("roomName");
+        User friend = getIntent().getParcelableExtra("friend");
+        String title = friend.getDisplayName();
 
-
+        textView.setText(title);
+        Utils.loadImage(this, friend.getImageUrl(), avatarImageView);
 
         listView = (ListView) findViewById(android.R.id.list);
 
@@ -92,13 +94,13 @@ public class ChatRoom extends Activity {
 
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
         // Tell our list adapter that we only want 50 messages at a time
-        chatListAdapter = new ChatListAdapter(ref.child("messages").child(roomName).orderByChild("date"), this, R.layout.item_chat_right, ref.getAuth().getUid());
-        listView.setAdapter(chatListAdapter);
-        chatListAdapter.registerDataSetObserver(new DataSetObserver() {
+        messagesListAdapter = new MessagesListAdapter(ref.child("messages").child(roomName),this, ref.getAuth().getUid());
+        listView.setAdapter(messagesListAdapter);
+        messagesListAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
                 super.onChanged();
-                listView.setSelection(chatListAdapter.getCount() - 1);
+                listView.setSelection(messagesListAdapter.getCount() - 1);
             }
         });
 
@@ -129,10 +131,10 @@ public class ChatRoom extends Activity {
     public void onStop() {
         super.onStop();
         ref.getRoot().child(".info/connected").removeEventListener(connectedListener);
-        chatListAdapter.cleanup();
+        messagesListAdapter.cleanup();
         fireBaseManager.updateLastRead(roomName);
         fireBaseManager.checkUnread(roomName);
-    Conversations.conversationsRecyclerAdapter.notifyDataSetChanged();
+        Conversations.conversationsRecyclerAdapter.notifyDataSetChanged();
         FireBaseManager.currentRoom = null;
     }
 

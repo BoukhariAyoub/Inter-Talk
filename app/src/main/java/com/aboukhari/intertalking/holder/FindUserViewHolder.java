@@ -44,7 +44,7 @@ public class FindUserViewHolder extends RecyclerView.ViewHolder implements View.
         mUser = user;
         mDisplayName.setText(user.getDisplayName());
         mAge.setText(user.getAge() + " years");
-        mPlace.setText(user.getPlaceId() + "," + user.getPlaceName());
+        mPlace.setText(user.getPlaceName());
         Utils.loadImage(mContext, user.getImageUrl(), mAvatar);
         int color = user.getGender().equalsIgnoreCase("male") ? R.color.md_teal_A700 : R.color.md_red_A200;
 
