@@ -28,7 +28,7 @@
             android:textColor="@color/primary_dark"
             android:textSize="30sp" />
 
-        <com.aboukhari.intertalking.Utils.CircularImageView
+        <com.github.siyamed.shapeimageview.CircularImageView
             android:id="@+id/iv_avatar"
             android:layout_width="200dp"
             android:layout_height="200dp"

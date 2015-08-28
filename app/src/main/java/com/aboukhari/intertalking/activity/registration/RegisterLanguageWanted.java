@@ -11,13 +11,10 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
 import com.aboukhari.intertalking.R;
-import com.aboukhari.intertalking.Utils.Utils;
+import com.aboukhari.intertalking.Utils.JsonUtils;
 import com.aboukhari.intertalking.adapter.LanguagesRecyclerAdapter;
 import com.aboukhari.intertalking.adapter.MyGridLayoutManager;
 import com.aboukhari.intertalking.model.Language;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -72,27 +69,11 @@ public class RegisterLanguageWanted extends Fragment {
     }
 
     private Language[] getAllLanguages() {
-        mLanguagesList = jsonToLanguages(Utils.loadJSONFromAsset(getActivity(), "languages.json"));
+        mLanguagesList = JsonUtils.jsonToLanguages(getActivity());
         return mLanguagesList.toArray(new Language[mLanguagesList.size()]);
     }
 
-    private ArrayList<Language> jsonToLanguages(String json) {
-        ArrayList<Language> languages = new ArrayList<>();
-        try {
-            JSONArray jsonArray = new JSONArray(json);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String iso = jsonArray.getString(i);
 
-                Language language = new Language(iso);
-
-                languages.add(language);
-
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return languages;
-    }
     private ArrayList<Language> getSelectedLanguages(RecyclerView recyclerView) {
         LanguagesRecyclerAdapter adapter = (LanguagesRecyclerAdapter) recyclerView.getAdapter();
         return adapter.getLanguages();

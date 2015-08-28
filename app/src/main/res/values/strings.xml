@@ -9,6 +9,7 @@
     <string name="facebook_app_id">974378129279344</string>
     <string name="firebase_url"> https://blazing-torch-3851.firebaseio.com</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="translate_api_key">trnsl.1.1.20150716T152343Z.fa3f8e0911e22061.fd6bf080e9fe92b230dc3b3ac215c50c9169ce94</string>
 
     <!-- Main MENU -->
     <string name="sync_fb_friends">Sync</string>

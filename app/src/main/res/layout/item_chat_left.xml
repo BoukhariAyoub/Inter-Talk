@@ -6,7 +6,7 @@
     android:paddingLeft="5dp"
     android:paddingTop="10dp">
 
-    <com.aboukhari.intertalking.Utils.CircularImageView
+    <com.github.siyamed.shapeimageview.CircularImageView
         android:id="@+id/iv_avatar"
         android:layout_width="match_parent"
         android:layout_height="40dp"

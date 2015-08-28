@@ -57,7 +57,7 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
 
         if (ref.getAuth() != null) {
             FireBaseManager.getInstance(this).addCurrentUserChangeListener();
-            Intent intent = new Intent(Login.this,
+            Intent intent = new Intent(this,
                     MainActivity.class);
             startActivity(intent);
             this.finish();

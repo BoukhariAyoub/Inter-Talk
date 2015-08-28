@@ -42,7 +42,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:+'
     compile 'com.android.support:cardview-v7:+'
     compile 'jp.wasabeef:recyclerview-animators:1.2.1'
-    compile 'org.geonames:geonames:1.0'
     compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
     compile 'com.github.chenupt.android:springindicator:1.0.2@aar'
     compile 'info.hoang8f:android-segmented:1.0.5'
@@ -54,5 +53,7 @@ dependencies {
     compile 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
     compile 'com.cloudinary:cloudinary-android:1.2.1'
     compile 'com.appyvet:materialrangebar:1.0'
-
+    compile ('com.weiwangcn.betterspinner:library-material:1.1.0') {
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+    }
 }

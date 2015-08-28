@@ -9,30 +9,36 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 
 import com.aboukhari.intertalking.R;
+import com.aboukhari.intertalking.Utils.JsonUtils;
 import com.aboukhari.intertalking.adapter.CitiesAutoCompleteAdapter;
 import com.aboukhari.intertalking.model.FilterPrefs;
+import com.aboukhari.intertalking.model.Language;
 import com.aboukhari.intertalking.model.Place;
 import com.appyvet.rangebar.RangeBar;
 import com.google.gson.Gson;
+import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import info.hoang8f.android.segmented.SegmentedGroup;
 
 public class FilterUsers extends AppCompatActivity implements View.OnClickListener, TextWatcher {
 
     ImageView mToolbarDone;
     ImageView mToolbarReturn;
-    private AutoCompleteTextView mLanguagesKnownAutoComplete;
+    MaterialBetterSpinner mLanguagesSpinner;
     CitiesAutoCompleteAdapter mCityAdapter;
     Place mChosenPlace;
-    private AutoCompleteTextView mPlaceAutoComplete;
+    Language language;
+    AutoCompleteTextView mPlaceAutoComplete;
     RangeBar mRangeBar;
-    RadioGroup mRadioGroup;
+    SegmentedGroup mRadioGroup;
 
 
     @Override
@@ -44,7 +50,7 @@ public class FilterUsers extends AppCompatActivity implements View.OnClickListen
         mPlaceAutoComplete = (AutoCompleteTextView) findViewById(R.id.auto_city);
         mToolbarDone = (ImageView) findViewById(R.id.toolbar_done);
         mRangeBar = (RangeBar) findViewById(R.id.rangebar);
-        mRadioGroup = (RadioGroup) findViewById(R.id.radio_group);
+        mRadioGroup = (SegmentedGroup) findViewById(R.id.radio_group);
 
 
         mCityAdapter = new CitiesAutoCompleteAdapter(this, android.R.layout.simple_list_item_1, Locale.getDefault().getLanguage());
@@ -56,9 +62,19 @@ public class FilterUsers extends AppCompatActivity implements View.OnClickListen
 
         mToolbarDone.setOnClickListener(this);
 
+
+        mLanguagesSpinner = (MaterialBetterSpinner) findViewById(R.id.spinner_languages);
+        ArrayAdapter<Language> dataAdapter = new ArrayAdapter<>
+                (this, android.R.layout.simple_spinner_item, JsonUtils.jsonToLanguages(this));
+
+        mLanguagesSpinner.setAdapter(dataAdapter);
+      //  mLanguagesSpinner.getSe
+
+
         loadSettings();
 
     }
+
 
 
     @Override
@@ -149,8 +165,10 @@ public class FilterUsers extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void afterTextChanged(Editable s) {
-        if (mChosenPlace!= null && !mChosenPlace.getDescription().equals(s.toString())) {
+        if (mChosenPlace != null && !mChosenPlace.getDescription().equals(s.toString())) {
             mChosenPlace = null;
         }
     }
+
+
 }

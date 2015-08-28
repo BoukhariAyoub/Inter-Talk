@@ -511,7 +511,7 @@ public class FireBaseManager {
     }
 
     public void addGeneratedUsers() {
-        ArrayList<User> users = Utils.generateRandomUsers(context);
+        ArrayList<User> users = JsonUtils.generateRandomUsers(context);
         for (User user : users) {
             user.setUid("Random:" + user.getUid());
             Map<String, Object> userMap = Utils.objectToMap(user);
@@ -628,7 +628,7 @@ public class FireBaseManager {
             @Override
             public void success(JsonElement json, Response response) {
                 /*Set Place To User*/
-                Place place = Utils.jSonToPlace(json);
+                Place place = JsonUtils.jSonToPlace(json);
                 FireBaseManager.getInstance(context).addPlaceToUser(place, user);
             }
 
@@ -660,8 +660,7 @@ public class FireBaseManager {
      */
     public void addPlaceToUser(Place place, User user) {
         ref.getRoot().child("places").child(place.getId()).setValue(place);
-        ref.getRoot().child("users").child(user.getUid()).child("placeId").setValue(place.getId());
-        ref.getRoot().child("users").child(user.getUid()).child("placeName").setValue(place.getDescription());
+        ref.getRoot().child("users").child(user.getUid()).child("place").setValue(place);
     }
 
 

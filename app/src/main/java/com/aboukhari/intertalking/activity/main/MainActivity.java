@@ -48,8 +48,6 @@ public class MainActivity extends ActionBarActivity implements
         fireBaseManager = new FireBaseManager(this);
         FacebookSdk.sdkInitialize(this);
 
-
-
         viewPager = (ViewPager) findViewById(R.id.pager);
         actionBar = getSupportActionBar();
 

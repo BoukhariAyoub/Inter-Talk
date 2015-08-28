@@ -51,8 +51,7 @@ public class FindUsersRecyclerAdapter extends RecyclerView.Adapter<FindUserViewH
         final FilterPrefs filterPrefs = gson.fromJson(json, FilterPrefs.class);
         if (filterPrefs != null) {
             Log.d("natija filter", "pref filter =  " + filterPrefs.toString());
-        }
-        else {
+        } else {
             Log.d("natija filter", "pref filter =  NULL");
         }
 
@@ -60,6 +59,7 @@ public class FindUsersRecyclerAdapter extends RecyclerView.Adapter<FindUserViewH
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, final String previousChildName) {
                 if (checkPrefs(dataSnapshot, filterPrefs)) {
+
                     Log.d("natija", "dataSnapshot = " + dataSnapshot);
                     final String name = dataSnapshot.getKey();
                     final User model = dataSnapshot.getValue(User.class);
@@ -157,7 +157,8 @@ public class FindUsersRecyclerAdapter extends RecyclerView.Adapter<FindUserViewH
     }
 
     private boolean checkPrefs(DataSnapshot dataSnapshot, FilterPrefs prefs) {
-        boolean check = true;
+        boolean check = true; // dataSnapshot.getKey() != ref.getRef().getAuth().getUid();
+
         if (prefs != null) {
 
 
@@ -172,7 +173,7 @@ public class FindUsersRecyclerAdapter extends RecyclerView.Adapter<FindUserViewH
 
 
             if (gender != null) {
-                check &= dataSnapshot.child("gender").getValue() != null && dataSnapshot.child("gender").getValue(String.class).equals(gender);
+                check &= dataSnapshot.child("gender").getValue() != null && dataSnapshot.child("gender").getValue(String.class).equalsIgnoreCase(gender);
             }
 
             if (placeId != null) {
@@ -196,13 +197,20 @@ public class FindUsersRecyclerAdapter extends RecyclerView.Adapter<FindUserViewH
      /*    if (isOnline != null) {
             check &= dataSnapshot.child("isOnline").getValue() != null && dataSnapshot.child("isOnline").getValue(Boolean.class).equals(isOnline);
         }
-        if (hasPicture != null) {
-            check &= dataSnapshot.child("hasPicture").getValue() != null && dataSnapshot.child("hasPicture").getValue(Boolean.class).equals(hasPicture);
-        }*/
-/*
-        if (languages != null) {
-            check &= dataSnapshot.child("languages").getValue() != null && dataSnapshot.child("languages").getValue(String.class).equals(languages);
-        }*/
+        */
+            if (hasPicture != null && hasPicture) {
+                check &= dataSnapshot.child("imageUrl").getValue() != null;
+            }
+
+            languages = new ArrayList<>();
+
+            languages.add("ar");
+
+            if (languages != null && !languages.isEmpty()) {
+                Map<String, String> langs = (Map<String, String>) dataSnapshot.child("knownLanguages").getValue();
+                check &= dataSnapshot.child("knownLanguages").getValue() != null && speaksLangs(langs, languages);
+            }
+
 
         }
         return check;
@@ -243,5 +251,14 @@ public class FindUsersRecyclerAdapter extends RecyclerView.Adapter<FindUserViewH
         ref.removeEventListener(listener);
         models.clear();
         modelNames.clear();
+    }
+
+    private boolean speaksLangs(Map<String, String> langs, ArrayList<String> languages) {
+        for (String l : languages) {
+            if (langs.keySet().contains(l)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

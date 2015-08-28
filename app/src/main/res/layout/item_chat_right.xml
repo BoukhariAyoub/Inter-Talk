@@ -26,18 +26,18 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.15"
         android:minHeight="40dp"
-        android:background="@drawable/message_me_shape"
+        android:background="@drawable/calque_1"
         android:textColor="@color/white"
         android:paddingBottom="5dp"
-        android:text="dksqjdqlsmdqsmkdjqslkdjqsmldjqsldkjqsldjqsmldqjsldjqsldkjqsmldqjsdlkqsjdlqsjdmlqsjdqlkjdqslmdjqsldjqlmdkjqslkdjqlsd"/>
+        android:text=""/>
 
-    <com.aboukhari.intertalking.Utils.CircularImageView
+    <com.github.siyamed.shapeimageview.RoundedImageView
         android:id="@+id/iv_avatar"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_weight="0.4"
         android:src="@drawable/user"
-        android:layout_gravity="top"
+        android:layout_gravity="bottom"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
         />

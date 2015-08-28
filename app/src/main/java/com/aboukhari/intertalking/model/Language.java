@@ -1,5 +1,7 @@
 package com.aboukhari.intertalking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Locale;
 
 /**
@@ -30,6 +32,7 @@ public class Language {
         return iso;
     }
 
+    @JsonIgnore
     public String getName() {
         return  new Locale(iso).getDisplayLanguage().toUpperCase();
 
