@@ -13,8 +13,8 @@ import android.view.MenuItem;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.Utils.Utils;
-import com.aboukhari.intertalking.activity.search.FindUsers;
 import com.aboukhari.intertalking.activity.profile.ProfileView;
+import com.aboukhari.intertalking.activity.search.FindUsers;
 import com.aboukhari.intertalking.adapter.TabsPagerAdapter;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
@@ -29,6 +29,8 @@ public class MainActivity extends ActionBarActivity implements
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
+
+
 
     // Tab titles
     final int[] ICONS = new int[]{
@@ -89,6 +91,7 @@ public class MainActivity extends ActionBarActivity implements
         });
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -116,7 +119,7 @@ public class MainActivity extends ActionBarActivity implements
         }
 
         if (id == R.id.action_find_users) {
-            Intent intent = new Intent(this,FindUsers.class);
+            Intent intent = new Intent(this, FindUsers.class);
             startActivity(intent);
         }
 
@@ -145,8 +148,13 @@ public class MainActivity extends ActionBarActivity implements
 
     }
 
-
-    public FireBaseManager getFireBaseManager() {
+    public FireBaseManager getFireBaseManager(){
         return fireBaseManager;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+     fireBaseManager.updateOnlineStatus();
     }
 }

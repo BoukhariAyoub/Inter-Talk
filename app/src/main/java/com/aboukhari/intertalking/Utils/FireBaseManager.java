@@ -68,10 +68,11 @@ public class FireBaseManager {
     Firebase ref;
 
     Map<String, ChildEventListener> messagesListenerMap = new HashMap<>();
-    Map<String, ValueEventListener> singleMessageLisntenerMap = new HashMap<>();
     public static Map<String, Long> unreadMap = new HashMap();
     public static String currentRoom = null;
     Map<String, ChildEventListener> roomMessagesListenerMap = new HashMap<>();
+    private ValueEventListener connectedListener;
+
 
     public static FireBaseManager getInstance(Context ctx) {
         return new FireBaseManager(ctx);
@@ -82,7 +83,6 @@ public class FireBaseManager {
         this.ref = new Firebase(context.getResources().getString(R.string.firebase_url));
         this.context = context;
         databaseManager = DatabaseManager.getInstance(context);
-
     }
 
     /**
@@ -470,7 +470,7 @@ public class FireBaseManager {
 
     /* retrieve the count of unread messages */
     public void checkUnread(final String roomName) {
-        Log.d("the real deal","check unread");
+        Log.d("the real deal", "check unread");
         Firebase refUserRooms = ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms");
 
         refUserRooms.child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -756,14 +756,31 @@ public class FireBaseManager {
 
     }
 
-    public void getCurrentTime() {
-    }
+    public void updateOnlineStatus() {
+        final Firebase isOnline = ref.getRoot().child("users").child(Utils.getUserFromPreferences(context).getUid()).child("online");
+        final Firebase lastOnline = ref.getRoot().child("users").child(Utils.getUserFromPreferences(context).getUid()).child("online");
+        if (connectedListener == null) {
+            connectedListener = ref.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    boolean connected = (Boolean) dataSnapshot.getValue();
+                    if (connected) {
+                        Log.d("natija online", "is connected ? " + connected);
+                        lastOnline.onDisconnect().setValue(ServerValue.TIMESTAMP);
+                        isOnline.setValue(true);
+                        isOnline.onDisconnect().setValue(false  );
+
+                    }
+
+                }
 
 
-    public void theRealRealDeal() {
-
-        final Firebase refMessages = ref.getRoot().child("messages");
-
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    System.err.println("Listener was cancelled at .info/connected");
+                }
+            });
+        }
 
     }
 }

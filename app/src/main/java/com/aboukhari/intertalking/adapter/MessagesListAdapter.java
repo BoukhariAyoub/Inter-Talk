@@ -16,7 +16,7 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
-import com.github.siyamed.shapeimageview.RoundedImageView;
+import com.github.siyamed.shapeimageview.CircularImageView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -189,7 +189,7 @@ public class MessagesListAdapter extends BaseAdapter {
 
         TextView messageText = (TextView) view.findViewById(R.id.message);
         TextView dateText = (TextView) view.findViewById(R.id.date);
-        RoundedImageView imageView = (RoundedImageView) view.findViewById(R.id.iv_avatar);
+        CircularImageView imageView = (CircularImageView) view.findViewById(R.id.iv_avatar);
 
         messageText.setText(message.getMessage());
 

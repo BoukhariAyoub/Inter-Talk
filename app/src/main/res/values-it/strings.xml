@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+    <string name="app_name">Chat App</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="title_activity_main_tabs">MainTabs</string>
+    <string name="title_activity_friends">Amici</string>
+    <string name="title_activity_conversations">Conversazioni</string>
+    <string name="title_activity_chat_room">Chat</string>
+    <string name="facebook_app_id">974378129279344</string>
+    <string name="firebase_url"> https://blazing-torch-3851.firebaseio.com</string>
+    <string name="title_activity_main">Obbiettivo principale l\'allevamento</string>
+    <string name="translate_api_key">trnsl.1.1.20150716T152343Z.fa3f8e0911e22061.fd6bf080e9fe92b230dc3b3ac215c50c9169ce94</string>
+    <!-- Main MENU -->
+    <string name="sync_fb_friends">Sync</string>
+    <string name="logout">Il Log Out</string>
+    <string name="title_activity_geo_names">GeoNames</string>
+    <string name="title_activity_registration">Registrazione</string>
+    <string name="title_activity_register_basic">RegisterBasic</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_spring_indicator">SpringIndicator</string>
+    <!-- LANGUAGE REGISTER -->
+    <string name="languages_you_know">Le Lingue Che Conosci</string>
+    <string name="languages_you_want">La Lingua Che Si Desidera Imparare</string>
+    <!-- LANGUAGE LEVEL -->
+    <string name="language_level_1">Principiante</string>
+    <string name="language_level_2">Intermedi</string>
+    <string name="language_level_3">Avanzate</string>
+    <string name="language_level_4">Nativo</string>
+    <!-- CHAT ROOM -->
+    <string name="your_message">Il Tuo Messaggio...</string>
+    <string name="title_activity_profile_view">ProfileView</string>
+    <string name="hello_world">Ciao mondo!!</string>
+    <string name="title_activity_profile_edit">ProfileEdit</string>
+    <string name="title_activity_find_users">FindUsers</string>
+    <string name="title_activity_filter_users">Filtro Utenti</string>
+</resources>

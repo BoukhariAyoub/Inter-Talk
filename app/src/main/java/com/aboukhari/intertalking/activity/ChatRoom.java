@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
@@ -21,16 +20,12 @@ import com.aboukhari.intertalking.adapter.MessagesListAdapter;
 import com.aboukhari.intertalking.database.DatabaseManager;
 import com.aboukhari.intertalking.model.Message;
 import com.aboukhari.intertalking.model.User;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 
 
 public class ChatRoom extends Activity {
 
     private Firebase ref;
-    private ValueEventListener connectedListener;
     private MessagesListAdapter messagesListAdapter;
     private ListView listView;
     private String roomName;
@@ -105,24 +100,7 @@ public class ChatRoom extends Activity {
         });
 
 
-        // Finally, a little indication of connection status
-        connectedListener = ref.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean connected = (Boolean) dataSnapshot.getValue();
-                if (connected) {
-                    Toast.makeText(ChatRoom.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(ChatRoom.this, "Disconnected from Firebase", Toast.LENGTH_SHORT).show();
-                }
-            }
 
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                // No-op
-            }
-        });
 
         FireBaseManager.currentRoom = roomName;
     }
@@ -130,7 +108,6 @@ public class ChatRoom extends Activity {
     @Override
     public void onStop() {
         super.onStop();
-        ref.getRoot().child(".info/connected").removeEventListener(connectedListener);
         messagesListAdapter.cleanup();
         fireBaseManager.updateLastRead(roomName);
         fireBaseManager.checkUnread(roomName);
