@@ -203,7 +203,6 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
         ref.removeEventListener(listener);
         models.clear();
         modelNames.clear();
-
     }
 
     @Override

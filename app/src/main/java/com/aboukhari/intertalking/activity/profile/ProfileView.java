@@ -21,6 +21,7 @@ import com.aboukhari.intertalking.model.User;
 import com.github.clans.fab.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
 
@@ -60,7 +61,7 @@ public class ProfileView extends Activity implements View.OnClickListener {
         recyclerViewKnown = (RecyclerView) findViewById(R.id.recyclerViewKnown);
         recyclerViewWanted = (RecyclerView) findViewById(R.id.recyclerViewWanted);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setupWindowAnimations();
         }
 
@@ -84,12 +85,16 @@ public class ProfileView extends Activity implements View.OnClickListener {
 
     private ArrayList<Language> getSelectedLanguages() {
         ArrayList<Language> languages = new ArrayList<>();
-        languages.add(new Language("en"));
-        languages.add(new Language("ar"));
-        languages.add(new Language("fr"));
-        languages.add(new Language("en"));
-        languages.add(new Language("ar"));
-        languages.add(new Language("fr"));
+
+        HashMap<String, Integer> langs = user.getKnownLanguages();
+        if (langs != null) {
+            for (String lang : langs.keySet()) {
+                int level = langs.get(lang);
+                languages.add(new Language(lang, level));
+            }
+        }
+
+
         return languages;
     }
 
@@ -106,6 +111,10 @@ public class ProfileView extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         if (v.getId() == fabAddFriend.getId()) {
             FireBaseManager.getInstance(this).addFriend(user);
+        }
+
+        if (v.getId() == fabSendMessage.getId()) {
+            FireBaseManager.getInstance(this).createRoom(user);
         }
     }
 }

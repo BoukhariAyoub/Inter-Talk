@@ -19,7 +19,9 @@ import java.util.HashMap;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @DatabaseTable(tableName = "user")
-public class User implements Parcelable {
+public class User implements Parcelable{
+
+
 
 
     @DatabaseField(id = true)
@@ -56,6 +58,8 @@ public class User implements Parcelable {
     Boolean isFirstLogin;
 
     HashMap<String,Integer> languages;
+    HashMap<String,Integer> knownLanguages;
+    HashMap<String,Integer> wantedLanguages;
 
 
     public User() {
@@ -174,6 +178,29 @@ public class User implements Parcelable {
         this.isFirstLogin = firstLogin;
     }
 
+    public Boolean getIsFirstLogin() {
+        return isFirstLogin;
+    }
+
+    public void setIsFirstLogin(Boolean isFirstLogin) {
+        this.isFirstLogin = isFirstLogin;
+    }
+
+    public HashMap<String, Integer> getKnownLanguages() {
+        return knownLanguages;
+    }
+
+    public void setKnownLanguages(HashMap<String, Integer> knownLanguages) {
+        this.knownLanguages = knownLanguages;
+    }
+
+    public HashMap<String, Integer> getWantedLanguages() {
+        return wantedLanguages;
+    }
+
+    public void setWantedLanguages(HashMap<String, Integer> wantedLanguages) {
+        this.wantedLanguages = wantedLanguages;
+    }
 
     @Override
     public String toString() {
@@ -190,6 +217,7 @@ public class User implements Parcelable {
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
+
 
     @Override
     public int describeContents() {
@@ -208,6 +236,10 @@ public class User implements Parcelable {
         dest.writeString(this.placeName);
         dest.writeString(this.gender);
         dest.writeString(this.imageUrl);
+        dest.writeValue(this.isFirstLogin);
+        dest.writeSerializable(this.languages);
+        dest.writeSerializable(this.knownLanguages);
+        dest.writeSerializable(this.wantedLanguages);
     }
 
     protected User(Parcel in) {
@@ -223,9 +255,13 @@ public class User implements Parcelable {
         this.placeName = in.readString();
         this.gender = in.readString();
         this.imageUrl = in.readString();
+        this.isFirstLogin = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.languages = (HashMap<String, Integer>) in.readSerializable();
+        this.knownLanguages = (HashMap<String, Integer>) in.readSerializable();
+        this.wantedLanguages = (HashMap<String, Integer>) in.readSerializable();
     }
 
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+    public static final Creator<User> CREATOR = new Creator<User>() {
         public User createFromParcel(Parcel source) {
             return new User(source);
         }

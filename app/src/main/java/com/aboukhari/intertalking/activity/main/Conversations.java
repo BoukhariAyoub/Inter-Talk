@@ -12,7 +12,6 @@ import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.adapter.ConversationsRecyclerAdapter;
 import com.aboukhari.intertalking.adapter.MyGridLayoutManager;
-import com.aboukhari.intertalking.adapter.MyLayoutManager;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.Firebase;
 import com.firebase.client.Query;
@@ -30,7 +29,6 @@ public class Conversations extends Fragment {
     private ValueEventListener connectedListener;
     private ListView listView;
     private RecyclerView recyclerView;
-    // public static ConversationsListAdapter conversationListAdapter;
     public static ConversationsRecyclerAdapter conversationsRecyclerAdapter;
 
     Map<String, ChildEventListener> messageListenerMap = new HashMap<>();
@@ -65,34 +63,13 @@ public class Conversations extends Fragment {
     public void onStart() {
         super.onStart();
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
-        Query query = ref.child("room_names");//.orderByChild("myId").equalTo(ref.getAuth().getUid());
-     /*   conversationListAdapter = new ConversationsListAdapter(query, R.layout.item_conversation_list, getActivity());
-        listView.setAdapter(conversationListAdapter);
-        conversationListAdapter.registerDataSetObserver(new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                listView.setSelection(conversationListAdapter.getCount() - 1);
-            }
-        });*/
+        Query query = ref.child("room_names");
         conversationsRecyclerAdapter = new ConversationsRecyclerAdapter(getActivity(),query, fireBaseManager);
         conversationsRecyclerAdapter.setHasStableIds(true);
         MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(getActivity(),1);
-        MyLayoutManager myLayoutManager = new MyLayoutManager(getActivity());
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(conversationsRecyclerAdapter);
         recyclerView.setItemAnimator(new FadeInAnimator());
-
-
-
-        // listView.setAdapter(conversationListAdapter);
-    /*    conversationListAdapter.registerDataSetObserver(new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                listView.setSelection(conversationListAdapter.getCount() - 1);
-            }
-        });*/
 
 
     }

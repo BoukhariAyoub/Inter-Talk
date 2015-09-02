@@ -1,9 +1,10 @@
 package com.aboukhari.intertalking.activity;
 
 import android.app.Activity;
-import android.database.DataSetObserver;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -16,21 +17,28 @@ import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.Utils.Utils;
 import com.aboukhari.intertalking.activity.main.Conversations;
-import com.aboukhari.intertalking.adapter.MessagesListAdapter;
+import com.aboukhari.intertalking.adapter.MessageRecyclerAdapter;
+import com.aboukhari.intertalking.adapter.MyGridLayoutManager;
 import com.aboukhari.intertalking.database.DatabaseManager;
 import com.aboukhari.intertalking.model.Message;
 import com.aboukhari.intertalking.model.User;
 import com.firebase.client.Firebase;
 
+import java.util.Date;
 
-public class ChatRoom extends Activity {
+import jp.wasabeef.recyclerview.animators.FadeInAnimator;
+
+
+public class ChatRoom extends Activity implements View.OnClickListener {
 
     private Firebase ref;
-    private MessagesListAdapter messagesListAdapter;
     private ListView listView;
+    private RecyclerView recyclerView;
     private String roomName;
     private DatabaseManager databaseManager;
     private FireBaseManager fireBaseManager;
+    private MessageRecyclerAdapter messageRecyclerAdapter;
+    ImageView mTranslateImageView, mActivatedImageView;
 
 
     @Override
@@ -41,9 +49,15 @@ public class ChatRoom extends Activity {
         databaseManager = DatabaseManager.getInstance(this);
         fireBaseManager = new FireBaseManager(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         ImageView avatarImageView = (ImageView) findViewById(R.id.iv_avatar);
         TextView textView = (TextView) findViewById(R.id.toolbar_title);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        mTranslateImageView = (ImageView) findViewById(R.id.toolbar_auto_translate);
+        mActivatedImageView = (ImageView) findViewById(R.id.toolbar_translate_activated);
+
+        mTranslateImageView.setOnClickListener(this);
+        mActivatedImageView.setOnClickListener(this);
 
         roomName = getIntent().getStringExtra("roomName");
         User friend = getIntent().getParcelableExtra("friend");
@@ -89,6 +103,7 @@ public class ChatRoom extends Activity {
 
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
         // Tell our list adapter that we only want 50 messages at a time
+/*
         messagesListAdapter = new MessagesListAdapter(ref.child("messages").child(roomName),this, ref.getAuth().getUid());
         listView.setAdapter(messagesListAdapter);
         messagesListAdapter.registerDataSetObserver(new DataSetObserver() {
@@ -98,17 +113,52 @@ public class ChatRoom extends Activity {
                 listView.setSelection(messagesListAdapter.getCount() - 1);
             }
         });
+*/
 
 
+        messageRecyclerAdapter = new MessageRecyclerAdapter(ref.child("messages").child(roomName), fireBaseManager, this);
+        MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(this, 1);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setAdapter(messageRecyclerAdapter);
+        recyclerView.setItemAnimator(new FadeInAnimator());
+
+        messageRecyclerAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                Log.d("natija recycler", "positionStart " + positionStart + " - itemCount " + itemCount);
+                recyclerView.smoothScrollToPosition(positionStart + itemCount - 1);
 
 
+            }
+
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                Log.d("natija recycler", "count " + messageRecyclerAdapter.getItemCount());
+
+                recyclerView.smoothScrollToPosition(messageRecyclerAdapter.getItemCount() - 1);
+            }
+        });
+
+        //  messageRecyclerAdapter.setHasStableIds(true);
+   /*     messageRecyclerAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                recyclerView.smoothScrollToPosition(messageRecyclerAdapter.getItemCount() - 1);
+            }
+        });
+*/
         FireBaseManager.currentRoom = roomName;
+
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        messagesListAdapter.cleanup();
+        messageRecyclerAdapter.cleanup();
         fireBaseManager.updateLastRead(roomName);
         fireBaseManager.checkUnread(roomName);
         Conversations.conversationsRecyclerAdapter.notifyDataSetChanged();
@@ -126,5 +176,20 @@ public class ChatRoom extends Activity {
         }
     }
 
+    Date enabledDate = new Date(Long.MAX_VALUE);
 
+    public Date getEnabledDate() {
+        return enabledDate;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == mActivatedImageView.getId() || v.getId() == mTranslateImageView.getId()) {
+            boolean enable = !mActivatedImageView.isEnabled();
+            int drawable = enable ? android.R.drawable.presence_offline : android.R.drawable.presence_online;
+            mActivatedImageView.setEnabled(enable);
+            enabledDate = enable ? new Date(Long.MAX_VALUE) : new Date();
+            mActivatedImageView.setImageDrawable(ContextCompat.getDrawable(this, drawable));
+        }
+    }
 }

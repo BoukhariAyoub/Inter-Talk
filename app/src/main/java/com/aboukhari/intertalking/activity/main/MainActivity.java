@@ -31,7 +31,6 @@ public class MainActivity extends ActionBarActivity implements
     private ActionBar actionBar;
 
 
-
     // Tab titles
     final int[] ICONS = new int[]{
             R.mipmap.ic_conversations,
@@ -49,6 +48,8 @@ public class MainActivity extends ActionBarActivity implements
 
         fireBaseManager = new FireBaseManager(this);
         FacebookSdk.sdkInitialize(this);
+
+ //      TranslationManager.translateMessage("", "Hello my name is ayoub and i live in paris");
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         actionBar = getSupportActionBar();
@@ -148,13 +149,13 @@ public class MainActivity extends ActionBarActivity implements
 
     }
 
-    public FireBaseManager getFireBaseManager(){
+    public FireBaseManager getFireBaseManager() {
         return fireBaseManager;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-     fireBaseManager.updateOnlineStatus();
+        fireBaseManager.updateOnlineStatus();
     }
 }

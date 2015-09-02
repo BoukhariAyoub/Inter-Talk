@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.aboukhari.intertalking.model.Conversation;
 import com.aboukhari.intertalking.model.Friend;
-import com.aboukhari.intertalking.model.Message;
+import com.aboukhari.intertalking.model.TranslatedMessage;
 import com.aboukhari.intertalking.model.User;
 import com.aboukhari.intertalking.model.UserRoom;
 import com.j256.ormlite.stmt.UpdateBuilder;
@@ -67,12 +67,25 @@ public class DatabaseManager {
         }
     }
 
-    public void addMessage(Message message) {
+    public void addMessage(TranslatedMessage message) {
         try {
             getHelper().getmDaoMessage().create(message);
         } catch (SQLException e) {
             Log.e("Sql Error", e.getMessage());
         }
+    }
+
+    public TranslatedMessage getMessage(String id){
+        TranslatedMessage message;
+        try {
+            message = getHelper().getmDaoMessage().queryForId(id);
+            if (message != null) {
+                return message;
+            }
+        } catch (SQLException e) {
+            Log.e("Sql Error", e.getMessage());
+        }
+        return null;
     }
 
     public void addUserRoom(UserRoom userRoom) {

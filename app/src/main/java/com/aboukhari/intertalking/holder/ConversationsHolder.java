@@ -9,14 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aboukhari.intertalking.R;
+import com.aboukhari.intertalking.Utils.Constants;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.Utils.Utils;
 import com.aboukhari.intertalking.model.Conversation;
 import com.aboukhari.intertalking.model.User;
 import com.firebase.client.Query;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 /**
  * Created by aboukhari on 31/07/2015.
@@ -30,7 +28,6 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
     private final TextView mMessageTextView;
     private final ImageView mImageView;
     private final FireBaseManager fireBaseManager;
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm");
     private Conversation mConversation;
     private View view;
     private Context context;
@@ -63,7 +60,7 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
         }
 
         mDisplayNameTextView.setText(friend.getDisplayName());
-        mDateTextView.setText(DATE_FORMAT.format(conversation.getLastMessageDate()));
+        mDateTextView.setText(Constants.MESSAGE_DATE_FORMAT.format(conversation.getLastMessageDate()));
         mMessageTextView.setText(conversation.getLastMessage());
         Utils.loadImage(context, friend.getImageUrl(), mImageView);
     }

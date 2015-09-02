@@ -43,11 +43,40 @@
                 android:text="Toolbar Title"
                 android:textColor="@color/white" />
 
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                >
+
+                <ImageView
+                    android:id="@+id/toolbar_auto_translate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_translation_white"
+                    />
+
+                <ImageView
+                    android:id="@+id/toolbar_translate_activated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:src="@android:drawable/presence_online" />
+
+
+            </FrameLayout>
+
+
+
         </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>
 
     <ListView
+        android:visibility="gone"
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -57,6 +86,16 @@
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:transcriptMode="alwaysScroll" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/listFooter"
+        android:layout_below="@+id/toolbar"
+        android:divider="@null"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:transcriptMode="alwaysScroll" ></android.support.v7.widget.RecyclerView>
 
     <LinearLayout
         android:id="@+id/listFooter"

@@ -757,29 +757,34 @@ public class FireBaseManager {
     }
 
     public void updateOnlineStatus() {
-        final Firebase isOnline = ref.getRoot().child("users").child(Utils.getUserFromPreferences(context).getUid()).child("online");
-        final Firebase lastOnline = ref.getRoot().child("users").child(Utils.getUserFromPreferences(context).getUid()).child("online");
-        if (connectedListener == null) {
-            connectedListener = ref.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    boolean connected = (Boolean) dataSnapshot.getValue();
-                    if (connected) {
-                        Log.d("natija online", "is connected ? " + connected);
-                        lastOnline.onDisconnect().setValue(ServerValue.TIMESTAMP);
-                        isOnline.setValue(true);
-                        isOnline.onDisconnect().setValue(false  );
+        //TODO check if already in preference
+        if (Utils.getUserFromPreferences(context) != null) {
+
+
+            final Firebase isOnline = ref.getRoot().child("users").child(Utils.getUserFromPreferences(context).getUid()).child("online");
+            final Firebase lastOnline = ref.getRoot().child("users").child(Utils.getUserFromPreferences(context).getUid()).child("online");
+            if (connectedListener == null) {
+                connectedListener = ref.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        boolean connected = (Boolean) dataSnapshot.getValue();
+                        if (connected) {
+                            Log.d("natija online", "is connected ? " + connected);
+                            lastOnline.onDisconnect().setValue(ServerValue.TIMESTAMP);
+                            isOnline.setValue(true);
+                            isOnline.onDisconnect().setValue(false);
+
+                        }
 
                     }
 
-                }
 
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                    System.err.println("Listener was cancelled at .info/connected");
-                }
-            });
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                        System.err.println("Listener was cancelled at .info/connected");
+                    }
+                });
+            }
         }
 
     }

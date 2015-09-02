@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.aboukhari.intertalking.model.Conversation;
 import com.aboukhari.intertalking.model.Friend;
-import com.aboukhari.intertalking.model.Message;
+import com.aboukhari.intertalking.model.TranslatedMessage;
 import com.aboukhari.intertalking.model.User;
 import com.aboukhari.intertalking.model.UserRoom;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
@@ -23,9 +23,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private Dao<User, String> mDAOUser = null;
     private Dao<Friend,String> mDAOFriend= null;
-    private Dao<Message, String> mDAOMessage = null;
     private Dao<UserRoom, String> mDAOUserRoom = null;
     private Dao<Conversation, String> mDAOConversation = null;
+    private Dao<TranslatedMessage,String> mDAOMessage = null;
 
 
     public DatabaseHelper(Context context, String databaseName, SQLiteDatabase.CursorFactory factory, int databaseVersion) {
@@ -39,7 +39,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Conversation.class);
             TableUtils.createTable(connectionSource, Friend.class);
             TableUtils.createTable(connectionSource, UserRoom.class);
-            TableUtils.createTable(connectionSource, Message.class);
+            TableUtils.createTable(connectionSource, TranslatedMessage.class);
 
 
         } catch (SQLException e) {
@@ -51,18 +51,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         try {
             TableUtils.dropTable(connectionSource, User.class, true);
-            onCreate(database, connectionSource);
-
             TableUtils.dropTable(connectionSource, Conversation.class, true);
-            onCreate(database, connectionSource);
-
             TableUtils.dropTable(connectionSource, Friend.class, true);
-            onCreate(database, connectionSource);
-
             TableUtils.dropTable(connectionSource, UserRoom.class, true);
-            onCreate(database, connectionSource);
+            TableUtils.dropTable(connectionSource, TranslatedMessage.class, true);
 
-            TableUtils.dropTable(connectionSource, Message.class, true);
             onCreate(database, connectionSource);
 
         } catch (SQLException e) {
@@ -120,10 +113,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
 
-    public Dao<Message, String> getmDaoMessage() {
+    public Dao<TranslatedMessage, String> getmDaoMessage() {
         if(mDAOMessage == null) {
             try {
-                mDAOMessage = getDao(Message.class);
+                mDAOMessage = getDao(TranslatedMessage.class);
             } catch (SQLException e) {
                 Log.e("Sql Error", e.getMessage());
             }

@@ -30,6 +30,10 @@ public interface RestService {
     @POST("/GetCityDetails")
     void getCityDetails(@Field("fqcn") String query, Callback<JsonElement> callback);
 
+    @GET("/translate")
+    void getTranslation(@Query("key") String key,@Query("lang") String lang,@Query("text") String text,@Query("options") String options,Callback<JsonElement> callback);
+
+
 
 
 
