@@ -40,7 +40,7 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
         Firebase.setAndroidContext(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
-        //  ref.getDefaultConfig().setPersistenceEnabled(true);
+        ref.getDefaultConfig().setPersistenceEnabled(true);
         final FireBaseManager fireBaseManager = new FireBaseManager(this);
         callbackManager = CallbackManager.Factory.create();
         ref = new Firebase(getString(R.string.firebase_url));

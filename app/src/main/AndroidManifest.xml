@@ -53,7 +53,10 @@
         <activity
             android:name=".activity.ChatRoom"
             android:label="@string/title_activity_chat_room"
+            android:windowSoftInputMode="stateVisible|adjustPan"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:screenOrientation="portrait" >
+
         </activity>
         <activity
             android:name=".activity.main.MainActivity"

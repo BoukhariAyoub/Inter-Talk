@@ -55,17 +55,13 @@ public class MessageViewHolder extends RecyclerView.ViewHolder implements View.O
             User friend = activity.getIntent().getParcelableExtra("friend");
             imageUrl = friend.getImageUrl() != null ? friend.getImageUrl() : "";
 
-            if( message.getDate().after(activity.getEnabledDate())){
-                TranslationManager.translateMessage(activity, "en-fr", messageId, text, messageTextView);
-            }
-            else{
+            boolean auto_translate = message.getDate().after(activity.getEnabledDate());
+            TranslationManager.translateMessage(activity, "en-fr", messageId, text, messageTextView, auto_translate);
+
+        /*    else{
                 messageTextView.setText(text);
-            }
+            }*/
         }
-
-
-
-
 
 
         Constants.MESSAGE_DATE_FORMAT.setTimeZone(TimeZone.getDefault());

@@ -1,16 +1,17 @@
 package com.aboukhari.intertalking.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.aboukhari.intertalking.R;
@@ -29,25 +30,30 @@ import java.util.Date;
 import jp.wasabeef.recyclerview.animators.FadeInAnimator;
 
 
-public class ChatRoom extends Activity implements View.OnClickListener {
+public class ChatRoom extends AppCompatActivity implements View.OnClickListener {
 
     private Firebase ref;
-    private ListView listView;
     private RecyclerView recyclerView;
     private String roomName;
     private DatabaseManager databaseManager;
     private FireBaseManager fireBaseManager;
     private MessageRecyclerAdapter messageRecyclerAdapter;
     ImageView mTranslateImageView, mActivatedImageView;
-
+    FrameLayout mTranslationFrameLayout;
+    boolean isTranslationActivated;
+    Date enabledDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_room);
 
+
         databaseManager = DatabaseManager.getInstance(this);
         fireBaseManager = new FireBaseManager(this);
+
+        isTranslationActivated = true; //TODO add from shared preferences
+        enabledDate = new Date();
 
 
         ImageView avatarImageView = (ImageView) findViewById(R.id.iv_avatar);
@@ -55,6 +61,10 @@ public class ChatRoom extends Activity implements View.OnClickListener {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mTranslateImageView = (ImageView) findViewById(R.id.toolbar_auto_translate);
         mActivatedImageView = (ImageView) findViewById(R.id.toolbar_translate_activated);
+        mTranslationFrameLayout = (FrameLayout) findViewById(R.id.translation_frame);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
 
         mTranslateImageView.setOnClickListener(this);
         mActivatedImageView.setOnClickListener(this);
@@ -66,7 +76,6 @@ public class ChatRoom extends Activity implements View.OnClickListener {
         textView.setText(title);
         Utils.loadImage(this, friend.getImageUrl(), avatarImageView);
 
-        listView = (ListView) findViewById(android.R.id.list);
 
 
         FireBaseManager.currentRoom = roomName;
@@ -101,21 +110,6 @@ public class ChatRoom extends Activity implements View.OnClickListener {
     public void onStart() {
         super.onStart();
 
-        // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
-        // Tell our list adapter that we only want 50 messages at a time
-/*
-        messagesListAdapter = new MessagesListAdapter(ref.child("messages").child(roomName),this, ref.getAuth().getUid());
-        listView.setAdapter(messagesListAdapter);
-        messagesListAdapter.registerDataSetObserver(new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                listView.setSelection(messagesListAdapter.getCount() - 1);
-            }
-        });
-*/
-
-
         messageRecyclerAdapter = new MessageRecyclerAdapter(ref.child("messages").child(roomName), fireBaseManager, this);
         MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -141,15 +135,6 @@ public class ChatRoom extends Activity implements View.OnClickListener {
             }
         });
 
-        //  messageRecyclerAdapter.setHasStableIds(true);
-   /*     messageRecyclerAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                recyclerView.smoothScrollToPosition(messageRecyclerAdapter.getItemCount() - 1);
-            }
-        });
-*/
         FireBaseManager.currentRoom = roomName;
 
 
@@ -176,19 +161,18 @@ public class ChatRoom extends Activity implements View.OnClickListener {
         }
     }
 
-    Date enabledDate = new Date(Long.MAX_VALUE);
-
     public Date getEnabledDate() {
         return enabledDate;
     }
 
     @Override
     public void onClick(View v) {
+
         if (v.getId() == mActivatedImageView.getId() || v.getId() == mTranslateImageView.getId()) {
-            boolean enable = !mActivatedImageView.isEnabled();
-            int drawable = enable ? android.R.drawable.presence_offline : android.R.drawable.presence_online;
-            mActivatedImageView.setEnabled(enable);
-            enabledDate = enable ? new Date(Long.MAX_VALUE) : new Date();
+       // if (v.getId() == mTranslationFrameLayout.getId())
+            isTranslationActivated = !isTranslationActivated;
+            int drawable = isTranslationActivated ?android.R.drawable.presence_online: android.R.drawable.presence_offline ;
+            enabledDate = isTranslationActivated ? new Date():new Date(Long.MAX_VALUE) ;
             mActivatedImageView.setImageDrawable(ContextCompat.getDrawable(this, drawable));
         }
     }

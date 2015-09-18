@@ -21,15 +21,16 @@ import retrofit.client.Response;
 
 public class TranslationManager {
 
-    public static void translateMessage(final Context context, String lang, final String messageId, final String text, final TextView messageTextView) {
+    public static void translateMessage(final Context context, String lang, final String messageId, final String text, final TextView messageTextView, boolean auto_translate) {
         messageTextView.setText("Translating...");
         final DatabaseManager databaseManager = DatabaseManager.getInstance(context);
         TranslatedMessage message = databaseManager.getMessage(messageId);
         //TODO check if lang == selected lang too
         if (message != null) {
+            //TODO add boolean and do this
             messageTextView.setText(message.getText());
-            Log.d("natija trans","from database : " + messageId + " : " + message.getText());
-        } else {
+            Log.d("natija trans", "from database : " + messageId + " : " + message.getText());
+        } else if (auto_translate) {
             RestClient.get(Constants.YANDEX_TRANSLATE_API_ENDPOINT).getTranslation(Constants.YANDEX_API_KEY, lang, text, "1", new Callback<JsonElement>() {
                 @Override
                 public void success(JsonElement jsonElement, Response response) {
@@ -42,8 +43,7 @@ public class TranslationManager {
                         TranslatedMessage translatedMessage = new TranslatedMessage(messageId, translatedText, lang);
                         databaseManager.addMessage(translatedMessage);
                         Log.d("natija trans", "from yandex");
-                        Log.d("natija trans","from yandexe : " + messageId + " : " + translatedMessage.getText());
-
+                        Log.d("natija trans", "from yandexe : " + messageId + " : " + translatedMessage.getText());
 
 
                     } else {
@@ -58,6 +58,9 @@ public class TranslationManager {
                 }
             });
 
+        }
+        else{
+            messageTextView.setText(text);
         }
 
 
