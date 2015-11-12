@@ -178,13 +178,7 @@ public class User implements Parcelable{
         this.isFirstLogin = firstLogin;
     }
 
-    public Boolean getIsFirstLogin() {
-        return isFirstLogin;
-    }
 
-    public void setIsFirstLogin(Boolean isFirstLogin) {
-        this.isFirstLogin = isFirstLogin;
-    }
 
     public HashMap<String, Integer> getKnownLanguages() {
         return knownLanguages;

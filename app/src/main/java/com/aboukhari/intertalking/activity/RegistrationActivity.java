@@ -27,7 +27,7 @@ import java.util.Date;
 
 import github.chenupt.springindicator.viewpager.ScrollerViewPager;
 
-public class Main2Activity extends FragmentActivity implements View.OnClickListener {
+public class RegistrationActivity extends FragmentActivity implements View.OnClickListener {
 
     ScrollerViewPager viewPager;
     Button mNextButton;
@@ -42,6 +42,7 @@ public class Main2Activity extends FragmentActivity implements View.OnClickListe
     RegisterLanguageKnown registerLanguageKnown;
     RegisterLanguageWanted registerLanguageWanted;
     RegisterImage registerImage;
+    boolean mIsfacebook;
 
 
 
@@ -55,6 +56,7 @@ public class Main2Activity extends FragmentActivity implements View.OnClickListe
         mUid = getIntent().getStringExtra("uid");
         mEmail = getIntent().getStringExtra("email");
         mUser = Utils.getUserFromPreferences(this);
+        mIsfacebook = getIntent().getBooleanExtra("facebook",false);
 
         mNextFragment = (TextView) findViewById(R.id.tv_next_fragement);
 
@@ -128,13 +130,15 @@ public class Main2Activity extends FragmentActivity implements View.OnClickListe
         ArrayList<Fragment> fragments = new ArrayList<>();
 
 
-       registerPassword = new RegisterPassword();
+        registerPassword = new RegisterPassword();
         registerFusion = new RegisterFusion();
         registerPlace = new RegisterPlace();
         registerLanguageKnown = new RegisterLanguageKnown();
         registerLanguageWanted = new RegisterLanguageWanted();
         registerImage = new RegisterImage();
-        fragments.add(registerPassword);
+        if(!mIsfacebook){
+            fragments.add(registerPassword);
+        }
         fragments.add(registerFusion);
         fragments.add(registerPlace);
         fragments.add(registerLanguageKnown);
@@ -145,16 +149,16 @@ public class Main2Activity extends FragmentActivity implements View.OnClickListe
 
     private void registerUser() {
 
-        String password = registerPassword.getPassword();
+
         String name = registerFusion.getName();
         Date birthDate = registerFusion.getBirthdate();
         String gender = registerFusion.getGender();
         String placeId = registerPlace.getPlaceId();
         Bitmap bitmap = registerImage.getBitmap();
 
-        User user = new User();
+        User user = Utils.getUserFromPreferences(this);
         user.setUid(mUid);
-        user.setEmail(mEmail);
+       // user.setEmail(mEmail);
         user.setDisplayName(name);
         user.setBirthday(birthDate);
         user.setGender(gender);
@@ -163,11 +167,24 @@ public class Main2Activity extends FragmentActivity implements View.OnClickListe
         ArrayList<Language> known = registerLanguageKnown.getKnownLanguages();
         ArrayList<Language> wanted = registerLanguageWanted.getWantedLanguages();
 
+        if(mIsfacebook){
+            FireBaseManager.getInstance(this).updateFirstFacebookLoginProfile(user,bitmap,placeId,known,wanted);
+        }
+        else {
+            String password = registerPassword.getPassword();
+            FireBaseManager.getInstance(this).updateFirstLoginProfile(user, mPassword, password, bitmap, placeId, known, wanted);
+        }
 
-        FireBaseManager.getInstance(this).updateFirstLoginProfile(user, mPassword, password, bitmap, placeId, known, wanted);
 
     }
 
+    public User getmUser() {
+        return mUser;
+    }
+
+    public void setmUser(User mUser) {
+        this.mUser = mUser;
+    }
 
     public void goToNextFragment() {
         if (viewPager.getCurrentItem() == tabsAdapter.getCount() - 1) {

@@ -15,6 +15,7 @@ import com.aboukhari.intertalking.R;
 public class RegisterPassword extends Fragment {
 
     EditText mPasswordEditText;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_registration_password, container, false);
@@ -25,8 +26,11 @@ public class RegisterPassword extends Fragment {
         return v;
     }
 
-    public String getPassword(){
-        return  mPasswordEditText.getText().toString();
+    public String getPassword() {
+        if (mPasswordEditText.getText() != null) {
+            return mPasswordEditText.getText().toString();
+        }
+        return null;
     }
 
 

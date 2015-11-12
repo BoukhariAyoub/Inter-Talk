@@ -1,12 +1,22 @@
 package com.aboukhari.intertalking.Utils;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v7.app.NotificationCompat;
 import android.telephony.TelephonyManager;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -24,6 +34,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -47,6 +58,28 @@ public abstract class Utils {
         } catch (ParseException e) {
             return new Date(0L);
         }
+    }
+
+
+    /**
+     * @param title
+     * @param text
+     */
+    public void showNotification(String title, String text,Context context) {
+        //  PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, Friends.class), 0);
+        Resources r = context.getResources();
+        Notification notification = new NotificationCompat.Builder(context)
+                .setTicker("Ticker")
+                .setLargeIcon(BitmapFactory.decodeResource(r, R.mipmap.chat_logo))
+                .setSmallIcon(R.mipmap.chat_logo)
+                .setContentTitle(title)
+                .setContentText(text)
+                        //   .setContentIntent(pi)
+                .setAutoCancel(true)
+                .build();
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, notification);
     }
 
     public static String dateToString(Date date) {
@@ -185,6 +218,25 @@ public abstract class Utils {
         v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
         v.draw(c);
         return b;
+    }
+
+    public static void getCurrentHashForFacebook(Context context){
+        PackageInfo info;
+        try {
+            info = context.getPackageManager().getPackageInfo("com.aboukhari.intertalking", PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md;
+                md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String something = new String(Base64.encode(md.digest(), 0));
+                //String something = new String(Base64.encodeBytes(md.digest()));
+                Log.d("natija fb hack", something);
+            }
+        } catch (Exception e) {
+            Log.e("natija fb hack", e.toString());
+        }
+
+
     }
 
 

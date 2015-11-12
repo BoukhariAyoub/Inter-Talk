@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     dexOptions {
         preDexLibraries false
@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId "com.aboukhari.intertalking"
         minSdkVersion 15
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
@@ -31,26 +31,26 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.jpardogo.materialtabstrip:library:1.1.0'
-    compile 'com.firebase:firebase-client-android:2.3.1+'
+    compile 'com.firebase:firebase-client-android:2.3.1'
     compile 'com.facebook.android:facebook-android-sdk:4.1.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.j256.ormlite:ormlite-core:4.48'
     compile 'com.j256.ormlite:ormlite-android:4.48'
-    compile 'com.android.support:recyclerview-v7:+'
-    compile 'com.android.support:cardview-v7:+'
-    compile 'jp.wasabeef:recyclerview-animators:1.2.1'
+    compile 'com.android.support:recyclerview-v7:23.1.0'
+    compile 'com.android.support:cardview-v7:23.1.0'
+    compile 'jp.wasabeef:recyclerview-animators:2.0.0'
     compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
     compile 'com.github.chenupt.android:springindicator:1.0.2@aar'
     compile 'info.hoang8f:android-segmented:1.0.5'
     compile 'com.wdullaer:materialdatetimepicker:1.4.2'
-    compile 'me.grantland:autofittextview:0.2.+'
+    compile 'me.grantland:autofittextview:0.2.1'
     compile 'com.soundcloud.android:android-crop:1.0.0@aar'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile 'com.github.clans:fab:1.5.5'
-    compile 'com.github.siyamed:android-shape-imageview:0.9.+@aar'
+    compile 'com.github.siyamed:android-shape-imageview:0.9.3@aar'
     compile 'com.cloudinary:cloudinary-android:1.2.1'
     compile 'com.appyvet:materialrangebar:1.0'
     compile ('com.weiwangcn.betterspinner:library-material:1.1.0') {

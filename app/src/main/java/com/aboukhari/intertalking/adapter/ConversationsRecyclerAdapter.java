@@ -50,7 +50,7 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, final String previousChildName) {
                 //add listener to the new conv
-                fireBaseManager.theRealDeal();
+                fireBaseManager.addAllListeners();
                 final String roomName = dataSnapshot.getKey();
                 final Conversation model = dataSnapshot.getValue(Conversation.class);
                 ConversationsRecyclerAdapter.this.ref.getRef().getRoot().child("users").child(uid).child("rooms").child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {

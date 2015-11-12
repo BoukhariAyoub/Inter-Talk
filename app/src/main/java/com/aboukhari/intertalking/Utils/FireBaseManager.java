@@ -1,22 +1,17 @@
 package com.aboukhari.intertalking.Utils;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.activity.ChatRoom;
 import com.aboukhari.intertalking.activity.Login;
-import com.aboukhari.intertalking.activity.Main2Activity;
+import com.aboukhari.intertalking.activity.RegistrationActivity;
 import com.aboukhari.intertalking.activity.main.Conversations;
 import com.aboukhari.intertalking.activity.main.MainActivity;
 import com.aboukhari.intertalking.database.DatabaseManager;
@@ -198,26 +193,6 @@ public class FireBaseManager {
         });
     }
 
-    /**
-     * @param title
-     * @param text
-     */
-    public void showNotification(String title, String text) {
-        //  PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, Friends.class), 0);
-        Resources r = context.getResources();
-        Notification notification = new NotificationCompat.Builder(context)
-                .setTicker("Ticker")
-                .setLargeIcon(BitmapFactory.decodeResource(r, R.mipmap.chat_logo))
-                .setSmallIcon(R.mipmap.chat_logo)
-                .setContentTitle(title)
-                .setContentText(text)
-                        //   .setContentIntent(pi)
-                .setAutoCancel(true)
-                .build();
-
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0, notification);
-    }
 
     /**
      * Remove New Message Listener
@@ -229,110 +204,6 @@ public class FireBaseManager {
             ChildEventListener listener = messagesListenerMap.get(roomName);
             ref.getRoot().child("messages").child(roomName).removeEventListener(listener);
             messagesListenerMap.remove(roomName);
-        }
-    }
-
-
-    public void onFacebookAccessTokenChange(final Context context, final AccessToken token, final String pictureUrl) {
-        if (token != null) {
-            ref.authWithOAuthToken("facebook", token.getToken(), new Firebase.AuthResultHandler() {
-                @Override
-                public void onAuthenticated(final AuthData authData) {
-
-                    String email = authData.getProviderData().get("email").toString();
-
-                    ref.child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            //if user already exists
-                            if (dataSnapshot.exists()) {
-
-                                DataSnapshot dataUser = dataSnapshot.getChildren().iterator().next();
-
-                                User user = dataUser.getValue(User.class);
-                                Utils.saveUserToPreferences(context, user);
-
-                                //TODO login()
-                                Intent mainIntent = new Intent(context,
-                                        MainActivity.class);
-                                context.startActivity(mainIntent);
-
-
-                            }
-
-                            //user does not exists
-                            else {
-                                String uid = authData.getUid();
-                                String email = "";
-                                Date birthday = new Date(0L);
-                                String displayName = "";
-                                String gender = "";
-
-
-                                //Set DisplayName
-                                if (authData.getProviderData().containsKey("displayName")) {
-                                    displayName = authData.getProviderData().get("displayName").toString();
-                                }
-
-                                //Set Picture //TODO
-                                //  downloadImage(authData.getUid(), pictureUrl);
-
-
-                                //Set Email
-                                if (authData.getProviderData().containsKey("email")) {
-                                    email = authData.getProviderData().get("email").toString();
-                                }
-
-                                //Set Birthday & Gender
-                                if (authData.getProviderData().containsKey("cachedUserProfile")) {
-                                    Map<String, Object> cachedUserProfile = (Map<String, Object>) authData.getProviderData().get("cachedUserProfile");
-                                    if (cachedUserProfile.containsKey("birthday")) {
-                                        birthday = Utils.stringToDate(cachedUserProfile.get("birthday").toString());
-                                    }
-                                    if (cachedUserProfile.containsKey("gender")) {
-                                        gender = cachedUserProfile.get("gender").toString();
-                                    }
-                                }
-
-
-                                User user = new User(uid, displayName, email, birthday, gender);
-                                user.setImageUrl(pictureUrl);
-
-
-                                //Add User To Firebase
-                                addUserToFireBase(user);
-
-
-                                Intent mainIntent = new Intent(context,
-                                        MainActivity.class);
-                                mainIntent.putExtra("id", "1");
-                                context.startActivity(mainIntent);
-
-                                Log.d("natija pref", "2nd gateway");
-                                Utils.saveUserToPreferences(context, user);
-
-
-                               /* Intent intent = new Intent(context, SpringIndicator.class);
-                                intent.putExtra("user", user);
-                                Log.d("natija user", "from fb" + user);
-                                context.startActivity(intent);*/
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-
-                        }
-                    });
-                }
-
-                @Override
-                public void onAuthenticationError(FirebaseError firebaseError) {
-                    Log.e("natija", "error " + firebaseError.getMessage());
-                }
-            });
-        } else {
-            ref.unauth();
         }
     }
 
@@ -370,27 +241,9 @@ public class FireBaseManager {
         request.executeAsync();
     }
 
-    public void addListenerToRoom(String s) {
-        if (!roomMessagesListenerMap.containsKey(s)) {
-
-           /* if (roomMessagesListenerMap.containsKey(dataSnapshot.getKey())) {
-                updateRoom(roomName); // Update Last message
-            }
-            checkUnread(roomName);
-
-            if (roomName.equals(currentRoom)) {
-                updateLastRead(roomName);
-                updateRoom(roomName);
-            } else {
-                updateRoom(roomName);
-            }
-            roomMessagesListenerMap.put(s, this);*/
-        }
-    }
-
     /*
     * Add Listener For every room in user's rooms*/
-    public void theRealDeal() {
+    public void addAllListeners() {
         final Firebase refUserRooms = ref.getRoot().child("users").child(ref.getAuth().getUid()).child("rooms");
         refUserRooms.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -505,9 +358,9 @@ public class FireBaseManager {
     public void logout(Context ctx) {
         ref.unauth();
         LoginManager.getInstance().logOut();
+        Utils.saveUserToPreferences(ctx, null);
         Intent intent = new Intent(ctx, Login.class);
         ctx.startActivity(intent);
-
     }
 
     public void addGeneratedUsers() {
@@ -536,9 +389,12 @@ public class FireBaseManager {
     public void deleteLanguageFromUser(String uid, String languageType, Language language) {
         ref.getRoot().child("users").child(uid).child(languageType).child(language.getIso()).removeValue();
         ref.getRoot().child(languageType).child(language.getIso()).child(uid).removeValue();
-
     }
 
+    /**
+     * Register a new User with email
+     * @param email
+     */
     public void createUser(final String email) {
         Long.toHexString(Double.doubleToLongBits(Math.random()));
         String password = Long.toHexString(Double.doubleToLongBits(Math.random()));
@@ -559,13 +415,13 @@ public class FireBaseManager {
                 ref.resetPassword(email, new Firebase.ResultHandler() {
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(context, "A password has been sent to the email you entred", Toast.LENGTH_LONG);
+                        Toast.makeText(context, "A password has been sent to the email you entred", Toast.LENGTH_LONG).show();
                         Log.d("natija pass", "A password has been sent to the email you entred");
                     }
 
                     @Override
                     public void onError(FirebaseError firebaseError) {
-                        Toast.makeText(context, "There Was an error sending an email please", Toast.LENGTH_LONG);
+                        Toast.makeText(context, "There Was an error sending an email please : " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                         Log.d("natija pass", "There Was an error sending an email please : " + firebaseError.getMessage());
 
                     }
@@ -574,32 +430,25 @@ public class FireBaseManager {
 
             @Override
             public void onError(FirebaseError firebaseError) {
+                Toast.makeText(context, "There Was an error sending an email please : " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 Log.e("natija pass", firebaseError.getMessage());
             }
         });
 
     }
 
-    public void createUser(final User user, String password, final Bitmap bitmap, final String placeId, final ArrayList<Language> knownLanguages, final ArrayList<Language> wantedLanguages) {
-        String email = user.getEmail();
-        ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
-            @Override
-            public void onSuccess(Map<String, Object> result) {
-                String uid = result.get("uid").toString();
-                user.setUid(uid);
-                addUserToFireBase(user);
-                new UploadImage(context, user).execute(bitmap);
-                registerPlace(user, placeId);
-                registerLanguages(user, knownLanguages, wantedLanguages);
-            }
 
-            @Override
-            public void onError(FirebaseError firebaseError) {
-                // there was an error
-            }
-        });
-    }
-
+    /**
+     * Update user after Registration and first login
+     *
+     * @param user
+     * @param oldPassword
+     * @param newPassword
+     * @param bitmap
+     * @param placeId
+     * @param knownLanguages
+     * @param wantedLanguages
+     */
     public void updateFirstLoginProfile(final User user, String oldPassword, String newPassword, final Bitmap bitmap, final String placeId, final ArrayList<Language> knownLanguages, final ArrayList<Language> wantedLanguages) {
         String email = user.getEmail();
         ref.changePassword(email, oldPassword, newPassword, new Firebase.ResultHandler() {
@@ -610,10 +459,8 @@ public class FireBaseManager {
                 new UploadImage(context, user).execute(bitmap);
                 registerPlace(user, placeId);
                 registerLanguages(user, knownLanguages, wantedLanguages);
-
                 Intent intent = new Intent(context, Login.class);
                 context.startActivity(intent);
-
             }
 
             @Override
@@ -621,6 +468,19 @@ public class FireBaseManager {
 
             }
         });
+    }
+
+    public void updateFirstFacebookLoginProfile(final User user, final Bitmap bitmap, final String placeId, final ArrayList<Language> knownLanguages, final ArrayList<Language> wantedLanguages) {
+        user.setFirstLogin(false);
+        addUserToFireBase(user);
+        if (bitmap != null) {
+            new UploadImage(context, user).execute(bitmap);
+        }
+        registerPlace(user, placeId);
+        registerLanguages(user, knownLanguages, wantedLanguages);
+        Intent intent = new Intent(context, Login.class);
+        context.startActivity(intent);
+
     }
 
     private void registerPlace(final User user, String placeId) {
@@ -664,6 +524,110 @@ public class FireBaseManager {
     }
 
 
+    /**
+     * Login An Existing User
+     *
+     * @param user
+     */
+    private void loginExistingUser(User user,boolean facebook) {
+        Utils.saveUserToPreferences(context, user);
+        if(user.getFirstLogin()){
+            Intent mainIntent = new Intent(context,
+                    RegistrationActivity.class);
+            mainIntent.putExtra("facebook", facebook);
+            context.startActivity(mainIntent);
+
+        }
+        else {
+            Intent mainIntent = new Intent(context,
+                    MainActivity.class);
+            context.startActivity(mainIntent);
+        }
+
+
+    }
+
+    public void onFacebookAccessTokenChange(final Context context, final AccessToken token, final String pictureUrl) {
+        if (token != null) {
+            ref.authWithOAuthToken("facebook", token.getToken(), new Firebase.AuthResultHandler() {
+                @Override
+                public void onAuthenticated(final AuthData authData) {
+
+                    String email = authData.getProviderData().get("email").toString();
+
+                    ref.child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            //if user already exists
+                            if (dataSnapshot.exists()) {
+
+                                DataSnapshot dataUser = dataSnapshot.getChildren().iterator().next();
+                                User user = dataUser.getValue(User.class);
+                                loginExistingUser(user,true);
+                            }
+
+                            //user does not exists
+                            else {
+                                String uid = authData.getUid();
+                                String email = "";
+                                Date birthday = new Date(0L);
+                                String displayName = "";
+                                String gender = "";
+
+
+                                //Set DisplayName
+                                if (authData.getProviderData().containsKey("displayName")) {
+                                    displayName = authData.getProviderData().get("displayName").toString();
+                                }
+
+                                //Set Email
+                                if (authData.getProviderData().containsKey("email")) {
+                                    email = authData.getProviderData().get("email").toString();
+                                }
+
+                                //Set Birthday & Gender
+                                if (authData.getProviderData().containsKey("cachedUserProfile")) {
+                                    Map<String, Object> cachedUserProfile = (Map<String, Object>) authData.getProviderData().get("cachedUserProfile");
+                                    if (cachedUserProfile.containsKey("birthday")) {
+                                        birthday = Utils.stringToDate(cachedUserProfile.get("birthday").toString());
+                                    }
+                                    if (cachedUserProfile.containsKey("gender")) {
+                                        gender = cachedUserProfile.get("gender").toString();
+                                    }
+                                }
+
+
+                                User user = new User(uid, displayName, email, birthday, gender);
+                                user.setImageUrl(pictureUrl);
+                                user.setFirstLogin(true);
+
+
+                                //Add User To Firebase
+                                addUserToFireBase(user);
+
+                               loginExistingUser(user, true);
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+                    Log.e("natija", "error " + firebaseError.getMessage());
+                }
+            });
+        } else {
+            ref.unauth();
+        }
+    }
+
+
     public void loginUserWithPassword(final String email, final String password) {
         Log.d("natija", "email = " + email);
         Log.d("natija", "password = " + password);
@@ -677,7 +641,7 @@ public class FireBaseManager {
 
                 //TODO check if first login
                 if (isTemporaryPassword) {
-                    Intent intent = new Intent(context, Main2Activity.class);
+                    Intent intent = new Intent(context, RegistrationActivity.class);
                     intent.putExtra("uid", uid);
                     intent.putExtra("email", email);
                     intent.putExtra("password", password);
@@ -692,18 +656,15 @@ public class FireBaseManager {
                             User user = dataSnapshot.getValue(User.class);
 
                             if (user.getFirstLogin()) {
-                                Intent intent = new Intent(context, Main2Activity.class);
+                                Intent intent = new Intent(context, RegistrationActivity.class);
                                 intent.putExtra("uid", uid);
                                 intent.putExtra("email", email);
                                 intent.putExtra("password", password);
                                 context.startActivity(intent);
                             } else {
-
                                 Utils.saveUserToPreferences(context, user);
                                 Intent intent = new Intent(context, MainActivity.class);
                                 context.startActivity(intent);
-
-
                             }
                         }
 

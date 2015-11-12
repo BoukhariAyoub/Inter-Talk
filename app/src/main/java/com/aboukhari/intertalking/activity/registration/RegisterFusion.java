@@ -9,6 +9,8 @@ import android.widget.EditText;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.Utils;
+import com.aboukhari.intertalking.activity.RegistrationActivity;
+import com.aboukhari.intertalking.model.User;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
@@ -26,6 +28,8 @@ public class RegisterFusion extends Fragment implements View.OnClickListener, Da
     HashMap<String, Integer> mGenderMap = new HashMap<>();
     EditText mBirthDateEditText;
     Date selectedBirthdate;
+    User mUser;
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -36,6 +40,23 @@ public class RegisterFusion extends Fragment implements View.OnClickListener, Da
         mGenderMap.put("male", R.id.radio_male);
         mBirthDateEditText = (EditText) v.findViewById(R.id.et_birthday);
         mBirthDateEditText.setOnClickListener(this);
+        mUser = ((RegistrationActivity) getActivity()).getmUser();
+
+        if (mUser != null) {
+            if(mUser.getDisplayName() != null){
+                mUserNameEditText.setText(mUser.getDisplayName());
+            }
+
+            if (mUser.getBirthday() != null) {
+                mBirthDateEditText.setText(Utils.dateToString(mUser.getBirthday())); //TODO
+            }
+
+            if (mUser.getGender() != null) {
+                int checked = mUser.getGender().equals("male") ? R.id.radio_male : R.id.radio_female;
+                mSegmentedGroup.check(checked);
+            }
+
+        }
 
         return v;
     }
@@ -58,7 +79,7 @@ public class RegisterFusion extends Fragment implements View.OnClickListener, Da
         if (v == mBirthDateEditText) {
 
             Calendar start = Calendar.getInstance();
-            start.add(Calendar.YEAR,-15);
+            start.add(Calendar.YEAR, -15);
             DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
                     this,
                     start.get(Calendar.YEAR),
@@ -69,7 +90,7 @@ public class RegisterFusion extends Fragment implements View.OnClickListener, Da
             Calendar now = Calendar.getInstance();
             int startYear = now.get(Calendar.YEAR) - 99;
             int endYear = now.get(Calendar.YEAR) - 5;
-            datePickerDialog.setYearRange(startYear,endYear);
+            datePickerDialog.setYearRange(startYear, endYear);
 
             datePickerDialog.show(getActivity().getFragmentManager(), "Datepickerdialog");
         }
