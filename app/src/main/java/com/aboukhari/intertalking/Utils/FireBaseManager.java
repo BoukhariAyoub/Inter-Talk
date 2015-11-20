@@ -374,31 +374,20 @@ public class FireBaseManager {
 
     public void addUserToFireBase(User user) {
         Map<String, Object> userMap = Utils.objectToMap(user);
+        Log.d("natija", user.toString());
         ref.getRoot().child("users").child(user.getUid()).updateChildren(userMap);
     }
 
-    public void addImageToUser(User user, String imageUrl) {
-        ref.getRoot().child("users").child(user.getUid()).child("imageUrl").setValue(imageUrl);
-    }
-
-    public void addLanguageToUser(String uid, String languageType, Language language) {
-        ref.getRoot().child("users").child(uid).child(languageType).child(language.getIso()).setValue(language.getLevel());
-        ref.getRoot().child(languageType).child(language.getIso()).child(uid).setValue(true);
-    }
-
-    public void deleteLanguageFromUser(String uid, String languageType, Language language) {
-        ref.getRoot().child("users").child(uid).child(languageType).child(language.getIso()).removeValue();
-        ref.getRoot().child(languageType).child(language.getIso()).child(uid).removeValue();
-    }
 
     /**
      * Register a new User with email
+     *
      * @param email
      */
     public void createUser(final String email) {
         Long.toHexString(Double.doubleToLongBits(Math.random()));
         String password = Long.toHexString(Double.doubleToLongBits(Math.random()));
-        ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
+        ref.createUser(email.toLowerCase(), password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
                 String uid = result.get("uid").toString();
@@ -406,6 +395,7 @@ public class FireBaseManager {
                 user.setUid(uid);
                 user.setEmail(email);
                 user.setFirstLogin(true);
+                Log.d("natija fb", "onFacebookAccessTokenChange");
 
                 addUserToFireBase(user);
 
@@ -451,7 +441,7 @@ public class FireBaseManager {
      */
     public void updateFirstLoginProfile(final User user, String oldPassword, String newPassword, final Bitmap bitmap, final String placeId, final ArrayList<Language> knownLanguages, final ArrayList<Language> wantedLanguages) {
         String email = user.getEmail();
-        ref.changePassword(email, oldPassword, newPassword, new Firebase.ResultHandler() {
+        ref.changePassword(email, oldPassword, newPassword.trim(), new Firebase.ResultHandler() {
             @Override
             public void onSuccess() {
                 user.setFirstLogin(false);
@@ -459,6 +449,7 @@ public class FireBaseManager {
                 new UploadImage(context, user).execute(bitmap);
                 registerPlace(user, placeId);
                 registerLanguages(user, knownLanguages, wantedLanguages);
+                Utils.saveUserToPreferences(context, user);
                 Intent intent = new Intent(context, Login.class);
                 context.startActivity(intent);
             }
@@ -478,9 +469,9 @@ public class FireBaseManager {
         }
         registerPlace(user, placeId);
         registerLanguages(user, knownLanguages, wantedLanguages);
-        Intent intent = new Intent(context, Login.class);
+        Utils.saveUserToPreferences(context, user);
+        Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
-
     }
 
     private void registerPlace(final User user, String placeId) {
@@ -523,51 +514,45 @@ public class FireBaseManager {
         ref.getRoot().child("users").child(user.getUid()).child("place").setValue(place);
     }
 
-
-    /**
-     * Login An Existing User
-     *
-     * @param user
-     */
-    private void loginExistingUser(User user,boolean facebook) {
-        Utils.saveUserToPreferences(context, user);
-        if(user.getFirstLogin()){
-            Intent mainIntent = new Intent(context,
-                    RegistrationActivity.class);
-            mainIntent.putExtra("facebook", facebook);
-            context.startActivity(mainIntent);
-
-        }
-        else {
-            Intent mainIntent = new Intent(context,
-                    MainActivity.class);
-            context.startActivity(mainIntent);
-        }
-
-
+    public void addImageToUser(User user, String imageUrl) {
+        ref.getRoot().child("users").child(user.getUid()).child("imageUrl").setValue(imageUrl);
     }
 
-    public void onFacebookAccessTokenChange(final Context context, final AccessToken token, final String pictureUrl) {
+    public void addLanguageToUser(String uid, String languageType, Language language) {
+        ref.getRoot().child("users").child(uid).child(languageType).child(language.getIso()).setValue(language.getLevel());
+        ref.getRoot().child(languageType).child(language.getIso()).child(uid).setValue(true);
+    }
+
+    public void deleteLanguageFromUser(String uid, String languageType, Language language) {
+        ref.getRoot().child("users").child(uid).child(languageType).child(language.getIso()).removeValue();
+        ref.getRoot().child(languageType).child(language.getIso()).child(uid).removeValue();
+    }
+
+
+    public void onFacebookAccessTokenChange(final AccessToken token, final String pictureUrl) {
         if (token != null) {
             ref.authWithOAuthToken("facebook", token.getToken(), new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(final AuthData authData) {
 
-                    String email = authData.getProviderData().get("email").toString();
+                    String email = authData.getProviderData().get("email").toString().toLowerCase();
 
-                    ref.child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                    Log.d("natija fb", "email  " + email);
+                    ref.getRoot().child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             //if user already exists
                             if (dataSnapshot.exists()) {
-
+                                Log.d("natija fb", "user already exists");
                                 DataSnapshot dataUser = dataSnapshot.getChildren().iterator().next();
                                 User user = dataUser.getValue(User.class);
-                                loginExistingUser(user,true);
+                                Log.d("natija fb", "if user " + user.toString());
+                                loginExistingUser(user, true);
                             }
 
                             //user does not exists
                             else {
+                                Log.d("natija fb", "user does not exists");
                                 String uid = authData.getUid();
                                 String email = "";
                                 Date birthday = new Date(0L);
@@ -582,7 +567,7 @@ public class FireBaseManager {
 
                                 //Set Email
                                 if (authData.getProviderData().containsKey("email")) {
-                                    email = authData.getProviderData().get("email").toString();
+                                    email = authData.getProviderData().get("email").toString().toLowerCase();
                                 }
 
                                 //Set Birthday & Gender
@@ -600,12 +585,12 @@ public class FireBaseManager {
                                 User user = new User(uid, displayName, email, birthday, gender);
                                 user.setImageUrl(pictureUrl);
                                 user.setFirstLogin(true);
-
+                                Log.d("natija fb", "onFacebookAccessTokenChange");
 
                                 //Add User To Firebase
                                 addUserToFireBase(user);
 
-                               loginExistingUser(user, true);
+                                loginExistingUser(user, true);
 
                             }
                         }
@@ -625,6 +610,30 @@ public class FireBaseManager {
         } else {
             ref.unauth();
         }
+    }
+
+    /**
+     * Login An Existing User
+     *
+     * @param user
+     */
+    private void loginExistingUser(User user, boolean facebook) {
+        Utils.saveUserToPreferences(context, user);
+
+        Log.d("natija fb", "login existing : " + user);
+        if (user.getFirstLogin()) {
+            Intent mainIntent = new Intent(context,
+                    RegistrationActivity.class);
+            mainIntent.putExtra("facebook", facebook);
+            context.startActivity(mainIntent);
+        } else {
+            Utils.saveUserToPreferences(context, user);
+            Intent mainIntent = new Intent(context,
+                    MainActivity.class);
+            context.startActivity(mainIntent);
+        }
+
+
     }
 
 

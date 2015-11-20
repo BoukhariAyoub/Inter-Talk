@@ -43,12 +43,13 @@ public class RegisterFusion extends Fragment implements View.OnClickListener, Da
         mUser = ((RegistrationActivity) getActivity()).getmUser();
 
         if (mUser != null) {
-            if(mUser.getDisplayName() != null){
+            if (mUser.getDisplayName() != null) {
                 mUserNameEditText.setText(mUser.getDisplayName());
             }
 
             if (mUser.getBirthday() != null) {
-                mBirthDateEditText.setText(Utils.dateToString(mUser.getBirthday())); //TODO
+                mBirthDateEditText.setText(Utils.dateToString(mUser.getBirthday()));
+                selectedBirthdate = mUser.getBirthday();
             }
 
             if (mUser.getGender() != null) {
@@ -79,7 +80,16 @@ public class RegisterFusion extends Fragment implements View.OnClickListener, Da
         if (v == mBirthDateEditText) {
 
             Calendar start = Calendar.getInstance();
-            start.add(Calendar.YEAR, -15);
+
+            if (mUser.getBirthday() != null) {
+                start.setTime(mUser.getBirthday());
+                selectedBirthdate = mUser.getBirthday();
+
+            } else {
+                start = Calendar.getInstance();
+            }
+
+
             DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
                     this,
                     start.get(Calendar.YEAR),
@@ -89,7 +99,7 @@ public class RegisterFusion extends Fragment implements View.OnClickListener, Da
 
             Calendar now = Calendar.getInstance();
             int startYear = now.get(Calendar.YEAR) - 99;
-            int endYear = now.get(Calendar.YEAR) - 5;
+            int endYear = now.get(Calendar.YEAR) - 10;
             datePickerDialog.setYearRange(startYear, endYear);
 
             datePickerDialog.show(getActivity().getFragmentManager(), "Datepickerdialog");
@@ -102,6 +112,7 @@ public class RegisterFusion extends Fragment implements View.OnClickListener, Da
         Date d = Utils.stringToDate(date);
         mBirthDateEditText.setText(date);
         selectedBirthdate = d;
+
     }
 
 }

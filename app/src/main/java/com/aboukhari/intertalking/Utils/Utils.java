@@ -61,11 +61,32 @@ public abstract class Utils {
     }
 
 
+    public static String dateToString(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        return formatter.format(date);
+    }
+
+    public static Date birthdayStringToDate(String string) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            return formatter.parse(string);
+        } catch (ParseException e) {
+            return new Date(0L);
+        }
+    }
+
+
+    public static String birthdayDateToString(Date date) {
+        return dateToString(date);
+    }
+
+
     /**
      * @param title
      * @param text
      */
-    public void showNotification(String title, String text,Context context) {
+    public void showNotification(String title, String text, Context context) {
         //  PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, Friends.class), 0);
         Resources r = context.getResources();
         Notification notification = new NotificationCompat.Builder(context)
@@ -82,11 +103,6 @@ public abstract class Utils {
         notificationManager.notify(0, notification);
     }
 
-    public static String dateToString(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-
-        return formatter.format(date);
-    }
 
     public static void exportDB(String dataBaseName) {
         File sd = Environment.getExternalStorageDirectory();
@@ -114,7 +130,6 @@ public abstract class Utils {
         }
         return friendId + "_" + myId;
     }
-
 
 
     public static String getCountryByIso(String language, String iso) {
@@ -220,7 +235,7 @@ public abstract class Utils {
         return b;
     }
 
-    public static void getCurrentHashForFacebook(Context context){
+    public static void getCurrentHashForFacebook(Context context) {
         PackageInfo info;
         try {
             info = context.getPackageManager().getPackageInfo("com.aboukhari.intertalking", PackageManager.GET_SIGNATURES);
@@ -238,7 +253,6 @@ public abstract class Utils {
 
 
     }
-
 
 
 }

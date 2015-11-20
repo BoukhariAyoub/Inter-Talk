@@ -47,7 +47,10 @@ public class RegisterPlace extends Fragment {
     }
 
     public String getPlaceId() {
-        return mChosenPlace.getId();
+        if (mChosenPlace != null) {
+            return mChosenPlace.getId();
+        }
+        return null;
     }
 
 

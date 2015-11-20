@@ -40,10 +40,11 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            Firebase.getDefaultConfig().setPersistenceEnabled(true);
+            Firebase.getDefaultConfig().setPersistenceEnabled(false);
         }catch (Exception ex){
 
         }
+
         Firebase.setAndroidContext(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
@@ -98,7 +99,7 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
             protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
                 if (newProfile != null) {
                     String pictureUrl = newProfile.getProfilePictureUri(400, 400).toString();
-                    fireBaseManager.onFacebookAccessTokenChange(Login.this, AccessToken.getCurrentAccessToken(), pictureUrl);
+                    fireBaseManager.onFacebookAccessTokenChange(AccessToken.getCurrentAccessToken(), pictureUrl);
                 }
             }
         };

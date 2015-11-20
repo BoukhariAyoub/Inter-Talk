@@ -2,6 +2,7 @@ package com.aboukhari.intertalking.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.aboukhari.intertalking.Utils.Utils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -175,6 +176,7 @@ public class User implements Parcelable{
     }
 
     public void setFirstLogin(Boolean firstLogin) {
+        Log.d("natija fb","set first login = " + firstLogin);
         this.isFirstLogin = firstLogin;
     }
 
@@ -209,9 +211,9 @@ public class User implements Parcelable{
                 ", placeName='" + placeName + '\'' +
                 ", gender='" + gender + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
+                ", isFirstLogin=" + isFirstLogin +
                 '}';
     }
-
 
     @Override
     public int describeContents() {

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -33,7 +34,7 @@ public class RegistrationActivity extends FragmentActivity implements View.OnCli
     Button mNextButton;
     RegistrationTabsAdapter tabsAdapter;
     User mUser;
-    String mPassword, mUid, mEmail;
+    String mPassword, mEmail;
     TextView mNextFragment;
 
     RegisterPassword registerPassword ;
@@ -53,9 +54,10 @@ public class RegistrationActivity extends FragmentActivity implements View.OnCli
 
 
         mPassword = getIntent().getStringExtra("password");
-        mUid = getIntent().getStringExtra("uid");
         mEmail = getIntent().getStringExtra("email");
         mUser = Utils.getUserFromPreferences(this);
+        Log.d("natija fb", "Muser" + mUser.toString());
+
         mIsfacebook = getIntent().getBooleanExtra("facebook",false);
 
         mNextFragment = (TextView) findViewById(R.id.tv_next_fragement);
@@ -157,8 +159,6 @@ public class RegistrationActivity extends FragmentActivity implements View.OnCli
         Bitmap bitmap = registerImage.getBitmap();
 
         User user = Utils.getUserFromPreferences(this);
-        user.setUid(mUid);
-       // user.setEmail(mEmail);
         user.setDisplayName(name);
         user.setBirthday(birthDate);
         user.setGender(gender);
