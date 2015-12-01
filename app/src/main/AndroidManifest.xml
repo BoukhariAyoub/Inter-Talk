@@ -7,10 +7,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/chat_logo"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -33,30 +32,18 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-
-
-
         <activity
             android:name=".activity.Login"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light" >
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
         </activity>
         <activity
             android:name=".activity.ChatRoom"
             android:label="@string/title_activity_chat_room"
-            android:windowSoftInputMode="stateVisible|adjustPan"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:screenOrientation="portrait" >
-
+            android:windowSoftInputMode="stateVisible|adjustPan" >
         </activity>
         <activity
             android:name=".activity.main.MainActivity"
@@ -99,8 +86,23 @@
             android:name=".activity.search.FilterUsers"
             android:label="@string/title_activity_filter_users"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".activity.SplashActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
 
+        </activity>
+        <activity
+            android:name=".activity.main.Main3Activity"
+            android:label="@string/title_activity_main3" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

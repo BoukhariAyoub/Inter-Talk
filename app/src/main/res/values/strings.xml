@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Chat App</string>
+    <string name="app_name">Inter TALK</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_main_tabs">MainTabs</string>
@@ -39,5 +39,7 @@
     <string name="title_activity_profile_edit">ProfileEdit</string>
     <string name="title_activity_find_users">FindUsers</string>
     <string name="title_activity_filter_users">Filter Users</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="title_activity_main3">Main3Activity</string>
 
 </resources>

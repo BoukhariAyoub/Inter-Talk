@@ -169,7 +169,6 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
     public void onClick(View v) {
 
         if (v.getId() == mActivatedImageView.getId() || v.getId() == mTranslateImageView.getId()) {
-       // if (v.getId() == mTranslationFrameLayout.getId())
             isTranslationActivated = !isTranslationActivated;
             int drawable = isTranslationActivated ?android.R.drawable.presence_online: android.R.drawable.presence_offline ;
             enabledDate = isTranslationActivated ? new Date():new Date(Long.MAX_VALUE) ;

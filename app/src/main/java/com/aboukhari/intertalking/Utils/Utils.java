@@ -91,8 +91,8 @@ public abstract class Utils {
         Resources r = context.getResources();
         Notification notification = new NotificationCompat.Builder(context)
                 .setTicker("Ticker")
-                .setLargeIcon(BitmapFactory.decodeResource(r, R.mipmap.chat_logo))
-                .setSmallIcon(R.mipmap.chat_logo)
+                .setLargeIcon(BitmapFactory.decodeResource(r, R.drawable.ic_launcher))
+                .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(title)
                 .setContentText(text)
                         //   .setContentIntent(pi)
