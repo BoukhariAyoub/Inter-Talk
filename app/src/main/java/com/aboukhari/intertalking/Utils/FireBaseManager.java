@@ -13,7 +13,7 @@ import com.aboukhari.intertalking.activity.ChatRoom;
 import com.aboukhari.intertalking.activity.Login;
 import com.aboukhari.intertalking.activity.RegistrationActivity;
 import com.aboukhari.intertalking.activity.main.Conversations;
-import com.aboukhari.intertalking.activity.main.MainActivity;
+import com.aboukhari.intertalking.activity.main.Main3Activity;
 import com.aboukhari.intertalking.database.DatabaseManager;
 import com.aboukhari.intertalking.model.Conversation;
 import com.aboukhari.intertalking.model.Friend;
@@ -470,25 +470,29 @@ public class FireBaseManager {
         registerPlace(user, placeId);
         registerLanguages(user, knownLanguages, wantedLanguages);
         Utils.saveUserToPreferences(context, user);
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, Main3Activity.class);
         context.startActivity(intent);
     }
 
     private void registerPlace(final User user, String placeId) {
-        RestClient.get(RestClient.GOOGLE_MAPS_ENDPOINT).getPlaceDetails(placeId, "en", Constants.GOOGLE_API_KEY, new Callback<JsonElement>() {
-            @Override
-            public void success(JsonElement json, Response response) {
+        if (placeId != null) {
+
+
+            RestClient.get(RestClient.GOOGLE_MAPS_ENDPOINT).getPlaceDetails(placeId, "en", Constants.GOOGLE_API_KEY, new Callback<JsonElement>() {
+                @Override
+                public void success(JsonElement json, Response response) {
                 /*Set Place To User*/
-                Place place = JsonUtils.jSonToPlace(json);
-                FireBaseManager.getInstance(context).addPlaceToUser(place, user);
-            }
+                    Place place = JsonUtils.jSonToPlace(json);
+                    FireBaseManager.getInstance(context).addPlaceToUser(place, user);
+                }
 
 
-            @Override
-            public void failure(RetrofitError error) {
+                @Override
+                public void failure(RetrofitError error) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     private void registerLanguages(User user, ArrayList<Language> knownLanguages, ArrayList<Language> wantedLanguages) {
@@ -629,7 +633,7 @@ public class FireBaseManager {
         } else {
             Utils.saveUserToPreferences(context, user);
             Intent mainIntent = new Intent(context,
-                    MainActivity.class);
+                    Main3Activity.class);
             context.startActivity(mainIntent);
         }
 
@@ -672,7 +676,7 @@ public class FireBaseManager {
                                 context.startActivity(intent);
                             } else {
                                 Utils.saveUserToPreferences(context, user);
-                                Intent intent = new Intent(context, MainActivity.class);
+                                Intent intent = new Intent(context, Main3Activity.class);
                                 context.startActivity(intent);
                             }
                         }

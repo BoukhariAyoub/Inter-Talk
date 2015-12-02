@@ -42,7 +42,7 @@ public class Conversations extends Fragment {
         ref = new Firebase(getString(R.string.firebase_url));
 
 
-        MainActivity activity = (MainActivity) getActivity();
+        Main3Activity activity = (Main3Activity) getActivity();
         fireBaseManager = activity.getFireBaseManager();
         fireBaseManager.addAllListeners();
 

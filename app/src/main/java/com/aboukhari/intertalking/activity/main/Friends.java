@@ -13,7 +13,6 @@ import android.widget.ListView;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.adapter.FriendsListAdapter;
-import com.aboukhari.intertalking.model.Friend;
 import com.aboukhari.intertalking.model.User;
 import com.firebase.client.Firebase;
 import com.firebase.client.ValueEventListener;
@@ -38,7 +37,7 @@ public class Friends extends Fragment {
         Firebase.setAndroidContext(getActivity());
         ref = new Firebase(getString(R.string.firebase_url));
 
-        MainActivity activity = (MainActivity) getActivity();
+        Main3Activity activity = (Main3Activity) getActivity();
         fireBaseManager = activity.getFireBaseManager();
 
 

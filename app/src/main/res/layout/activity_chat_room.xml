@@ -6,8 +6,7 @@
     tools:context="com.aboukhari.intertalking.activity.ChatRoom">
 
 
-
-       <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -21,60 +20,96 @@
             android:layout_height="56dp"
             android:gravity="center_vertical">
 
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_arrow_back_white_36dp" />
+
             <com.github.siyamed.shapeimageview.CircularImageView
-                android:layout_gravity="center"
                 android:id="@+id/iv_avatar"
                 android:layout_width="42dp"
                 android:layout_height="match_parent"
-                android:gravity="center"
                 android:layout_centerInParent="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginRight="10dp"/>
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_toEndOf="@id/iv_back"
+                android:layout_toRightOf="@id/iv_back"
+                android:gravity="center" />
 
             <TextView
                 android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center"
                 android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/iv_avatar"
                 android:layout_toRightOf="@id/iv_avatar"
-                android:text="Toolbar Title"
+                android:gravity="center"
                 android:textColor="@color/white" />
 
-            <FrameLayout
-                android:id="@+id/translation_frame"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="5dp"
-                >
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp">
+
+                <ImageView
+                    android:id="@+id/toolbar_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_search_white_24dp" />
+
+                <ImageView
+                    android:id="@+id/toolbar_send_picture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_image_white_24dp" />
 
                 <ImageView
                     android:id="@+id/toolbar_auto_translate"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_translation_white"
-                    />
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_translate_white_24dp" />
 
-                <ImageView
-                    android:id="@+id/toolbar_translate_activated"
+
+                <FrameLayout
+                    android:id="@+id/translation_frame"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
-                    android:layout_marginRight="3dp"
-                    android:layout_marginBottom="3dp"
-                    android:src="@android:drawable/presence_online" />
+                    android:visibility="gone">
 
 
-            </FrameLayout>
+                    <ImageView
+                        android:id="@+id/toolbar_translate_activated"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|right"
+                        android:layout_marginBottom="3dp"
+                        android:layout_marginRight="3dp"
+                        android:src="@android:drawable/presence_online" />
 
 
+                </FrameLayout>
+
+            </LinearLayout>
 
         </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>
-
 
 
     <android.support.v7.widget.RecyclerView
@@ -84,10 +119,38 @@
         android:layout_above="@+id/listFooter"
         android:layout_below="@+id/toolbar"
         android:divider="@null"
+        android:isScrollContainer="true"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
-        android:isScrollContainer="false"
         android:transcriptMode="alwaysScroll" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/layout_attach"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_gravity="center"
+        android:background="@color/primary_light"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <ImageButton
+            android:layout_weight="1"
+            android:id="@+id/btn_camera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_image_white_36dp" />
+
+        <ImageButton
+            android:layout_weight="1"
+            android:id="@+id/btn_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_image_white_36dp" />
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/listFooter"
@@ -95,20 +158,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
+
         <EditText
             android:id="@+id/messageInput"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:hint="@string/your_message"
             android:imeOptions="actionDone"
             android:inputType="textMultiLine"
+            android:maxLines="10"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:textColor="@color/gray"
             android:textColorHint="@color/gray"
-            android:textSize="15sp"
-            android:maxLines="10"/>
+            android:textSize="15sp" />
 
         <ImageButton
             android:id="@+id/sendButton"

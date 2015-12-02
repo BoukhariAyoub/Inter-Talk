@@ -29,80 +29,58 @@
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            />
         <activity
             android:name=".activity.Login"
-            android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light" >
+            >
         </activity>
         <activity
             android:name=".activity.ChatRoom"
-            android:label="@string/title_activity_chat_room"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateVisible|adjustPan" >
-        </activity>
-        <activity
-            android:name=".activity.main.MainActivity"
-            android:label="@string/title_activity_main"
-            android:screenOrientation="portrait" >
+            android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
             android:name=".activity.GeoNames"
-            android:label="@string/title_activity_geo_names"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activity.RegistrationActivity"
-            android:label="@string/title_activity_main2"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activity.profile.ProfileView"
-            android:label="@string/title_activity_profile_view"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activity.profile.ProfileEdit"
-            android:label="@string/title_activity_profile_edit"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".activity.search.FindUsers"
-            android:label="@string/title_activity_find_users"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.registration.SignUpEmail"
-            android:label="@string/title_activity_find_users"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.search.FilterUsers"
-            android:label="@string/title_activity_filter_users"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activity.SplashActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
-
-        </activity>
-        <activity
-            android:name=".activity.main.Main3Activity"
-            android:label="@string/title_activity_main3" >
-
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.main.Main3Activity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

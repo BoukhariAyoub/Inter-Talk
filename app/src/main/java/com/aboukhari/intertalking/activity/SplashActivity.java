@@ -29,8 +29,6 @@ public class SplashActivity extends AwesomeSplash {
 
 
 
-
-
         //Customize Title
         configSplash.setTitleSplash("INTER TALK");
         configSplash.setTitleTextColor(R.color.white);

@@ -12,7 +12,7 @@ import android.widget.EditText;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.Utils.Utils;
-import com.aboukhari.intertalking.activity.main.MainActivity;
+import com.aboukhari.intertalking.activity.main.Main3Activity;
 import com.aboukhari.intertalking.activity.registration.SignUpEmail;
 import com.aboukhari.intertalking.model.User;
 import com.facebook.AccessToken;
@@ -40,7 +40,7 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            Firebase.getDefaultConfig().setPersistenceEnabled(false);
+            Firebase.getDefaultConfig().setPersistenceEnabled(true);
         }catch (Exception ex){
 
         }
@@ -51,6 +51,7 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
         final FireBaseManager fireBaseManager = new FireBaseManager(this);
         callbackManager = CallbackManager.Factory.create();
         ref = new Firebase(getString(R.string.firebase_url));
+
 
         Utils.getCurrentHashForFacebook(this);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
@@ -77,7 +78,7 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
             }*/
 
                 Intent intent = new Intent(this,
-                        MainActivity.class);
+                        Main3Activity.class);
                 startActivity(intent);
                 this.finish();
             }
