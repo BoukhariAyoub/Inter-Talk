@@ -35,7 +35,6 @@ dependencies {
     compile 'com.jpardogo.materialtabstrip:library:1.1.0'
     compile 'com.firebase:firebase-client-android:2.3.1'
     compile 'com.facebook.android:facebook-android-sdk:4.1.0'
-    compile 'com.lguipeng.bubbleview:library:1.0.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.j256.ormlite:ormlite-core:4.48'

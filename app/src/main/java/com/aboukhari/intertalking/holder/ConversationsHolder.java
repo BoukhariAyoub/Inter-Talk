@@ -2,6 +2,7 @@ package com.aboukhari.intertalking.holder;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +22,6 @@ import com.firebase.client.Query;
  */
 public class ConversationsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    private Query ref;
 
     private final TextView mDisplayNameTextView;
     private final TextView mDateTextView;
@@ -34,7 +34,6 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
 
     public ConversationsHolder(Context context, View itemView, Query ref, FireBaseManager fireBaseManager) {
         super(itemView);
-        this.ref = ref;
         this.context = context;
         this.view = itemView;
         this.fireBaseManager = fireBaseManager;
@@ -52,12 +51,15 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
         mConversation = conversation;
         Log.d("natija read", " count = " + count);
         Log.d("natija read", " unreadMap = " + FireBaseManager.unreadMap);
-
         if (count > 0) {
-            view.setBackgroundColor(view.getResources().getColor(R.color.md_grey_300));
+            view.setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.md_grey_300));
         } else {
             view.setBackgroundColor(Color.TRANSPARENT);
         }
+        mMessageTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.black));
+        mDisplayNameTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.black));
+        mDateTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.black));
+
 
         mDisplayNameTextView.setText(friend.getDisplayName());
         mDateTextView.setText(Constants.MESSAGE_DATE_FORMAT.format(conversation.getLastMessageDate()));
@@ -67,7 +69,9 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
 
     @Override
     public void onClick(View v) {
-        fireBaseManager.openRoom(mConversation.getRoomName());
+        if(mConversation!=null){
+            fireBaseManager.openRoom(mConversation.getRoomName());
+        }
     }
 
 }

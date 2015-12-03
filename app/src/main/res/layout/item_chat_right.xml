@@ -21,24 +21,22 @@
         android:layout_marginLeft="20dp"
         >
 
-    <com.github.library.bubbleview.BubbleTextVew
+    <TextView
         android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:layout_gravity="end"
         android:textColor="@android:color/white"
-        app:angle="8dp"
-        app:arrowHeight="10dp"
-        app:arrowLocation="right"
-        app:arrowPosition="14dp"
-        app:arrowWidth="8dp"
+        android:background="@drawable/rounded_rect_primary"
         android:layout_alignParentRight="true"
-        app:bubbleColor="@color/primary" />
+        android:layout_alignParentEnd="true"
+        />
 
         <TextView
             android:id="@+id/date"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_below="@id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,7 +50,6 @@
     </RelativeLayout>
 
     <com.github.siyamed.shapeimageview.CircularImageView
-        android:visibility="gone"
         android:id="@+id/iv_avatar"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -61,7 +58,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
         android:maxHeight="40dp"
-        android:minHeight="40dp"
-        android:src="@drawable/user" />
+        android:minHeight="40dp" />
 
 </LinearLayout>

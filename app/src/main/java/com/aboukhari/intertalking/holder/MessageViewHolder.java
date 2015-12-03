@@ -47,6 +47,8 @@ public class MessageViewHolder extends RecyclerView.ViewHolder implements View.O
 
         String text = message.getMessage();
 
+        messageTextView.setOnClickListener(this);
+
         if (author.equals(uid)) {
             imageUrl = Utils.getUserFromPreferences(activity).getImageUrl();
             messageTextView.setText(text);
@@ -74,6 +76,9 @@ public class MessageViewHolder extends RecyclerView.ViewHolder implements View.O
 
     @Override
     public void onClick(View v) {
+        if(v.getId() == messageTextView.getId()){
+           // messageTextView.setBubbleColor(ContextCompat.getColor(v.getContext(), R.color.red));
 
+        }
     }
 }

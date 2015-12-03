@@ -177,7 +177,6 @@ public class ConversationsRecyclerAdapter extends RecyclerView.Adapter<Conversat
                                 }
                             }
                             Collections.sort(models, new DateComparator());
-
                             notifyDataSetChanged();
                         }
                     }

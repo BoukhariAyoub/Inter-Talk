@@ -23,7 +23,6 @@ import com.aboukhari.intertalking.activity.main.Conversations;
 import com.aboukhari.intertalking.activity.profile.ProfileView;
 import com.aboukhari.intertalking.adapter.MessageRecyclerAdapter;
 import com.aboukhari.intertalking.adapter.MyGridLayoutManager;
-import com.aboukhari.intertalking.database.DatabaseManager;
 import com.aboukhari.intertalking.model.Message;
 import com.aboukhari.intertalking.model.User;
 import com.daimajia.androidanimations.library.Techniques;
@@ -40,11 +39,10 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
     private Firebase ref;
     private RecyclerView recyclerView;
     private String roomName;
-    private DatabaseManager databaseManager;
     private FireBaseManager fireBaseManager;
     private MessageRecyclerAdapter messageRecyclerAdapter;
-    ImageView mTranslateImageView, mActivatedImageView, mSearchImageView, mSendPictureImageView, mBackImageView, mAvatarImageView;
-    LinearLayout mLinearAttach;
+    ImageView mTranslateImageView,mSearchImageView, mSendPictureImageView, mBackImageView, mAvatarImageView;
+    LinearLayout mLinearAttach,mLinearAutoTraslate;
     FrameLayout mTranslationFrameLayout;
     boolean isTranslationActivated;
     Date enabledDate;
@@ -57,23 +55,21 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
         setContentView(R.layout.activity_chat_room);
 
 
-        databaseManager = DatabaseManager.getInstance(this);
         fireBaseManager = new FireBaseManager(this);
 
-        isTranslationActivated = true; //TODO add from shared preferences
-        enabledDate = new Date();
+        isTranslationActivated = false; //TODO add from shared preferences
+        enabledDate = new Date(Long.MAX_VALUE);
 
 
-        ImageView avatarImageView = (ImageView) findViewById(R.id.iv_avatar);
         TextView textView = (TextView) findViewById(R.id.toolbar_title);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mTranslateImageView = (ImageView) findViewById(R.id.toolbar_auto_translate);
-        mActivatedImageView = (ImageView) findViewById(R.id.toolbar_translate_activated);
         mSearchImageView = (ImageView) findViewById(R.id.toolbar_search);
         mSendPictureImageView = (ImageView) findViewById(R.id.toolbar_send_picture);
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mAvatarImageView = (ImageView) findViewById(R.id.iv_avatar);
         mLinearAttach = (LinearLayout) findViewById(R.id.layout_attach);
+        mLinearAutoTraslate = (LinearLayout) findViewById(R.id.layout_auto_translate);
 
         mTranslationFrameLayout = (FrameLayout) findViewById(R.id.translation_frame);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -81,7 +77,6 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
         setSupportActionBar(toolbar);
 
         mTranslateImageView.setOnClickListener(this);
-        mActivatedImageView.setOnClickListener(this);
         mSearchImageView.setOnClickListener(this);
         mSendPictureImageView.setOnClickListener(this);
         mBackImageView.setOnClickListener(this);
@@ -92,7 +87,7 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
         String title = mFriend.getDisplayName();
 
         textView.setText(title);
-        Utils.loadImage(this, mFriend.getImageUrl(), avatarImageView);
+        Utils.loadImage(this, mFriend.getImageUrl(), mAvatarImageView);
 
         FireBaseManager.currentRoom = roomName;
 
@@ -106,7 +101,7 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    sendMessage();
+                   // sendMessage();
                 }
                 return true;
             }
@@ -184,11 +179,13 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == mActivatedImageView.getId() || v.getId() == mTranslateImageView.getId()) {
+        if (v.getId() == mTranslateImageView.getId()) {
             isTranslationActivated = !isTranslationActivated;
-            int drawable = isTranslationActivated ? android.R.drawable.presence_online : android.R.drawable.presence_offline;
+            int color = isTranslationActivated ? R.color.primary_dark : R.color.primary;
             enabledDate = isTranslationActivated ? new Date() : new Date(Long.MAX_VALUE);
-            mActivatedImageView.setImageDrawable(ContextCompat.getDrawable(this, drawable));
+            mTranslateImageView.setBackgroundColor(ContextCompat.getColor(this,color));
+            mLinearAutoTraslate.setBackgroundColor(ContextCompat.getColor(this,color));
+
         }
 
         if (v.getId() == mBackImageView.getId()) {
