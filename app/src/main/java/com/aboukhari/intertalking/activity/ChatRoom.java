@@ -28,6 +28,7 @@ import com.aboukhari.intertalking.model.User;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 
 import java.util.Date;
 
@@ -41,8 +42,8 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
     private String roomName;
     private FireBaseManager fireBaseManager;
     private MessageRecyclerAdapter messageRecyclerAdapter;
-    ImageView mTranslateImageView,mSearchImageView, mSendPictureImageView, mBackImageView, mAvatarImageView;
-    LinearLayout mLinearAttach,mLinearAutoTraslate;
+    ImageView mTranslateImageView, mSearchImageView, mSendPictureImageView, mBackImageView, mAvatarImageView;
+    LinearLayout mLinearAttach, mLinearAutoTraslate;
     FrameLayout mTranslationFrameLayout;
     boolean isTranslationActivated;
     Date enabledDate;
@@ -101,7 +102,7 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                   // sendMessage();
+                    // sendMessage();
                 }
                 return true;
             }
@@ -167,7 +168,20 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
         String input = inputText.getText().toString();
         if (!input.equals("")) {
             Message message = new Message(input, ref.getAuth().getUid());
-            ref.child("messages").child(roomName).push().setValue(message);
+           // ref.child("messages").child(roomName).push().setValue(message);
+            Log.d("natija sync", "sendmessage");
+
+            ref.child("messages").child(roomName).push().setValue(message, new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    Log.d("natija sync", "oncomplete");
+                    if (firebaseError == null) {
+                        Log.d("natija sync","null");
+
+                    } else
+                        Log.d("natija sync", firebaseError.getMessage());
+                }
+            });
             inputText.setText("");
         }
     }
@@ -183,8 +197,8 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
             isTranslationActivated = !isTranslationActivated;
             int color = isTranslationActivated ? R.color.primary_dark : R.color.primary;
             enabledDate = isTranslationActivated ? new Date() : new Date(Long.MAX_VALUE);
-            mTranslateImageView.setBackgroundColor(ContextCompat.getColor(this,color));
-            mLinearAutoTraslate.setBackgroundColor(ContextCompat.getColor(this,color));
+            mTranslateImageView.setBackgroundColor(ContextCompat.getColor(this, color));
+            mLinearAutoTraslate.setBackgroundColor(ContextCompat.getColor(this, color));
 
         }
 
