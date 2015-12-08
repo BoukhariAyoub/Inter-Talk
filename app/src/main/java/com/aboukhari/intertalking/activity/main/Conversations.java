@@ -45,17 +45,6 @@ public class Conversations extends Fragment {
         Main3Activity activity = (Main3Activity) getActivity();
         fireBaseManager = activity.getFireBaseManager();
         fireBaseManager.addAllListeners();
-
-
-     /*   listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Conversation conversation = (Conversation) listView.getItemAtPosition(position);
-                fireBaseManager.openRoom(conversation.getRoomName());
-            }
-
-        });*/
-
         return v;
     }
 

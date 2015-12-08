@@ -1,5 +1,6 @@
 package com.aboukhari.intertalking.activity.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -8,9 +9,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
+import com.aboukhari.intertalking.activity.search.FindUsers;
 import com.facebook.FacebookSdk;
 import com.firebase.client.Firebase;
 
@@ -32,12 +36,11 @@ public class Main3Activity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-        }
 
         viewPager.setAdapter(new SectionPagerAdapter(getSupportFragmentManager()));
         tabLayout.setupWithViewPager(viewPager);
@@ -84,5 +87,32 @@ public class Main3Activity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         fireBaseManager.updateOnlineStatus();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main2, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id){
+            case R.id.action_find:
+                Intent intent = new Intent(this, FindUsers.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_message:
+                return true;
+            case R.id.action_settings:
+                return true;
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

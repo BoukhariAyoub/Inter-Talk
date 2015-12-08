@@ -2,14 +2,15 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
-<!-- <item name="android:tabWidgetStyle">@style/AppTabLayout</item>-->
-        <!-- <item name="android:editTextStyle">@style/EditTextStyle</item> -->
+        <item name="android:popupMenuStyle">@style/MyApp.PopupMenu</item>
+        <item name="android:actionBarStyle">@style/MyApp.ActionBar</item>
+        <item name="android:actionMenuTextColor">@color/white</item>
+
     </style>
 
     <style name="EditTextStyle" parent="Theme.AppCompat">
@@ -43,6 +44,17 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/WhiteSmoke</item>
         <item name="textAllCaps">true</item>
+    </style>
+
+    <!-- The beef: background color for Action Bar overflow menu -->
+    <style name="MyApp.PopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">@color/white</item>
+    </style>
+
+    <!-- Bonus: if you want to style whole Action Bar, not just the menu -->
+    <style name="MyApp.ActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid">
+        <!-- Blue background color & black bottom border -->
+        <item name="android:background">@color/red</item>
     </style>
 
 

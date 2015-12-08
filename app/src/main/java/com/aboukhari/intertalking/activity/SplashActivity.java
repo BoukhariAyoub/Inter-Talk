@@ -46,6 +46,7 @@ public class SplashActivity extends AwesomeSplash {
         startActivity(intent);
 
 
+
     }
 
    /* @Override
