@@ -23,6 +23,8 @@ import android.widget.ImageView;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.model.User;
 import com.cloudinary.Cloudinary;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -250,8 +252,25 @@ public abstract class Utils {
         } catch (Exception e) {
             Log.e("natija fb hack", e.toString());
         }
+    }
 
+    public static void hideView(View view, Techniques effect) {
+        view.setVisibility(View.GONE);
+        YoYo.with(effect)
+                .duration(200)
+                .playOn(view);
+    }
 
+    public static void showView(View view, Techniques effect) {
+        view.setVisibility(View.VISIBLE);
+        YoYo.with(effect)
+                .duration(500)
+                .playOn(view);
+    }
+
+    public static void showAndHide(View toHide, View toShow, Techniques hideEffect, Techniques showEffet) {
+        hideView(toHide, hideEffect);
+        showView(toShow, showEffet);
     }
 
 

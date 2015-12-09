@@ -524,4 +524,6 @@
     <color name="transparent_grey">#1A000000</color>
     <color name="transparent_lighter_grey">#80FFFFFF</color>
 
+    <color name="gplus_color">#D34836</color>
+
 </resources>

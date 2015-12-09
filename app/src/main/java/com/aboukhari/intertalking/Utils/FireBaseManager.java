@@ -24,6 +24,7 @@ import com.aboukhari.intertalking.model.User;
 import com.aboukhari.intertalking.model.UserRoom;
 import com.aboukhari.intertalking.retrofit.RestClient;
 import com.aboukhari.intertalking.task.UploadImage;
+import com.dd.processbutton.iml.ActionProcessButton;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -384,7 +385,7 @@ public class FireBaseManager {
      *
      * @param email
      */
-    public void createUser(final String email) {
+    public void createUser(final String email, final ActionProcessButton button) {
         Long.toHexString(Double.doubleToLongBits(Math.random()));
         String password = Long.toHexString(Double.doubleToLongBits(Math.random()));
         ref.createUser(email.toLowerCase(), password, new Firebase.ValueResultHandler<Map<String, Object>>() {
@@ -399,18 +400,25 @@ public class FireBaseManager {
 
                 addUserToFireBase(user);
 
+
                 Utils.saveUserToPreferences(context, user);
 
 
                 ref.resetPassword(email, new Firebase.ResultHandler() {
                     @Override
                     public void onSuccess() {
+                        button.setProgress(100);
+                        button.setText("Password Sent");
                         Toast.makeText(context, "A password has been sent to the email you entred", Toast.LENGTH_LONG).show();
                         Log.d("natija pass", "A password has been sent to the email you entred");
                     }
 
                     @Override
                     public void onError(FirebaseError firebaseError) {
+                        button.setProgress(-1);
+                        button.setError("Error");
+                        button.setText("Error");
+                        button.setErrorText("Error");
                         Toast.makeText(context, "There Was an error sending an email please : " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                         Log.d("natija pass", "There Was an error sending an email please : " + firebaseError.getMessage());
 
@@ -420,6 +428,10 @@ public class FireBaseManager {
 
             @Override
             public void onError(FirebaseError firebaseError) {
+                button.setProgress(-1);
+                button.setError("Error", null);
+                button.setText("Error");
+                button.setErrorText("Error");
                 Toast.makeText(context, "There Was an error sending an email please : " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 Log.e("natija pass", firebaseError.getMessage());
             }

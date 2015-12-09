@@ -10,7 +10,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.aboukhari.intertalking.R;
-import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.activity.Login;
 
 /**
@@ -36,7 +35,7 @@ public class SignUpEmail extends Activity implements View.OnClickListener {
         if (v.getId() == mSendButton.getId()) {
             String email = mEmailEditText.getText().toString().trim();
             if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                FireBaseManager.getInstance(this).createUser(email);
+             //   FireBaseManager.getInstance(this).createUser(email);
                 Intent intent = new Intent(this, Login.class);
                 intent.putExtra("email", email);
                 startActivity(intent);
