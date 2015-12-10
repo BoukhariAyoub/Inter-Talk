@@ -1,13 +1,13 @@
 package com.aboukhari.intertalking.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Patterns;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.Utils.Utils;
-import com.aboukhari.intertalking.activity.main.Main3Activity;
 import com.aboukhari.intertalking.model.User;
 import com.daimajia.androidanimations.library.Techniques;
 import com.dd.processbutton.iml.ActionProcessButton;
@@ -36,13 +35,12 @@ import java.util.Arrays;
 public class Login extends Activity implements View.OnClickListener, View.OnTouchListener {
 
 
-    Button btnFbLogin, btnEmailLogin, btnSignUp;
     EditText mEmailEditText, mPasswordEditText, mEmailSignUpEditText;
     Firebase ref;
     CallbackManager callbackManager;
-    ActionProcessButton btnSignUpEmail;
-    TextView mLinkSignUp, mLinkSignIn,mLinkBack;
-    LinearLayout mLinearSignIn, mLinearSignUp, mLinearEmail;
+    ActionProcessButton btnSignUpEmail, btnFbLogin, btnEmailLogin;
+    TextView mLinkSignUp, mLinkSignIn, mLinkForgotPassword;
+    LinearLayout mLinearSignIn, mLinearSignUp;
 
 
     @Override
@@ -66,37 +64,43 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
 
-        btnEmailLogin = (Button) findViewById(R.id.btn_login);
+        btnEmailLogin = (ActionProcessButton) findViewById(R.id.btn_login);
         btnSignUpEmail = (ActionProcessButton) findViewById(R.id.btn_send_email);
-        btnFbLogin = (Button) findViewById(R.id.btn_fb_login);
-        btnSignUp = (Button) findViewById(R.id.btn_email_signup);
+        btnFbLogin = (ActionProcessButton) findViewById(R.id.btn_fb_login);
         mPasswordEditText = (EditText) findViewById(R.id.et_password);
         mEmailEditText = (EditText) findViewById(R.id.et_email);
         mEmailSignUpEditText = (EditText) findViewById(R.id.et_email_signup);
         mLinkSignIn = (TextView) findViewById(R.id.link_signin);
         mLinkSignUp = (TextView) findViewById(R.id.link_signup);
-        mLinkBack= (TextView) findViewById(R.id.link_back);
+        mLinkForgotPassword = (TextView) findViewById(R.id.link_forgot_password);
         mLinearSignIn = (LinearLayout) findViewById(R.id.layout_sign_in);
         mLinearSignUp = (LinearLayout) findViewById(R.id.layout_sign_up);
-        mLinearEmail = (LinearLayout) findViewById(R.id.layout_email_sign_up);
 
 
         btnFbLogin.setOnClickListener(this);
         btnEmailLogin.setOnClickListener(this);
-        btnSignUp.setOnClickListener(this);
         mPasswordEditText.setOnTouchListener(this);
         btnSignUpEmail.setOnClickListener(this);
         mLinkSignUp.setOnClickListener(this);
         mLinkSignIn.setOnClickListener(this);
-        mLinkBack.setOnClickListener(this);
+        mLinkForgotPassword.setOnClickListener(this);
 
 
         if (ref.getAuth() != null) {
             FireBaseManager.getInstance(this).addCurrentUserChangeListener();
             User user = Utils.getUserFromPreferences(this);
-            if (user != null && !user.getFirstLogin()) {
-                Intent intent = new Intent(this,
-                        Main3Activity.class);
+            if (user != null) {
+                Intent intent;
+
+                if (!user.getFirstLogin()) {
+                    intent = new Intent(this,
+                            RegistrationActivity.class);//TODO change to MainActivity.class
+
+                } else {
+                    intent = new Intent(this,
+                            RegistrationActivity.class);
+
+                }
                 startActivity(intent);
                 this.finish();
             }
@@ -109,12 +113,17 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
             mEmailEditText.setText(email);
         }
 
+
+        if (AccessToken.getCurrentAccessToken() != null) {
+            // AccessToken.getCurrentAccessToken().get
+        }
+
         ProfileTracker profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
                 if (newProfile != null) {
                     String pictureUrl = newProfile.getProfilePictureUri(400, 400).toString();
-                    fireBaseManager.onFacebookAccessTokenChange(AccessToken.getCurrentAccessToken(), pictureUrl);
+                    fireBaseManager.onFacebookAccessTokenChange(AccessToken.getCurrentAccessToken(), pictureUrl, btnFbLogin);
                 }
             }
         };
@@ -147,10 +156,16 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
         }
 
 
-
-
         if (v == btnEmailLogin) {
-            FireBaseManager.getInstance(this).loginUserWithPassword(mEmailEditText.getText().toString().trim(), mPasswordEditText.getText().toString().trim());
+            String email = mEmailEditText.getText().toString().trim().toLowerCase();
+            String password = mPasswordEditText.getText().toString().trim();
+            if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                FireBaseManager.getInstance(this).loginUserWithPassword(email, password, btnEmailLogin);
+                btnEmailLogin.setProgress(1);
+            } else {
+                Toast.makeText(this, "Please Enter A Valid Email", Toast.LENGTH_SHORT).show();
+            }
+
         }
 
 
@@ -158,25 +173,34 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
             if (AccessToken.getCurrentAccessToken() != null) {
                 LoginManager.getInstance().logOut();
             } else {
+                btnFbLogin.setProgress(1);
                 LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "user_friends", "user_birthday"));
             }
         }
 
-        if (v == btnSignUp) {
-            Utils.showAndHide(mLinearSignUp, mLinearEmail, Techniques.FadeOutUp, Techniques.FadeInDown);
-        }
 
         if (v == mLinkSignIn) {
             Utils.showAndHide(mLinearSignUp, mLinearSignIn, Techniques.FadeOutUp, Techniques.FadeInDown);
         }
 
         if (v == mLinkSignUp) {
-            Utils.showAndHide(mLinearSignIn,mLinearSignUp , Techniques.FadeOutUp, Techniques.FadeInDown);
+            Utils.showAndHide(mLinearSignIn, mLinearSignUp, Techniques.FadeOutUp, Techniques.FadeInDown);
         }
 
-        if (v == mLinkBack) {
-            Utils.showAndHide(mLinearEmail,mLinearSignUp , Techniques.FadeOutUp, Techniques.FadeInDown);
+        if (v == mLinkForgotPassword) {
+            String email = mEmailEditText.getText().toString().trim().toLowerCase();
+
+            if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                ProgressDialog progressDialog = ProgressDialog.show(this, "Reset Password",
+                        "We are sending a new password to the email you entred", true);
+                progressDialog.show();
+                FireBaseManager.getInstance(this).resetPassword(email, progressDialog);
+            } else {
+                Toast.makeText(this, "Please Enter A Valid Email", Toast.LENGTH_SHORT).show();
+            }
         }
+
+
     }
 
     @Override

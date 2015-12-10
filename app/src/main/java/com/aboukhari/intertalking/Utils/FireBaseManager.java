@@ -379,6 +379,23 @@ public class FireBaseManager {
         ref.getRoot().child("users").child(user.getUid()).updateChildren(userMap);
     }
 
+    public void resetPassword(String email, final ProgressDialog progressDialog) {
+        ref.resetPassword(email, new Firebase.ResultHandler() {
+            @Override
+            public void onSuccess() {
+                progressDialog.dismiss();
+                Toast.makeText(context, "A password has been sent to the email you entred", Toast.LENGTH_LONG).show();
+                Log.d("natija pass", "A password has been sent to the email you entred");
+            }
+
+            @Override
+            public void onError(FirebaseError firebaseError) {
+                progressDialog.dismiss();
+                Toast.makeText(context, "There Was an error sending an email : " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                Log.d("natija pass", "There Was an error sending an email : " + firebaseError.getMessage());
+            }
+        });
+    }
 
     /**
      * Register a new User with email
@@ -386,56 +403,73 @@ public class FireBaseManager {
      * @param email
      */
     public void createUser(final String email, final ActionProcessButton button) {
-        Long.toHexString(Double.doubleToLongBits(Math.random()));
         String password = Long.toHexString(Double.doubleToLongBits(Math.random()));
+
         ref.createUser(email.toLowerCase(), password, new Firebase.ValueResultHandler<Map<String, Object>>() {
-            @Override
-            public void onSuccess(Map<String, Object> result) {
-                String uid = result.get("uid").toString();
-                User user = new User();
-                user.setUid(uid);
-                user.setEmail(email);
-                user.setFirstLogin(true);
-                Log.d("natija fb", "onFacebookAccessTokenChange");
-
-                addUserToFireBase(user);
-
-
-                Utils.saveUserToPreferences(context, user);
-
-
-                ref.resetPassword(email, new Firebase.ResultHandler() {
                     @Override
-                    public void onSuccess() {
-                        button.setProgress(100);
-                        button.setText("Password Sent");
-                        Toast.makeText(context, "A password has been sent to the email you entred", Toast.LENGTH_LONG).show();
-                        Log.d("natija pass", "A password has been sent to the email you entred");
+                    public void onSuccess(final Map<String, Object> result) {
+
+                        ref.getRoot().child("users").orderByChild("email").equalTo(email.toLowerCase()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                //IF EMAIL ALREADY EXISTS
+                                if (!dataSnapshot.exists()) {
+
+                                    String uid = result.get("uid").toString();
+                                    User user = new User();
+                                    user.setUid(uid);
+                                    user.setEmail(email);
+                                    user.setFirstLogin(true);
+                                    addUserToFireBase(user);
+
+
+                                    Utils.saveUserToPreferences(context, user);
+
+
+                                    ref.resetPassword(email, new Firebase.ResultHandler() {
+                                        @Override
+                                        public void onSuccess() {
+                                            button.setProgress(100);
+                                            button.setText("Password Sent");
+                                            Toast.makeText(context, "A password has been sent to the email you entred", Toast.LENGTH_LONG).show();
+                                            Log.d("natija pass", "A password has been sent to the email you entred");
+                                        }
+
+                                        @Override
+                                        public void onError(FirebaseError firebaseError) {
+                                            button.setProgress(-1);
+                                            button.setError("Error");
+                                            button.setText("Error");
+                                            button.setErrorText("Error");
+                                            Toast.makeText(context, "There Was an error sending an email : " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                                            Log.d("natija pass", "There Was an error sending an email : " + firebaseError.getMessage());
+
+                                        }
+                                    });
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        });
+
                     }
 
                     @Override
                     public void onError(FirebaseError firebaseError) {
                         button.setProgress(-1);
-                        button.setError("Error");
+                        button.setError("Error", null);
                         button.setText("Error");
                         button.setErrorText("Error");
-                        Toast.makeText(context, "There Was an error sending an email please : " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.d("natija pass", "There Was an error sending an email please : " + firebaseError.getMessage());
-
+                        Toast.makeText(context, "There Was an error sending an email : " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.e("natija pass", firebaseError.getMessage());
                     }
-                });
-            }
+                }
 
-            @Override
-            public void onError(FirebaseError firebaseError) {
-                button.setProgress(-1);
-                button.setError("Error", null);
-                button.setText("Error");
-                button.setErrorText("Error");
-                Toast.makeText(context, "There Was an error sending an email please : " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
-                Log.e("natija pass", firebaseError.getMessage());
-            }
-        });
+        );
 
     }
 
@@ -451,6 +485,7 @@ public class FireBaseManager {
      * @param knownLanguages
      * @param wantedLanguages
      */
+
     public void updateFirstLoginProfile(final User user, String oldPassword, String newPassword, final Bitmap bitmap, final String placeId, final ArrayList<Language> knownLanguages, final ArrayList<Language> wantedLanguages) {
         String email = user.getEmail();
         ref.changePassword(email, oldPassword, newPassword.trim(), new Firebase.ResultHandler() {
@@ -545,7 +580,7 @@ public class FireBaseManager {
     }
 
 
-    public void onFacebookAccessTokenChange(final AccessToken token, final String pictureUrl) {
+    public void onFacebookAccessTokenChange(final AccessToken token, final String pictureUrl, final ActionProcessButton button) {
         if (token != null) {
             ref.authWithOAuthToken("facebook", token.getToken(), new Firebase.AuthResultHandler() {
                 @Override
@@ -553,11 +588,9 @@ public class FireBaseManager {
 
                     String email = authData.getProviderData().get("email").toString().toLowerCase();
 
-                    Log.d("natija fb", "email  " + email);
                     ref.getRoot().child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            //if user already exists
                             if (dataSnapshot.exists()) {
                                 Log.d("natija fb", "user already exists");
                                 DataSnapshot dataUser = dataSnapshot.getChildren().iterator().next();
@@ -601,10 +634,11 @@ public class FireBaseManager {
                                 User user = new User(uid, displayName, email, birthday, gender);
                                 user.setImageUrl(pictureUrl);
                                 user.setFirstLogin(true);
-                                Log.d("natija fb", "onFacebookAccessTokenChange");
 
                                 //Add User To Firebase
                                 addUserToFireBase(user);
+
+                                button.setProgress(100);
 
                                 loginExistingUser(user, true);
 
@@ -653,10 +687,9 @@ public class FireBaseManager {
     }
 
 
-    public void loginUserWithPassword(final String email, final String password) {
-        Log.d("natija", "email = " + email);
-        Log.d("natija", "password = " + password);
-        ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
+    public void loginUserWithPassword(final String email, final String password,final ActionProcessButton button) {
+
+        ref.authWithPassword(email.trim().toLowerCase(), password.trim(), new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
                 Log.d("natija auth", " auth data = " + authData);
@@ -666,6 +699,10 @@ public class FireBaseManager {
 
                 //TODO check if first login
                 if (isTemporaryPassword) {
+
+                    User user =new User(uid,null,email,null,null);
+                    user.setFirstLogin(true);
+                    Utils.saveUserToPreferences(context, user);
                     Intent intent = new Intent(context, RegistrationActivity.class);
                     intent.putExtra("uid", uid);
                     intent.putExtra("email", email);
@@ -678,23 +715,35 @@ public class FireBaseManager {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
-                            User user = dataSnapshot.getValue(User.class);
+                            if(dataSnapshot.exists()){
+                                User user = dataSnapshot.getValue(User.class);
 
-                            if (user.getFirstLogin()) {
-                                Intent intent = new Intent(context, RegistrationActivity.class);
-                                intent.putExtra("uid", uid);
-                                intent.putExtra("email", email);
-                                intent.putExtra("password", password);
-                                context.startActivity(intent);
-                            } else {
-                                Utils.saveUserToPreferences(context, user);
-                                Intent intent = new Intent(context, Main3Activity.class);
-                                context.startActivity(intent);
+                                if (user.getFirstLogin()) {
+                                    Utils.saveUserToPreferences(context, user);
+                                    Intent intent = new Intent(context, RegistrationActivity.class);
+                                    intent.putExtra("uid", uid);
+                                    intent.putExtra("email", email);
+                                    intent.putExtra("password", password);
+                                    context.startActivity(intent);
+                                } else {
+                                    Utils.saveUserToPreferences(context, user);
+                                    Intent intent = new Intent(context, Main3Activity.class);
+                                    context.startActivity(intent);
+                                }
+
                             }
+
+                            else{
+
+                            }
+
+                            button.setProgress(100);
                         }
+
 
                         @Override
                         public void onCancelled(FirebaseError firebaseError) {
+                            button.setProgress(-1);
 
                         }
                     });
@@ -705,6 +754,7 @@ public class FireBaseManager {
 
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
+                button.setProgress(-1);
                 Log.e("natija", firebaseError.getMessage());
             }
         });

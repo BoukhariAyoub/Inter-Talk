@@ -55,7 +55,7 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
 
     @Override
     public long getItemId(int position) {
-        return super.getItemId(position);
+        return languages.get(position).hashCode();
     }
 
     public ArrayList<Language> getLanguages() {

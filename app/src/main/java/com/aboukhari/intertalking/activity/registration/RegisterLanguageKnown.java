@@ -12,13 +12,12 @@ import android.widget.AutoCompleteTextView;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.JsonUtils;
-import com.aboukhari.intertalking.adapter.CitiesAutoCompleteAdapter;
 import com.aboukhari.intertalking.adapter.LanguagesRecyclerAdapter;
 import com.aboukhari.intertalking.adapter.MyGridLayoutManager;
 import com.aboukhari.intertalking.model.Language;
-import com.aboukhari.intertalking.model.Place;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
 
@@ -30,9 +29,6 @@ public class RegisterLanguageKnown extends Fragment {
     private AutoCompleteTextView mLanguagesKnownAutoComplete;
     RecyclerView mRecyclerViewKnown;
     ArrayList<Language> mLanguagesList;
-    CitiesAutoCompleteAdapter mCityAdapter;
-    Place mChosenPlace;
-    private AutoCompleteTextView mPlaceAutoComplete;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -52,7 +48,12 @@ public class RegisterLanguageKnown extends Fragment {
     private void setUpLanguageViews(AutoCompleteTextView autoCompleteTextView, RecyclerView recyclerView, boolean known) {
         ArrayAdapter<Language> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, getAllLanguages());
         autoCompleteTextView.setAdapter(arrayAdapter);
-        LanguagesRecyclerAdapter recyclerAdapter = new LanguagesRecyclerAdapter(getActivity(), new ArrayList<Language>(), arrayAdapter, known);
+
+        Language phoneLanguage = new Language(Locale.getDefault().getLanguage(), Language.LEVEL_ADVANCED);
+        ArrayList<Language> knownList = new ArrayList<>();
+       // knownList.add(phoneLanguage);
+
+        LanguagesRecyclerAdapter recyclerAdapter = new LanguagesRecyclerAdapter(getActivity(), knownList, arrayAdapter, known);
         autoCompleteTextView.setOnItemClickListener(setLanguagesOnClickListener(recyclerAdapter, autoCompleteTextView));
 
         recyclerView.setHasFixedSize(false);
@@ -85,7 +86,7 @@ public class RegisterLanguageKnown extends Fragment {
     }
 
 
-    public ArrayList<Language> getKnownLanguages(){
+    public ArrayList<Language> getKnownLanguages() {
         ArrayList<Language> knownLanguages = getSelectedLanguages(mRecyclerViewKnown);
         return knownLanguages;
     }

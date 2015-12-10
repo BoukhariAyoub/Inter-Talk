@@ -243,7 +243,7 @@ public abstract class Utils {
             info = context.getPackageManager().getPackageInfo("com.aboukhari.intertalking", PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md;
-                md = MessageDigest.getInstance("SHA");
+                md = MessageDigest.getInstance("SHA-1");
                 md.update(signature.toByteArray());
                 String something = new String(Base64.encode(md.digest(), 0));
                 //String something = new String(Base64.encodeBytes(md.digest()));
