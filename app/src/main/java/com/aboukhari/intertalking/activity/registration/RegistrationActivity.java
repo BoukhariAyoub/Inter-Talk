@@ -1,4 +1,4 @@
-package com.aboukhari.intertalking.activity;
+package com.aboukhari.intertalking.activity.registration;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -13,12 +13,6 @@ import android.widget.TextView;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.Utils.Utils;
-import com.aboukhari.intertalking.activity.registration.RegisterFusion;
-import com.aboukhari.intertalking.activity.registration.RegisterImage;
-import com.aboukhari.intertalking.activity.registration.RegisterLanguageKnown;
-import com.aboukhari.intertalking.activity.registration.RegisterLanguageWanted;
-import com.aboukhari.intertalking.activity.registration.RegisterPassword;
-import com.aboukhari.intertalking.activity.registration.RegisterPlace;
 import com.aboukhari.intertalking.adapter.RegistrationTabsAdapter;
 import com.aboukhari.intertalking.model.Language;
 import com.aboukhari.intertalking.model.User;
@@ -50,7 +44,7 @@ public class RegistrationActivity extends FragmentActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_2);
+        setContentView(R.layout.activity_registration);
 
 
         mPassword = getIntent().getStringExtra("password");

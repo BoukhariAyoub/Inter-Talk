@@ -9,7 +9,6 @@ import android.widget.EditText;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.Utils;
-import com.aboukhari.intertalking.activity.RegistrationActivity;
 import com.aboukhari.intertalking.model.User;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 

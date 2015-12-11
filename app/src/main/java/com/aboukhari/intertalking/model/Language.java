@@ -34,7 +34,7 @@ public class Language {
 
     @JsonIgnore
     public String getName() {
-        return  new Locale(iso).getDisplayLanguage().toUpperCase();
+        return new Locale(iso).getDisplayLanguage().toUpperCase();
 
     }
 
@@ -46,8 +46,8 @@ public class Language {
         this.level = level;
     }
 
-    public void updateLevel(){
-        if(this.level<3){
+    public void updateLevel() {
+        if (this.level < 3) {
             this.level++;
             return;
         }
@@ -57,5 +57,16 @@ public class Language {
     @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Language)) return false;
+        return iso.equalsIgnoreCase(((Language) o).getIso());
+    }
+
+    @Override
+    public int hashCode() {
+        return(iso.hashCode());
     }
 }

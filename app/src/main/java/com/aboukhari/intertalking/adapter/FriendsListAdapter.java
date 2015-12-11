@@ -223,7 +223,7 @@ public class FriendsListAdapter extends BaseAdapter {
                     TextView displayNameTextView = (TextView) view.findViewById(R.id.tv_display_name);
                     displayNameTextView.setText(name);
                     ImageView imageView = ((ImageView) view.findViewById(R.id.iv_profile));
-                    Utils.loadImage(activity, imageUrl, imageView);
+                    Utils.loadImage(imageUrl, imageView);
                 } else {
                     ref.getRef().getRoot().child("users").child(ref.getRef().getAuth().getUid()).child("friends").child(friend.getUid()).removeValue();
                 }

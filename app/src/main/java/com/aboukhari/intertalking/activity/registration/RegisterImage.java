@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.Utils;
-import com.aboukhari.intertalking.activity.RegistrationActivity;
 import com.aboukhari.intertalking.model.User;
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.soundcloud.android.crop.Crop;
@@ -41,7 +40,7 @@ public class RegisterImage extends Fragment implements View.OnClickListener {
       User mUser = ((RegistrationActivity) getActivity()).getmUser();
 
         if (mUser != null) {
-           Utils.loadImage(getActivity(),mUser.getImageUrl(),mAvatarImageView);
+           Utils.loadImage(mUser.getImageUrl(),mAvatarImageView);
         }
 
         return v;

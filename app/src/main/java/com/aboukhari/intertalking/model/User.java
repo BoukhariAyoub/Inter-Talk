@@ -44,10 +44,7 @@ public class User implements Parcelable{
     String spokenLanguages;
 
     @DatabaseField
-    String placeId;
-
-    @DatabaseField
-    String placeName;
+    String place;
 
     @DatabaseField
     String gender;
@@ -134,21 +131,15 @@ public class User implements Parcelable{
         this.spokenLanguages = spokenLanguages;
     }
 
-    public String getPlaceId() {
-        return placeId;
+    public String getPlace() {
+        return place;
     }
 
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
+    public void setPlace(String place) {
+        this.place = place;
     }
 
-    public String getPlaceName() {
-        return placeName;
-    }
 
-    public void setPlaceName(String placeName) {
-        this.placeName = placeName;
-    }
 
     public Date getBirthday() {
         return birthday;
@@ -207,8 +198,7 @@ public class User implements Parcelable{
                 ", birthday=" + birthday +
                 ", displayName='" + displayName + '\'' +
                 ", spokenLanguages='" + spokenLanguages + '\'' +
-                ", placeId='" + placeId + '\'' +
-                ", placeName='" + placeName + '\'' +
+                ", place='" + place + '\'' +
                 ", gender='" + gender + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", isFirstLogin=" + isFirstLogin +
@@ -228,8 +218,7 @@ public class User implements Parcelable{
         dest.writeLong(birthday != null ? birthday.getTime() : -1);
         dest.writeString(this.displayName);
         dest.writeString(this.spokenLanguages);
-        dest.writeString(this.placeId);
-        dest.writeString(this.placeName);
+        dest.writeString(this.place);
         dest.writeString(this.gender);
         dest.writeString(this.imageUrl);
         dest.writeValue(this.isFirstLogin);
@@ -247,8 +236,7 @@ public class User implements Parcelable{
         this.birthday = tmpBirthday == -1 ? null : new Date(tmpBirthday);
         this.displayName = in.readString();
         this.spokenLanguages = in.readString();
-        this.placeId = in.readString();
-        this.placeName = in.readString();
+        this.place = in.readString();
         this.gender = in.readString();
         this.imageUrl = in.readString();
         this.isFirstLogin = (Boolean) in.readValue(Boolean.class.getClassLoader());

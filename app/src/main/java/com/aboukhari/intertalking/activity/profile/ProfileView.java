@@ -52,10 +52,11 @@ public class ProfileView extends Activity implements View.OnClickListener {
         fabAddFriend.setOnClickListener(this);
         fabSendMessage.setOnClickListener(this);
 
+//TOOD
 
         mDisplayTextView.setText(user.getDisplayName());
-        mPlaceTextView.setText(user.getPlaceId() + " , " + user.getPlaceName());
-        Utils.loadImage(this, user.getImageUrl(), mAvatarImageView);
+     //   mPlaceTextView.setText(user.getPlaceId() + " , " + user.getPlaceName());
+        Utils.loadImage(user.getImageUrl(), mAvatarImageView);
 
 
         recyclerViewKnown = (RecyclerView) findViewById(R.id.recyclerViewKnown);

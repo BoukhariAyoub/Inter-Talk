@@ -38,7 +38,7 @@ public class FriendsViewHolder  extends RecyclerView.ViewHolder implements View.
 
     public void bindConversation(User friend) {
         mDisplayNameTextView.setText(friend.getDisplayName());
-        Utils.loadImage(context, friend.getImageUrl(), mAvatarImageView);
+        Utils.loadImage(friend.getImageUrl(), mAvatarImageView);
     }
 
     @Override

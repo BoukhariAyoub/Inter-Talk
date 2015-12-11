@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.Utils.FireBaseManager;
 import com.aboukhari.intertalking.Utils.Utils;
+import com.aboukhari.intertalking.activity.main.Main3Activity;
+import com.aboukhari.intertalking.activity.registration.RegistrationActivity;
 import com.aboukhari.intertalking.model.User;
 import com.daimajia.androidanimations.library.Techniques;
 import com.dd.processbutton.iml.ActionProcessButton;
@@ -54,7 +56,7 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
 
         Firebase.setAndroidContext(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        setContentView(R.layout.activity_login_2);
+        setContentView(R.layout.activity_login);
         final FireBaseManager fireBaseManager = new FireBaseManager(this);
         callbackManager = CallbackManager.Factory.create();
         ref = new Firebase(getString(R.string.firebase_url));
@@ -94,12 +96,13 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
 
                 if (!user.getFirstLogin()) {
                     intent = new Intent(this,
-                            RegistrationActivity.class);//TODO change to MainActivity.class
+                            Main3Activity.class);//TODO change to MainActivity.class
 
                 } else {
                     intent = new Intent(this,
                             RegistrationActivity.class);
-
+                    //if facebook
+                    intent.putExtra("facebook", (AccessToken.getCurrentAccessToken() != null));
                 }
                 startActivity(intent);
                 this.finish();
@@ -113,10 +116,6 @@ public class Login extends Activity implements View.OnClickListener, View.OnTouc
             mEmailEditText.setText(email);
         }
 
-
-        if (AccessToken.getCurrentAccessToken() != null) {
-            // AccessToken.getCurrentAccessToken().get
-        }
 
         ProfileTracker profileTracker = new ProfileTracker() {
             @Override

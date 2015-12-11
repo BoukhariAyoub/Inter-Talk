@@ -72,7 +72,7 @@ public class FindUsers extends AppCompatActivity implements OnClickListener {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
-        MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(this, 1);
+        MyGridLayoutManager gridLayoutManager = new MyGridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(recyclerAdapter);
         mRecyclerView.setItemAnimator(new FadeInAnimator());

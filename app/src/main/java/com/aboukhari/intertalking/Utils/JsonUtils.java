@@ -72,6 +72,7 @@ public abstract class JsonUtils {
                 Gson gson = new GsonBuilder()
                         .setDateFormat("MM/dd/yyyy").create();
                 User user = gson.fromJson(jsonObject, User.class);
+                user.setPlace("ChIJD7fiBh9u5kcRYJSMaMOCCwQ");
                 users.add(user);
             }
         } catch (Exception e) {

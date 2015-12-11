@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.aboukhari.intertalking.R;
 import com.aboukhari.intertalking.activity.ChatRoom;
 import com.aboukhari.intertalking.activity.Login;
-import com.aboukhari.intertalking.activity.RegistrationActivity;
+import com.aboukhari.intertalking.activity.registration.RegistrationActivity;
 import com.aboukhari.intertalking.activity.main.Conversations;
 import com.aboukhari.intertalking.activity.main.Main3Activity;
 import com.aboukhari.intertalking.database.DatabaseManager;
@@ -562,7 +562,7 @@ public class FireBaseManager {
      */
     public void addPlaceToUser(Place place, User user) {
         ref.getRoot().child("places").child(place.getId()).setValue(place);
-        ref.getRoot().child("users").child(user.getUid()).child("place").setValue(place);
+        ref.getRoot().child("users").child(user.getUid()).child("place").setValue(place.getId());
     }
 
     public void addImageToUser(User user, String imageUrl) {

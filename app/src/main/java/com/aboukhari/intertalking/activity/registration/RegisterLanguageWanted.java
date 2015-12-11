@@ -76,7 +76,7 @@ public class RegisterLanguageWanted extends Fragment {
 
     private ArrayList<Language> getSelectedLanguages(RecyclerView recyclerView) {
         LanguagesRecyclerAdapter adapter = (LanguagesRecyclerAdapter) recyclerView.getAdapter();
-        return adapter.getLanguages();
+        return adapter.getmLanguageList();
     }
 
 

@@ -46,12 +46,19 @@ public class RegisterLanguageKnown extends Fragment {
 
 
     private void setUpLanguageViews(AutoCompleteTextView autoCompleteTextView, RecyclerView recyclerView, boolean known) {
-        ArrayAdapter<Language> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, getAllLanguages());
-        autoCompleteTextView.setAdapter(arrayAdapter);
 
+        ArrayAdapter<Language> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, getAllLanguages());
+
+        //ADD current phoneLanguage automatically
         Language phoneLanguage = new Language(Locale.getDefault().getLanguage(), Language.LEVEL_ADVANCED);
         ArrayList<Language> knownList = new ArrayList<>();
-       // knownList.add(phoneLanguage);
+        knownList.add(phoneLanguage);
+
+//        arrayAdapter.remove(phoneLanguage);
+        //      arrayAdapter.notifyDataSetChanged();
+
+        autoCompleteTextView.setAdapter(arrayAdapter);
+
 
         LanguagesRecyclerAdapter recyclerAdapter = new LanguagesRecyclerAdapter(getActivity(), knownList, arrayAdapter, known);
         autoCompleteTextView.setOnItemClickListener(setLanguagesOnClickListener(recyclerAdapter, autoCompleteTextView));
@@ -64,7 +71,7 @@ public class RegisterLanguageKnown extends Fragment {
     }
 
 
-    private AdapterView.OnItemClickListener setLanguagesOnClickListener(final LanguagesRecyclerAdapter adapter, final AutoCompleteTextView autoCompleteTextView) {
+    public AdapterView.OnItemClickListener setLanguagesOnClickListener(final LanguagesRecyclerAdapter adapter, final AutoCompleteTextView autoCompleteTextView) {
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -77,12 +84,14 @@ public class RegisterLanguageKnown extends Fragment {
 
     private Language[] getAllLanguages() {
         mLanguagesList = JsonUtils.jsonToLanguages(getActivity());
+        Language phoneLanguage = new Language(Locale.getDefault().getLanguage());
+        mLanguagesList.remove(phoneLanguage);
         return mLanguagesList.toArray(new Language[mLanguagesList.size()]);
     }
 
     private ArrayList<Language> getSelectedLanguages(RecyclerView recyclerView) {
         LanguagesRecyclerAdapter adapter = (LanguagesRecyclerAdapter) recyclerView.getAdapter();
-        return adapter.getLanguages();
+        return adapter.getmLanguageList();
     }
 
 

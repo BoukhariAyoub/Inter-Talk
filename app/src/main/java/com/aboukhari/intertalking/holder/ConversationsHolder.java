@@ -64,7 +64,7 @@ public class ConversationsHolder extends RecyclerView.ViewHolder implements View
         mDisplayNameTextView.setText(friend.getDisplayName());
         mDateTextView.setText(Constants.MESSAGE_DATE_FORMAT.format(conversation.getLastMessageDate()));
         mMessageTextView.setText(conversation.getLastMessage());
-        Utils.loadImage(context, friend.getImageUrl(), mImageView);
+        Utils.loadImage(friend.getImageUrl(), mImageView);
     }
 
     @Override

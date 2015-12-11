@@ -20,16 +20,16 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
 
 
     Context context;
-    private ArrayList<Language> languages;
+    private ArrayList<Language> mLanguageList;
     ArrayAdapter<Language> mLanguageAdapter;
     LanguagesViewHolder mHolder;
-    boolean know;
+    boolean isKnown;
 
 
     public LanguagesRecyclerAdapter(Context context, ArrayList<Language> languages, ArrayAdapter<Language> languageAdapter,boolean know) {
         this.context = context;
-        this.languages = languages;
-        this.know = know;
+        this.mLanguageList = languages;
+        this.isKnown = know;
         mLanguageAdapter = languageAdapter;
     }
 
@@ -37,12 +37,12 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
     public LanguagesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_language, parent, false);
-        return new LanguagesViewHolder(context, view,know);
+        return new LanguagesViewHolder(context, view, isKnown);
     }
 
     @Override
     public void onBindViewHolder(LanguagesViewHolder holder, int position) {
-        final Language language = languages.get(position);
+        final Language language = mLanguageList.get(position);
         mHolder = holder.bindLanguage(language, position);
         holder.getmCrossImageView().setOnClickListener(this);
         holder.getmLevelImageView().setOnClickListener(this);
@@ -50,37 +50,37 @@ public class LanguagesRecyclerAdapter extends RecyclerView.Adapter<LanguagesView
 
     @Override
     public int getItemCount() {
-        return languages.size();
+        return mLanguageList.size();
     }
 
     @Override
     public long getItemId(int position) {
-        return languages.get(position).hashCode();
+        return mLanguageList.get(position).hashCode();
     }
 
-    public ArrayList<Language> getLanguages() {
-        return languages;
+    public ArrayList<Language> getmLanguageList() {
+        return mLanguageList;
     }
 
     public void addItem(Language language) {
         int position = 0;
-        languages.add(position, language);
+        mLanguageList.add(position, language);
         mLanguageAdapter.remove(language);
         mLanguageAdapter.notifyDataSetChanged();
         notifyItemInserted(position);
-        notifyItemRangeChanged(position, languages.size());
+        notifyItemRangeChanged(position, mLanguageList.size());
     }
 
     public void removeItem(int position) {
-        mLanguageAdapter.add(languages.get(position));
+        mLanguageAdapter.add(mLanguageList.get(position));
         mLanguageAdapter.notifyDataSetChanged();
-        languages.remove(position);
+        mLanguageList.remove(position);
         notifyItemRemoved(position);
-        notifyItemRangeChanged(position, languages.size());
+        notifyItemRangeChanged(position, mLanguageList.size());
     }
 
     public void updateItem(int position) {
-        languages.get(position).updateLevel();
+        mLanguageList.get(position).updateLevel();
         notifyItemChanged(position);
     }
 

@@ -140,9 +140,9 @@ public abstract class Utils {
 
     }
 
-    public static void loadImage(Context context, String imageUrl, final ImageView imageView) {
+    public static void loadImage(String imageUrl, final ImageView imageView) {
         if (!ImageLoader.getInstance().isInited()) {
-            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).build();
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(imageView.getContext()).build();
             ImageLoader.getInstance().init(config);
         }
         DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -171,13 +171,14 @@ public abstract class Utils {
 
     public static User getUserFromPreferences(Context context) {
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-
         Gson gson = new Gson();
         String json = mPrefs.getString("user", "");
         User user = gson.fromJson(json, User.class);
-
         return user;
+    }
 
+    public static String getFlagUrl(String countryIso){
+        return new StringBuilder().append(Constants.FLAGS_ENDPOINT).append(countryIso.toLowerCase()).append(".gif").toString();
     }
 
     public static int getAgeFromDate(Date date) {

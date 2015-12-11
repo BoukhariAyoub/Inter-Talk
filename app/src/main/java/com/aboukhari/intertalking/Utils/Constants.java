@@ -21,4 +21,6 @@ public abstract class Constants {
 
    public static String CLOUDINARY_KEY ="";
 
+   public static String FLAGS_ENDPOINT="http://www.geonames.org/flags/x/";
+
 }

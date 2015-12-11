@@ -69,7 +69,7 @@ public class MessageViewHolder extends RecyclerView.ViewHolder implements View.O
         Constants.MESSAGE_DATE_FORMAT.setTimeZone(TimeZone.getDefault());
         dateTextView.setText(Constants.MESSAGE_DATE_FORMAT.format(message.getDate()));
 
-        Utils.loadImage(activity, imageUrl, circularImageView);
+        Utils.loadImage(imageUrl, circularImageView);
         return this;
 
     }

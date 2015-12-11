@@ -5,8 +5,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
-import com.aboukhari.intertalking.activity.RegistrationActivity;
-
 /**
  * Created by aboukhari on 20/08/2015.
  */

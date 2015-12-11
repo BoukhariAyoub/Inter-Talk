@@ -177,12 +177,12 @@ public class FindUsersRecyclerAdapter extends RecyclerView.Adapter<FindUserViewH
             }
 
             if (placeId != null) {
-                check &= dataSnapshot.child("placeId").getValue() != null && dataSnapshot.child("placeId").getValue(String.class).equals(placeId);
+                check &= dataSnapshot.child("place").child("id").getValue() != null && dataSnapshot.child("placeId").getValue(String.class).equals(placeId);
             }
 
-       /* if (country != null) {
-            check &= dataSnapshot.child("country").getValue() != null && dataSnapshot.child("country").getValue(String.class).equals(countryIso);
-        }*/
+          /*  if (country != null) {
+                check &= dataSnapshot.child("palce").getValue() != null && dataSnapshot.child("country").getValue(String.class).equals(countryIso);
+            }*/
             Integer age = Utils.getAgeFromDate(dataSnapshot.child("birthday").getValue(Date.class));
 
 
@@ -206,7 +206,7 @@ public class FindUsersRecyclerAdapter extends RecyclerView.Adapter<FindUserViewH
 
             languages.add("ar");
 
-            if (languages != null && !languages.isEmpty()) {
+            if (!languages.isEmpty()) {
                 Map<String, String> langs = (Map<String, String>) dataSnapshot.child("knownLanguages").getValue();
                 check &= dataSnapshot.child("knownLanguages").getValue() != null && speaksLangs(langs, languages);
             }

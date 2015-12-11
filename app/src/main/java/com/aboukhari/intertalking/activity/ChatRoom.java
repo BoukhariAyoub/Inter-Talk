@@ -88,7 +88,7 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
         String title = mFriend.getDisplayName();
 
         textView.setText(title);
-        Utils.loadImage(this, mFriend.getImageUrl(), mAvatarImageView);
+        Utils.loadImage(mFriend.getImageUrl(), mAvatarImageView);
 
         FireBaseManager.currentRoom = roomName;
 
