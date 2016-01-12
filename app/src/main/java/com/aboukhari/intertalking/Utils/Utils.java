@@ -160,6 +160,24 @@ public abstract class Utils {
     }
 
 
+    public static void saveAutoTranslateToPrefs(Context context, String room, boolean value) {
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        String key = "auto_" + room;
+        prefsEditor.putBoolean(key, value);
+        Log.d("natija auto save","key = " + key +  "; value = " + value);
+
+        prefsEditor.commit();
+    }
+
+    public static boolean getAutoTranslateFromPreferences(Context context, String room) {
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String key = "auto_" + room;
+        boolean value = mPrefs.getBoolean(key, false);
+        Log.d("natija auto get","key = " + key +  "; value = " + value);
+        return value;
+    }
+
     public static void saveUserToPreferences(Context context, User user) {
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
@@ -177,7 +195,7 @@ public abstract class Utils {
         return user;
     }
 
-    public static String getFlagUrl(String countryIso){
+    public static String getFlagUrl(String countryIso) {
         return new StringBuilder().append(Constants.FLAGS_ENDPOINT).append(countryIso.toLowerCase()).append(".gif").toString();
     }
 

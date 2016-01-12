@@ -13,6 +13,7 @@ import com.aboukhari.intertalking.model.Message;
 import com.aboukhari.intertalking.model.User;
 import com.github.siyamed.shapeimageview.CircularImageView;
 
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -58,7 +59,10 @@ public class MessageViewHolder extends RecyclerView.ViewHolder implements View.O
             imageUrl = friend.getImageUrl() != null ? friend.getImageUrl() : "";
 
             boolean auto_translate = message.getDate().after(activity.getEnabledDate());
-            TranslationManager.translateMessage(activity, "en-fr", messageId, text, messageTextView, auto_translate);
+
+            String lang = Locale.getDefault().getISO3Language();
+
+            TranslationManager.translateMessage(activity, lang, messageId, text, messageTextView, auto_translate);
 
         /*    else{
                 messageTextView.setText(text);
@@ -76,8 +80,8 @@ public class MessageViewHolder extends RecyclerView.ViewHolder implements View.O
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == messageTextView.getId()){
-           // messageTextView.setBubbleColor(ContextCompat.getColor(v.getContext(), R.color.red));
+        if (v.getId() == messageTextView.getId()) {
+            // messageTextView.setBubbleColor(ContextCompat.getColor(v.getContext(), R.color.red));
 
         }
     }

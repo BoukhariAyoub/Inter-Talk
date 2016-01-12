@@ -10,10 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.aboukhari.intertalking.R;
-import com.aboukhari.intertalking.Utils.Utils;
 import com.aboukhari.intertalking.holder.FindUserViewHolder;
 import com.aboukhari.intertalking.model.FilterPrefs;
 import com.aboukhari.intertalking.model.User;
+import com.aboukhari.intertalking.Utils.Utils;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.FirebaseError;
@@ -159,9 +159,16 @@ public class FindUsersRecyclerAdapter extends RecyclerView.Adapter<FindUserViewH
     private boolean checkPrefs(DataSnapshot dataSnapshot, FilterPrefs prefs) {
         boolean check = true; // dataSnapshot.getKey() != ref.getRef().getAuth().getUid();
 
+        String uid = ref.getRef().getAuth().getUid();
+
+        Log.d("natija","uid = " + uid);
+        Log.d("natija","dataSnapshot.getKey() = " + dataSnapshot.getKey());
+        if (uid != null) {
+            check = dataSnapshot.getKey() != null && !dataSnapshot.getKey().equalsIgnoreCase(uid);
+        }
+
+
         if (prefs != null) {
-
-
             String gender = prefs.getGender();
             String placeId = prefs.getPlace() != null ? prefs.getPlace().getId() : null;
             String country = prefs.getPlace() != null ? prefs.getPlace().getCountry() : null;
@@ -170,6 +177,7 @@ public class FindUsersRecyclerAdapter extends RecyclerView.Adapter<FindUserViewH
             Boolean isOnline = prefs.getIsOnline();
             Boolean hasPicture = prefs.getHasPicture();
             ArrayList<String> languages = prefs.getLanguages();
+
 
 
             if (gender != null) {

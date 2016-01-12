@@ -26,7 +26,7 @@ public class TranslationManager {
         final DatabaseManager databaseManager = DatabaseManager.getInstance(context);
         TranslatedMessage message = databaseManager.getMessage(messageId);
         //TODO check if lang == selected lang too
-        if (message != null) {
+        if (message != null ) {
             //TODO add boolean and do this
             messageTextView.setText(message.getText());
             Log.d("natija trans", "from database : " + messageId + " : " + message.getText());
@@ -42,8 +42,7 @@ public class TranslationManager {
                         messageTextView.setText(translatedText);
                         TranslatedMessage translatedMessage = new TranslatedMessage(messageId, translatedText, lang);
                         databaseManager.addMessage(translatedMessage);
-                        Log.d("natija trans", "from yandex");
-                        Log.d("natija trans", "from yandexe : " + messageId + " : " + translatedMessage.getText());
+                        Log.d("natija trans", "from yandex : " + messageId + " : " + translatedMessage.getText());
 
 
                     } else {

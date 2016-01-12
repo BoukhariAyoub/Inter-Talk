@@ -58,8 +58,8 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
 
         fireBaseManager = new FireBaseManager(this);
 
-        isTranslationActivated = false; //TODO add from shared preferences
-        enabledDate = new Date(Long.MAX_VALUE);
+        //  isTranslationActivated = Utils.getAutoTranslateFromPreferences(this, roomName);
+        //   enabledDate = new Date(Long.MAX_VALUE);
 
 
         TextView textView = (TextView) findViewById(R.id.toolbar_title);
@@ -119,6 +119,14 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        isTranslationActivated = Utils.getAutoTranslateFromPreferences(this, roomName);
+        loadAutoTranslate();
+
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
 
@@ -168,15 +176,14 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
         String input = inputText.getText().toString();
         if (!input.equals("")) {
             Message message = new Message(input, ref.getAuth().getUid());
-           // ref.child("messages").child(roomName).push().setValue(message);
+            // ref.child("messages").child(roomName).push().setValue(message);
             Log.d("natija sync", "sendmessage");
 
             ref.child("messages").child(roomName).push().setValue(message, new Firebase.CompletionListener() {
                 @Override
                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                    Log.d("natija sync", "oncomplete");
                     if (firebaseError == null) {
-                        Log.d("natija sync","null");
+                        Log.d("natija sync", "null");
 
                     } else
                         Log.d("natija sync", firebaseError.getMessage());
@@ -195,11 +202,7 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
 
         if (v.getId() == mTranslateImageView.getId()) {
             isTranslationActivated = !isTranslationActivated;
-            int color = isTranslationActivated ? R.color.primary_dark : R.color.primary;
-            enabledDate = isTranslationActivated ? new Date() : new Date(Long.MAX_VALUE);
-            mTranslateImageView.setBackgroundColor(ContextCompat.getColor(this, color));
-            mLinearAutoTraslate.setBackgroundColor(ContextCompat.getColor(this, color));
-
+            loadAutoTranslate();
         }
 
         if (v.getId() == mBackImageView.getId()) {
@@ -251,5 +254,13 @@ public class ChatRoom extends AppCompatActivity implements View.OnClickListener 
         view.setVisibility(View.GONE);*/
 
 
+    }
+
+    private void loadAutoTranslate() {
+        int color = isTranslationActivated ? R.color.primary_dark : R.color.primary;
+        enabledDate = isTranslationActivated ? new Date() : new Date(Long.MAX_VALUE);
+        mTranslateImageView.setBackgroundColor(ContextCompat.getColor(this, color));
+        mLinearAutoTraslate.setBackgroundColor(ContextCompat.getColor(this, color));
+        Utils.saveAutoTranslateToPrefs(this, roomName, isTranslationActivated);
     }
 }
